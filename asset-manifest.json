@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "//pdco-dashboard/static/css/main.451795de.chunk.css",
-    "main.js": "//pdco-dashboard/static/js/main.46df73cc.chunk.js",
-    "main.js.map": "//pdco-dashboard/static/js/main.46df73cc.chunk.js.map",
-    "runtime-main.js": "//pdco-dashboard/static/js/runtime-main.3cd81386.js",
-    "runtime-main.js.map": "//pdco-dashboard/static/js/runtime-main.3cd81386.js.map",
-    "static/css/2.3fa4e1e1.chunk.css": "//pdco-dashboard/static/css/2.3fa4e1e1.chunk.css",
-    "static/js/2.339de652.chunk.js": "//pdco-dashboard/static/js/2.339de652.chunk.js",
-    "static/js/2.339de652.chunk.js.map": "//pdco-dashboard/static/js/2.339de652.chunk.js.map",
-    "index.html": "//pdco-dashboard/index.html",
-    "precache-manifest.842d1a2af34ea66242f297de4ffa92aa.js": "//pdco-dashboard/precache-manifest.842d1a2af34ea66242f297de4ffa92aa.js",
-    "service-worker.js": "//pdco-dashboard/service-worker.js",
-    "static/css/2.3fa4e1e1.chunk.css.map": "//pdco-dashboard/static/css/2.3fa4e1e1.chunk.css.map",
-    "static/css/main.451795de.chunk.css.map": "//pdco-dashboard/static/css/main.451795de.chunk.css.map",
-    "static/js/2.339de652.chunk.js.LICENSE.txt": "//pdco-dashboard/static/js/2.339de652.chunk.js.LICENSE.txt",
-    "static/media/index.css": "//pdco-dashboard/static/media/roboto-latin-900italic.ebf6d164.woff2"
+    "main.css": "/pdco-dashboard/static/css/main.451795de.chunk.css",
+    "main.js": "/pdco-dashboard/static/js/main.bfcce367.chunk.js",
+    "main.js.map": "/pdco-dashboard/static/js/main.bfcce367.chunk.js.map",
+    "runtime-main.js": "/pdco-dashboard/static/js/runtime-main.a58d15ca.js",
+    "runtime-main.js.map": "/pdco-dashboard/static/js/runtime-main.a58d15ca.js.map",
+    "static/css/2.75e5906e.chunk.css": "/pdco-dashboard/static/css/2.75e5906e.chunk.css",
+    "static/js/2.339de652.chunk.js": "/pdco-dashboard/static/js/2.339de652.chunk.js",
+    "static/js/2.339de652.chunk.js.map": "/pdco-dashboard/static/js/2.339de652.chunk.js.map",
+    "index.html": "/pdco-dashboard/index.html",
+    "precache-manifest.60c003a6c35d508c8870cc22c5dd9429.js": "/pdco-dashboard/precache-manifest.60c003a6c35d508c8870cc22c5dd9429.js",
+    "service-worker.js": "/pdco-dashboard/service-worker.js",
+    "static/css/2.75e5906e.chunk.css.map": "/pdco-dashboard/static/css/2.75e5906e.chunk.css.map",
+    "static/css/main.451795de.chunk.css.map": "/pdco-dashboard/static/css/main.451795de.chunk.css.map",
+    "static/js/2.339de652.chunk.js.LICENSE.txt": "/pdco-dashboard/static/js/2.339de652.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/pdco-dashboard/static/media/roboto-latin-900italic.ebf6d164.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.3cd81386.js",
-    "static/css/2.3fa4e1e1.chunk.css",
+    "static/js/runtime-main.a58d15ca.js",
+    "static/css/2.75e5906e.chunk.css",
     "static/js/2.339de652.chunk.js",
     "static/css/main.451795de.chunk.css",
-    "static/js/main.46df73cc.chunk.js"
+    "static/js/main.bfcce367.chunk.js"
   ]
 }
