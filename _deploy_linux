@@ -1,0 +1,29 @@
+#! /bin/bash
+
+source .env
+clear
+echo """
+=========================
+Building React Bundle
+Basehref: /
+Output: build
+=========================
+"""
+npm run build
+
+echo "Uploading..."
+cmd="rsync -avzd $PWD/build/ $LINUX_USER@$LINUX_HOST:/tmp/react-build/"
+eval $cmd
+echo $cmd
+
+echo "Copying..."
+ssh $LINUX_USER@$LINUX_HOST << EOF
+  sudo cp -R /tmp/react-build/* /var/www/html/
+EOF
+
+echo """
+=========================
+Done. Deployed to:
+https://$LINUX_HOST/
+=========================
+"""
