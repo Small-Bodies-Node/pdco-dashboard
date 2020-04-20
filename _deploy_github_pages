@@ -1,5 +1,10 @@
 #! /bin/bash
 
+
+# Details to deploy client to github pages
+. .env
+BASE_HREF="$GITHUB_REPO_NAME"
+
 echo -e """ \033[32m
 ===========================
 DEPLOYING BUNDLES TO GITHUB
@@ -7,33 +12,22 @@ BASE_HREF : \033[36m${BASE_HREF} \033[32m
 =========================== \033[0m
 """
 
-source .env
-BASE_HREF="/$GITHUB_REPO_NAME/"
-
 # Build pages for github deployment
-PUBLIC_URL="/$BASE_HREF" REACT_APP_BASE_HREF="/$BASE_HREF" npm run build
+PUBLIC_URL="/$BASE_HREF/" REACT_APP_BASE_HREF="/$BASE_HREF/" npm run build
+rsync -a build/ "build-$BASE_HREF/"
 
 
-node -e '''
+# Build some node code
+read -r -d '' NODECMD << EOM
   const ghpages = require("gh-pages");
-
-  const GITHUB_USER_NAME = "dwd-umd";
-  const GITHUB_REPO_NAME = "pdco-dashboard";
-
-  console.log("DEPLOYING...");
-
-  ghpages.publish("build-github", function (err) {
+  ghpages.publish("build-${GITHUB_REPO_NAME}", function (err) {
     if (!!err) {
-      console.log(`OH NO! STH WENT WRONG :(`, err);
+      console.log("OH NO! STH WENT WRONG :(", err);
       process.exit(1);
     }
-    console.log(`DEPLOYED TO: https://${GITHUB_USER_NAME}.github.io/${GITHUB_REPO_NAME}/`);
+    console.log("DEPLOYED TO: https://${GITHUB_USER_NAME}.github.io/${GITHUB_REPO_NAME}/");
   })
-'''
+EOM
 
-echo -e """ \033[32m
-==========================================================
-Done. Your page has been deployed to:\033[36m
-https://"$GITHUB_USER_NAME".github.io/"$GITHUB_REPO_NAME"/ \033[32m
-========================================================== \033[0m
-"""
+# Execute node code
+node -e "$NODECMD"

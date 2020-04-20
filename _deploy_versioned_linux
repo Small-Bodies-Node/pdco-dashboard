@@ -11,7 +11,6 @@ Output: build-$BASE_HREF
 """
 PUBLIC_URL="/$BASE_HREF" REACT_APP_BASE_HREF="/$BASE_HREF" npm run build
 rsync -a build/ "build-$BASE_HREF/"
-rsync -a build/ dwd/
 
 echo "Uploading..."
 cmd="rsync -avzd $PWD/build-$BASE_HREF/ $LINUX_USER@$LINUX_HOST:/home/$LINUX_USER/$BASE_HREF/"
