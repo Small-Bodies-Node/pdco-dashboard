@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => {
       '& ul': {
         margin: 0,
         '& li': {
+          color: 'white',
           display: 'inline-block',
           margin: '0px 10px'
         }
@@ -16,6 +17,9 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
+/**
+ * This is a simple menu to demo how to work a react router
+ */
 export const SimpleMenu = () => {
   const classes = useStyles();
   return (
@@ -26,9 +30,6 @@ export const SimpleMenu = () => {
         </li>
         <li>
           <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/contact">Contact</Link>
         </li>
       </ul>
     </div>
