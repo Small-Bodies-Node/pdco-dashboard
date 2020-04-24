@@ -14,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     gridColumn: '1 / 2',
     gridRow: '1 / 2',
     display: 'flex',
-    justifyContent: 'left',
+    justifyContent: 'center',
     padding: '0px 10px',
     alignItems: 'center',
     fontSize: 16,

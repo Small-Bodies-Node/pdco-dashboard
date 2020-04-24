@@ -14,8 +14,8 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     backgroundImage: 'url(images/world-placeholder.png)',
-    // backgroundSize: 'cover',
-    backgroundSize: '100% 100%',
+    backgroundSize: 'cover',
+    // backgroundSize: '100% 100%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center'
   }
