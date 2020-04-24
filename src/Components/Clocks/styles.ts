@@ -7,8 +7,10 @@ export const useStyles = makeStyles(
     container: {
       width: '100%',
       height: '100%',
+      padding: 0,
       flex: 1,
       display: 'grid',
+      gridGap: 5,
       gridTemplateRows: `repeat(1,minmax(0px,1fr))`,
       gridTemplateColumns: `repeat(7,minmax(0px,1fr))`,
       gridTemplateAreas: `'clock1 clock2 clock3 clock4 clock5 clock6 clock7'`,
@@ -51,9 +53,13 @@ export const useStyles = makeStyles(
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
-        gridTemplateRows: `repeat(4,minmax(0px,1fr))`,
-        gridTemplateColumns: `repeat(2,minmax(0px,1fr))`,
-        gridTemplateAreas: `'clock1 clock2' 'clock3 clock4' 'clock5 clock6' 'clock7 .'`
+        gridTemplateRows: `minmax(0px,1fr) repeat(2,minmax(0px,1fr))`,
+        gridTemplateColumns: `minmax(0px,1fr) minmax(0px,1fr) minmax(0px,1fr)`,
+        gridTemplateAreas: `
+          'clock5 clock5 clock5'
+          'clock1 clock2 clock3'
+          'clock4 clock6 clock7'
+        `
       }
     }
   }),

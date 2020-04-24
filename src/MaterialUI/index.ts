@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
+import { borderColor } from '../Utils/constants';
 
 export const defaultDark = createMuiTheme({
   palette: {
@@ -21,6 +22,8 @@ export const darklyTheme = createMuiTheme({
     secondary: { main: '#444' },
     error: { main: '#E74C3C' },
     background: { default: 'black' }
+    // background: { default: borderColor }
+    // background: { default: 'rgba(50,50,50)' }
   }
 });
 

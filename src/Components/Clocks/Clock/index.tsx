@@ -13,12 +13,12 @@ export const Clock = (props: IProps) => {
   return (
     <>
       <div className={classes.container}>
-        <div>{props.location}</div>
-        <div>{props.time}</div>
+        <div className="xxx">{props.location}</div>
+        <div className="xxx">{props.time}</div>
         <div
-          className={classes.flagImage}
+          className={classes.flagImage + ' yyy'}
           style={{ backgroundImage: `url(${props.flagUrl})` }}
-        ></div>
+        />
       </div>
     </>
   );

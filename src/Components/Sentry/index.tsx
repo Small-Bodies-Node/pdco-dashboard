@@ -4,7 +4,7 @@ import { useStyles } from './styles';
 
 const triColors = ['green', 'orange', 'red'];
 const triStrokePxl = 10;
-const svgBorder = 40;
+const svgBorder = 20;
 
 export const Sentry = () => {
   const classes = useStyles();
@@ -44,7 +44,6 @@ export const Sentry = () => {
         </g>
       </svg>
       <div className={classes.score}>{score}</div>
-      <div className={classes.title}>SENTRY STATUS</div>
     </div>
   );
 };
