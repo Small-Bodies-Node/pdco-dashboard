@@ -3,12 +3,14 @@ import React from 'react';
 import { useStyles } from './styles';
 
 interface IProps {
-  title: string;
+  title: string | React.JSXElementConstructor<any>;
   icon?: () => JSX.Element;
   alignment?: 'left' | 'center';
 }
 
 export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
+  const RenderedTitle =
+    typeof props.title === 'string' ? () => <>{props.title}</> : () => <props.title />;
   const classes = useStyles();
   return (
     <>
@@ -20,7 +22,7 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
           }}
         >
           <span style={{ paddingRight: 5 }}>{props.icon ? <props.icon /> : null} </span>
-          {props.title}
+          <RenderedTitle />
         </div>
         <div className={classes.content}>{props.children}</div>
       </div>

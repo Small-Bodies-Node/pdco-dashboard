@@ -18,7 +18,14 @@ export const useStyles = makeStyles((theme) => ({
     padding: '0px 10px',
     alignItems: 'center',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    '& a': {
+      textDecoration: 'none',
+      color: 'white',
+      '&:hover': {
+        color: 'cyan'
+      }
+    }
   },
   content: {
     backgroundColor: 'rgba(255,255,255,0)',

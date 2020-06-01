@@ -11,6 +11,7 @@ import { Sentry } from '../Sentry';
 import { ProgramsMap } from '../ProgramsMap';
 import { NeoCount } from '../NeoCount';
 import { TitledCell } from '../TitledCell';
+import { Link } from 'react-router-dom';
 
 export const MainUI = () => {
   const classes = useStyles();
@@ -32,7 +33,10 @@ export const MainUI = () => {
         </TitledCell>
       </div>
       <div className={classes.sentry}>
-        <TitledCell title="SENTRY STATUS" icon={() => <FontAwesomeIcon icon={faShieldAlt} />}>
+        <TitledCell
+          title={() => <a href="https://cneos.jpl.nasa.gov/sentry/">{'SENTRY STATUS'}</a>}
+          icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
+        >
           <Sentry />
         </TitledCell>
       </div>
