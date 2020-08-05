@@ -1,11 +1,13 @@
 import React from 'react';
 
 import { useStyles } from './styles';
+import { CircularProgress } from '@material-ui/core';
 
 interface IProps {
   title: string | React.JSXElementConstructor<any>;
   icon?: () => JSX.Element;
   alignment?: 'left' | 'center';
+  isDisplayed?: boolean;
 }
 
 export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
@@ -24,7 +26,11 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
           <span style={{ paddingRight: 5 }}>{props.icon ? <props.icon /> : null} </span>
           <RenderedTitle />
         </div>
-        <div className={classes.content}>{props.children}</div>
+        <>
+          <div className={classes.content}>
+            {props.isDisplayed ? props.children : <CircularProgress />}
+          </div>
+        </>
       </div>
     </>
   );

@@ -19,12 +19,12 @@ const gridTemplateAreas = `
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
-  minmax(0px,100px)
-  minmax(0px,200px)
+  minmax(0px,70px)
+  minmax(0px,120px)
   minmax(0px,150px)
-  minmax(0px,1fr)
-  minmax(0px,1fr)
-  minmax(0px,1fr)
+  minmax(0px,120px)
+  minmax(0px,350px)
+  minmax(0px,350px)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
@@ -78,6 +78,26 @@ export const useStyles = makeStyles(
       gridArea: 'title',
       backgroundColor: 'blue',
       fontSize: 20,
+      fontWeight: 'bold',
+      //
+      display: 'flex',
+      position: 'relative',
+      flexDirection: 'column',
+      '& > div': {
+        paddingBottom: 2
+      },
+      '& > .shortTitle': {
+        display: 'none',
+        paddingBottom: 2
+      },
+      '& > .date': {
+        fontSize: 12
+      }
+    },
+    date: {
+      gridArea: 'date',
+      backgroundColor: 'blue',
+      fontSize: 20,
       fontWeight: 'bold'
     },
     clocks: {
@@ -112,6 +132,14 @@ export const useStyles = makeStyles(
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
         gridTemplateAreas: gridTemplateAreasMobile
+      },
+      title: {
+        '& > .shortTitle': {
+          display: 'block'
+        },
+        '& > .longTitle': {
+          display: 'none'
+        }
       }
     }
   }),

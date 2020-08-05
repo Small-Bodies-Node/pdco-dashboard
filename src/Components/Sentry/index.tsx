@@ -1,43 +1,36 @@
 import React, { useState, useEffect } from 'react';
 
 import { useStyles } from './styles';
+import { ISentryData } from '../../Models/data';
 
 const triStrokePxl = 10;
 const svgBorder = 20;
 
-export const Sentry = () => {
+interface IProps {
+  sentryData: ISentryData;
+}
+
+export const Sentry = ({ sentryData }: IProps) => {
   const classes = useStyles();
   const [score, setScore] = useState<number>(0);
   const [triColor, setTriColor] = useState<'grey' | 'green' | 'yellow' | 'orange' | 'red'>('grey');
 
   useEffect(() => {
-    // Call the built-in function to make http requests from browser; this returns a promise
-    fetch('https://ssd-api.jpl.nasa.gov/sentry.api')
-      // Call 'then' method on returned promise; this accepts a function that acts on the future thing that gets returned; in this case, the thing that will get returned in the future is an http-response object
-      .then((response) => {
-        // The response object has a method that returns a promised json object; don't ask me why it has to be a promise
-        return response.json();
+    // Filter out those objects that contain ts_max values that aren't a string
+    // TODO: figure out a more robust test of the fitness of such objects
+    const tsMaxValues = sentryData.data
+      .filter((datum: any, ind: number) => {
+        return typeof datum.ts_max === 'string';
       })
-      .then((thePromisedJsonObject) => {
-        // isolate the data within the returned JSON object
-        const data: any[] = thePromisedJsonObject.data;
+      // Now map the filtered objects within the array of objects to an array of ts_max values (converted from strings to numbers)
+      .map((datum: any) => parseInt(datum.ts_max, 10));
 
-        // Filter out those objects that contain ts_max values that aren't a string
-        // TODO: figure out a more robust test of the fitness of such objects
-        const tsMaxValues = data
-          .filter((el: any, ind: number) => {
-            return typeof el.ts_max === 'string';
-          })
-          // Now map the filtered objects within the array of objects to an array of ts_max values (converted from strings to numbers)
-          .map((el: any) => parseInt(el.ts_max, 10));
+    // Now find the highest numeric value within the array
+    const highestTsMaxValues = Math.max.apply(null, tsMaxValues);
 
-        // Now find the hishest numeric value within the array
-        const highestTsMaxValues = Math.max.apply(null, tsMaxValues);
-
-        // Set our stateful variable to the highest-computed ts_max value
-        setScore(highestTsMaxValues);
-      });
-  }, []);
+    // Set our stateful variable to the highest-computed ts_max value
+    setScore(highestTsMaxValues);
+  }, [sentryData]);
 
   useEffect(() => {
     if (score === 0) setTriColor('grey');

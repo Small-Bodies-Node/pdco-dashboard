@@ -10,7 +10,7 @@ export const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'column',
       // border: `solid 1px ${borderColor}`,
-      '& > div.xxx': {
+      '& > div.aux': {
         flex: 1,
         display: 'flex',
         // backgroundColor: 'rgba(0,255,0,0.3)',
@@ -25,11 +25,11 @@ export const useStyles = makeStyles(
         color: 'green',
         transform: 'scale(2) translate(0%, 0%)',
         zIndex: 5,
-        '& div.yyy': {
+        '& div.auy': {
           opacity: 0.9,
           zIndex: 6
         },
-        '& div.xxx ': {
+        '& div.aux ': {
           textShadow: '1px 1px 1px rgba(0,0,0,1)',
           zIndex: 7
         }
@@ -55,7 +55,7 @@ export const useStyles = makeStyles(
     //
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
-        flexDirection: 'row'
+        // flexDirection: 'row'
       }
     }
   }),

@@ -53,12 +53,17 @@ export const useStyles = makeStyles(
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
-        gridTemplateRows: `minmax(0px,1fr) repeat(2,minmax(0px,1fr))`,
-        gridTemplateColumns: `minmax(0px,1fr) minmax(0px,1fr) minmax(0px,1fr)`,
+        gridTemplateRows: `repeat(2,minmax(0px,1fr))`,
+        // gridTemplateColumns: `minmax(0px,1fr) minmax(0px,1fr) minmax(0px,1fr)`,
+        gridTemplateColumns: `repeat(12,minmax(0px,1fr))`,
+        // gridTemplateAreas: `
+        //   'clock5 clock5 clock5'
+        //   'clock1 clock2 clock3'
+        //   'clock4 clock6 clock7'
+        // `
         gridTemplateAreas: `
-          'clock5 clock5 clock5'
-          'clock1 clock2 clock3'
-          'clock4 clock6 clock7'
+          'clock1 clock1 clock1 clock1 clock2 clock2 clock2 clock2 clock3 clock3 clock3 clock3'
+          'clock4 clock4 clock4 clock5 clock5 clock5 clock6 clock6 clock6 clock7 clock7 clock7'
         `
       }
     }

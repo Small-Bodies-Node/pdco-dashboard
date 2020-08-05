@@ -8,6 +8,10 @@ export const useStyles = makeStyles(
       height: '100%',
       display: 'flex'
     },
+    week: {
+      flex: 1
+      // backgroundColor: 'rgba(255,255,255,0.05)'
+    },
     month: {
       flex: 1
       // backgroundColor: 'rgba(255,255,255,0.05)'
@@ -30,7 +34,8 @@ export const useStyles = makeStyles(
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
         //
-      }
+      },
+      count: { fontSize: 40 }
     }
   }),
   { name: 'neo-count' }
