@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pdco-dashboard/precache-manifest.1b6580b83103107323cb2785eded302b.js"
+  "/pdco-dashboard/precache-manifest.a1ba3b5a05c4ec26ec7c7da02e2ae48b.js"
 );
 
 self.addEventListener('message', (event) => {
