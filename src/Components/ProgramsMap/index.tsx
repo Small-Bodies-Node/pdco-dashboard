@@ -36,7 +36,7 @@ export const ProgramsMap = () => {
               <WorldDaylightMap
                 options={{
                   controlsPosition: 'outer-top',
-                  isSunshineDisplayed: false,
+                  isSunshineDisplayed: !false,
                   icons: largeMapIcons
                   // icons: largeMapIcons.concat(smallMapIcons)
                   // icons: smallMapIcons.concat(largeMapIcons)
