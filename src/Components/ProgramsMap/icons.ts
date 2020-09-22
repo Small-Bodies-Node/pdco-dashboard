@@ -25,7 +25,7 @@ export const smallMapIcons: IIcon[] = [
   {
     iconLabel: 'Santiago, Chile',
     iconCoord: { lat: -33.45, lng: -70.666667 },
-    iconUrl: 'images/santiago-flag.png',
+    iconUrl: 'images/chile-flag.png',
     iconToSvgWidthRatio: iconToSvgWidthRatioSmallMap
   },
   {
