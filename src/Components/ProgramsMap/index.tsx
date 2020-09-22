@@ -1,19 +1,50 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import { WorldDaylightMap } from 'world-daylight-map';
 import { useStyles } from './styles';
+import { smallMapIcons, largeMapIcons } from './icons';
+import { Dialog, DialogProps } from '@material-ui/core';
 
 export const ProgramsMap = () => {
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
       <div className={classes.container}>
-        {/* <iframe
-          title="xxx"
-          src="https://www.google.com/maps/d/embed?mid=19R2POoOKW1RQj4-bBd5GA7dLvw8"
-          width="100%"
-          height="100%"
-        ></iframe> */}
-        <div className={classes.imagePlaceholder}></div>
+        <WorldDaylightMap
+          options={{
+            controlsPosition: 'no-controls',
+            isSunshineDisplayed: false,
+            icons: smallMapIcons
+          }}
+        />
+        <div
+          className={classes.overlay}
+          onClick={() => {
+            setIsDialogOpen((previous) => !previous);
+          }}
+        />
+
+        <Dialog
+          fullWidth={true}
+          maxWidth={'xl' as DialogProps['maxWidth']}
+          onClose={() => setIsDialogOpen(false)}
+          aria-labelledby="programs-dialog"
+          open={isDialogOpen}
+        >
+          <div className={classes.dialogContainer}>
+            <div className={classes.dialogMapWrapper}>
+              <WorldDaylightMap
+                options={{
+                  controlsPosition: 'outer-top',
+                  isSunshineDisplayed: false,
+                  icons: largeMapIcons
+                  // icons: largeMapIcons.concat(smallMapIcons)
+                  // icons: smallMapIcons.concat(largeMapIcons)
+                }}
+              />
+            </div>
+          </div>
+        </Dialog>
       </div>
     </>
   );

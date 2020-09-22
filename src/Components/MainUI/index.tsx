@@ -25,21 +25,21 @@ import { IFetchedData, fetchAllData } from '../../Utils/fetchAllData';
 export const MainUI = () => {
   const classes = useStyles();
   const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>('APIDATA', null);
+  const [isSearching, setIsSearching] = useState(true);
   const [displayDate, setDisplayDate] = useState('');
 
   useEffect(() => {
     // Ensure localStorage has been initialized with the api data
-    if (
-      !storedData ||
-      !storedData.sentryData ||
-      !storedData.cadData0p05AU ||
-      !storedData.cadData1LD
-    ) {
-      fetchAllData().then((data) => setStoredData(data));
+    if (!storedData || isSearching) {
+      console.log('Fetching data');
+      fetchAllData().then((data) => {
+        if (!!data) setStoredData(data);
+        setIsSearching(false);
+      });
     } else {
       setDisplayDate(storedData ? formattedTimestamp(storedData.timestamp) : '');
     }
-  }, [storedData, setStoredData]);
+  }, [storedData, setStoredData, isSearching, setIsSearching]);
 
   return (
     <>
@@ -50,7 +50,7 @@ export const MainUI = () => {
         <div className={classes.imageRight}>
           <ImageCell imageUrl="images/nasa-logo.png" />
         </div>
-        <div className={classes.title} onClick={() => setStoredData(null)}>
+        <div className={classes.title} onClick={() => setIsSearching(true)}>
           <div className="longTitle">{'PDCO STATUS SUMMARY'}</div>
           <div className="shortTitle">{'PDCO STATUS'}</div>
           <div className="date">
@@ -65,7 +65,7 @@ export const MainUI = () => {
           <TitledCell
             title="CLOSE APPROACHES <1LD"
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
-            isDisplayed={!!storedData}
+            isDisplayed={!isSearching}
           >
             {!!storedData && <NeoCount cadData={storedData.cadData1LD} />}
           </TitledCell>
@@ -74,7 +74,7 @@ export const MainUI = () => {
           <TitledCell
             title={() => <a href="https://cneos.jpl.nasa.gov/sentry/">{'SENTRY STATUS'}</a>}
             icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
-            isDisplayed={!!storedData}
+            isDisplayed={!isSearching}
           >
             {!!storedData && <Sentry sentryData={storedData.sentryData} />}
           </TitledCell>
@@ -83,7 +83,7 @@ export const MainUI = () => {
           <TitledCell
             title="PROGRAMS"
             icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
-            isDisplayed={!!storedData}
+            isDisplayed={!isSearching}
           >
             <ProgramsMap />
           </TitledCell>
@@ -92,7 +92,7 @@ export const MainUI = () => {
           <TitledCell
             title="RECENT TABLE"
             icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={!!storedData}
+            isDisplayed={!isSearching}
           >
             {!!storedData && <TableCAD period="recent" cadData={storedData.cadData0p05AU} />}
           </TitledCell>
@@ -101,7 +101,7 @@ export const MainUI = () => {
           <TitledCell
             title="FUTURE TABLE"
             icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={!!storedData}
+            isDisplayed={!isSearching}
           >
             {!!storedData && <TableCAD period="future" cadData={storedData.cadData0p05AU} />}
           </TitledCell>

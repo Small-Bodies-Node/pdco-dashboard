@@ -23,7 +23,6 @@ export const NeoCount = ({ cadData }: IProps) => {
     const filterDates = (daysThreshold: number) => (datumArr: string[]) => {
       const dateFromDate = apiDateStringToJsDate(datumArr[cadFieldIndices.cd]);
       const dDays = (+new Date() - +dateFromDate) / (24 * 60 * 60 * 1000); // dMillSecs => Days
-      console.log('DaysThresh', daysThreshold, dDays, datumArr[cadFieldIndices.cd]);
       return dDays <= daysThreshold;
     };
 

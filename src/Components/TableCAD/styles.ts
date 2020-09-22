@@ -6,6 +6,7 @@ export const useStyles = makeStyles(
       width: '100%',
       height: '100%',
       padding: 10,
+      paddingTop: 0,
       overflow: 'hidden'
     },
     root: {

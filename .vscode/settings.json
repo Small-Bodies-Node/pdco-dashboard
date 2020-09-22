@@ -5,9 +5,7 @@
   "tslint.enable": true,
   "prettier.htmlWhitespaceSensitivity": "ignore",
   "files.associations": {
-    "*.html": "html"
-  },
-  "files.associations": {
+    "*.html": "html",
     "*.svg": "html"
   },
   "[html]": {
@@ -25,5 +23,5 @@
   },
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  }
 }

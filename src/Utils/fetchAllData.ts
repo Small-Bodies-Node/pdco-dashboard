@@ -12,7 +12,7 @@ export interface IFetchedData {
  * At the moment, we're using two routes('sentry' and 'cad'), and calling
  * cad twice with different params
  */
-export async function fetchAllData(): Promise<IFetchedData> {
+export async function fetchAllData(): Promise<IFetchedData | null> {
   // Urls for data fetching
   const sentryUrl = 'https://ssd-api.jpl.nasa.gov/sentry.api';
   const cad1LDUrl = getCadUrl('1LD');
@@ -23,16 +23,18 @@ export async function fetchAllData(): Promise<IFetchedData> {
     fetch(sentryUrl).then((res) => res.json()),
     fetch(cad1LDUrl).then((res) => res.json()),
     fetch(cad0p05AUUrl).then((res) => res.json())
-  ]);
+  ]).catch((err) => [null, null, null]);
 
-  // Return fetched data
-  const data: IFetchedData = {
+  // Return null if error occurred
+  if (!sentryData || !cad1LDUrl || !cad0p05AUUrl) return null;
+
+  // Return data otherwise
+  return {
     sentryData,
     cadData1LD,
     cadData0p05AU,
     timestamp: new Date().toUTCString()
   };
-  return data;
 }
 
 function getCadUrl(dist: '1LD' | '0p05AU') {

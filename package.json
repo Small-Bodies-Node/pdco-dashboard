@@ -46,7 +46,8 @@
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "3.4.0",
 		"typeface-roboto": "0.0.75",
-		"typescript": "^3.9.7"
+		"typescript": "^3.9.7",
+		"world-daylight-map": "^1.1.2"
 	},
 	"devDependencies": {
 		"@types/react-router-dom": "^5.1.5",
