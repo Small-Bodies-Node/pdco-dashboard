@@ -29,5 +29,10 @@ read -r -d '' NODECMD << EOM
   })
 EOM
 
+# ---
+echo "----------"
+ls "build-$BASE_HREF/static/js"
+rm "build-$BASE_HREF/static/js/"*.map
+
 # Execute node code
 node -e "$NODECMD"
