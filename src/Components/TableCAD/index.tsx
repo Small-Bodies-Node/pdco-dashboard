@@ -9,7 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 import { useStyles } from './styles';
-import { ICadData } from '../../Models/data';
+import { ICadData } from '../../Models/apiData.model';
 import { cadFieldIndices, au2ld } from '../../Utils/constants';
 import { Paper, withStyles, Theme } from '@material-ui/core';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
@@ -144,14 +144,16 @@ export const TableCAD = ({ cadData, period }: IProps) => {
 
   // We fetch data at once for both recent and future, which means
   // we have to separate out items here into their respective tables
-  const displayData = cadData.data.filter((datumArr: string[]) => {
+  const displayData = cadData.data.filter((datumArr: (string | null)[]) => {
     // Filter out CA's that aren't in the designated period
-    const dateFromData = apiDateStringToJsDate(datumArr[cadFieldIndices.cd]);
+    const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
+    if (!dateIsStringOrNull) return false;
+    const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
     const dDays = +new Date() - +dateFromData;
     return period === 'recent' ? dDays < 0 : dDays >= 0;
   });
 
-  const rows = displayData.map((datumArr: string[]) => {
+  const rows = displayData.map((datumArr: (string | null)[]) => {
     return {
       fullname: datumArr[cadFieldIndices.fullname],
       des: datumArr[cadFieldIndices.des],
@@ -189,9 +191,9 @@ export const TableCAD = ({ cadData, period }: IProps) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, ind) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.fullname}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
                     {columns.map((column) => {
                       const value = (row as any)[column.id];
                       return (

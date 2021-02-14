@@ -11,6 +11,10 @@ import { SimpleMenu } from '../Components/SimpleMenu';
 import { Layout } from '../Components/Layout';
 
 export const AppEntry = () => {
+  //------------------------>>>
+
+  console.log('>>> ' + process.env.NODE_ENV);
+
   const classes = useStyles();
   return (
     <div className={classes.container}>

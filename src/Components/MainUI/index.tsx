@@ -10,6 +10,7 @@ import {
   faRedo
 } from '@fortawesome/free-solid-svg-icons';
 
+// My constants, hooks, etc.
 import { ImageCell } from '../ImageCell';
 import { useStyles } from './styles';
 import { Clocks } from '../Clocks';
@@ -18,20 +19,50 @@ import { ProgramsMap } from '../ProgramsMap';
 import { NeoCount } from '../NeoCount';
 import { TitledCell } from '../TitledCell';
 import { TableCAD } from '../TableCAD';
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { ELocalStorageOptions, useLocalStorage } from '../../Hooks/useLocalStorage';
 import { formattedTimestamp } from '../../Utils/formattedTime';
-import { IFetchedData, fetchAllData } from '../../Utils/fetchAllData';
+import { fetchAllData } from '../../Utils/fetchAllData';
+import { IFetchedData } from '../../Models/apiData.model';
+import { useInterval } from '../../Hooks/useInterval';
+import { intervalToCheckForDataSecs } from '../../Utils/constants';
 
 export const MainUI = () => {
+  // --------------------->>>
+
+  //
+  // Set up state
+  //
   const classes = useStyles();
-  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>('APIDATA', null);
-  const [isSearching, setIsSearching] = useState(true);
+  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>(
+    ELocalStorageOptions.API_DATA,
+    null
+  );
+  const [storedIntervalToRefreshDataSecs, setIntervalToRefreshDataSecs] = useLocalStorage<number>(
+    ELocalStorageOptions.CHECK_FOR_DATA_REFRESH_INTERVAL,
+    20
+  );
+  const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState('');
 
+  //
+  // Set up regular checks to see if it's time to refresh data
+  //
+  const checkIfItsTimeForDataUpdate = () => {
+    if (!!storedData) {
+      const dtSecs = (new Date().getTime() - new Date(storedData.timestamp).getTime()) / 1000;
+      if (dtSecs > storedIntervalToRefreshDataSecs) {
+        setIsSearching(true);
+      }
+    }
+  };
+  useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
+
+  //
+  // Re-fetch data whenever there is no data in localStorage, or when search is initiated
+  //
   useEffect(() => {
-    // Ensure localStorage has been initialized with the api data
     if (!storedData || isSearching) {
-      console.log('Fetching data');
+      console.log(`Fetching ${process.env.NODE_ENV === 'development' ? '(Mock)' : ''} data`);
       fetchAllData().then((data) => {
         if (!!data) setStoredData(data);
         setIsSearching(false);
@@ -39,7 +70,7 @@ export const MainUI = () => {
     } else {
       setDisplayDate(storedData ? formattedTimestamp(storedData.timestamp) : '');
     }
-  }, [storedData, setStoredData, isSearching, setIsSearching]);
+  }, [isSearching, setIsSearching]);
 
   return (
     <>

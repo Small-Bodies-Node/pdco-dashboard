@@ -1,3 +1,11 @@
+// Interface for combining all fetched data into one obj
+export interface IFetchedData {
+  sentryData: ISentryData;
+  cadData1LD: ICadData;
+  cadData0p05AU: ICadData;
+  timestamp: string;
+}
+
 // Interface for data received from API:
 // https://ssd-api.jpl.nasa.gov/cad.api?...
 export interface ICadData {
@@ -7,7 +15,7 @@ export interface ICadData {
   };
   count: string;
   fields: string[];
-  data: string[][];
+  data: (string | null)[][];
 }
 
 // Interface for data received from API:
@@ -30,28 +38,8 @@ export interface ISentryData {
     fullname: string;
     n_imp: string;
     last_obs_jd: string;
-    ts_max: string;
+    ts_max: string | null;
     id: string;
     des: string;
   }[];
 }
-// {
-//     count: string;
-//     signature: any;
-//     data: {
-//       des: string;
-//       diameter: string;
-//       fullname: string;
-//       h: string;
-//       id: string;
-//       ip: string;
-//       last_obs: string;
-//       last_obs_jd: string;
-//       n_imp: string;
-//       ps_cum: string;
-//       ps_max: string;
-//       range: string;
-//       ts_max: string;
-//       v_inf: string;
-//     }[];
-//   }

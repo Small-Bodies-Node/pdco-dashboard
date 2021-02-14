@@ -7,7 +7,7 @@ import { TitledCell } from '../TitledCell';
 import { mobileWidthPxl, cadFieldIndices } from '../../Utils/constants';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
-import { ICadData } from '../../Models/data';
+import { ICadData } from '../../Models/apiData.model';
 
 interface IProps {
   cadData: ICadData;
@@ -20,8 +20,10 @@ export const NeoCount = ({ cadData }: IProps) => {
 
   useEffect(() => {
     // Function to filter cad events within daysThreshold
-    const filterDates = (daysThreshold: number) => (datumArr: string[]) => {
-      const dateFromDate = apiDateStringToJsDate(datumArr[cadFieldIndices.cd]);
+    const filterDates = (daysThreshold: number) => (datumArr: (string | null)[]) => {
+      const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
+      if (!dateIsStringOrNull) return false;
+      const dateFromDate = apiDateStringToJsDate(dateIsStringOrNull);
       const dDays = (+new Date() - +dateFromDate) / (24 * 60 * 60 * 1000); // dMillSecs => Days
       return dDays <= daysThreshold;
     };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useStyles } from './styles';
-import { ISentryData } from '../../Models/data';
+import { ISentryData } from '../../Models/apiData.model';
 
 const triStrokePxl = 10;
 const svgBorder = 20;
