@@ -40,7 +40,7 @@ export const MainUI = () => {
   );
   const [storedIntervalToRefreshDataSecs, setIntervalToRefreshDataSecs] = useLocalStorage<number>(
     ELocalStorageOptions.CHECK_FOR_DATA_REFRESH_INTERVAL,
-    20
+    12 * 60 * 60
   );
   const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState('');

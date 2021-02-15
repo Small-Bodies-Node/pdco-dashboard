@@ -8,6 +8,10 @@ export const useStyles = makeStyles(
       height: '100%',
       display: 'flex'
     },
+    labels: {
+      flex: 0.5
+      // backgroundColor: 'rgba(255,255,255,0.05)'
+    },
     week: {
       flex: 1
       // backgroundColor: 'rgba(255,255,255,0.05)'
