@@ -77,7 +77,7 @@ const columns = [
     format: (value: string) => parseFloat(value).toFixed(1)
   }
   ///////////////////////////////////////
-  ///////////////////////////////////////
+  // Not-displayed
   ///////////////////////////////////////
   // {
   //   id: 'des',
@@ -129,7 +129,8 @@ interface IProps {
 }
 
 export const TableCAD = ({ cadData, period }: IProps) => {
-  //
+  // -------------------------------------------------->>>
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -150,7 +151,7 @@ export const TableCAD = ({ cadData, period }: IProps) => {
     if (!dateIsStringOrNull) return false;
     const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
     const dDays = +new Date() - +dateFromData;
-    return period === 'recent' ? dDays < 0 : dDays >= 0;
+    return period === 'future' ? dDays < 0 : dDays >= 0;
   });
 
   const rows = displayData.map((datumArr: (string | null)[]) => {
