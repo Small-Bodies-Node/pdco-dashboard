@@ -137,7 +137,7 @@ export const MainUI = () => {
         </div>
         <div className={classes.recentTab}>
           <TitledCell
-            title="RECENT TABLE"
+            title="CLOSE APPROACHES LAST 7 DAYS <1LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={!isSearching}
           >
@@ -146,7 +146,7 @@ export const MainUI = () => {
         </div>
         <div className={classes.futureTab}>
           <TitledCell
-            title="FUTURE TABLE"
+            title="CLOSE APPROACHES NEXT 10 YEARS <1LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={!isSearching}
           >
