@@ -11,7 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { useStyles } from './styles';
 import { ICadData } from '../../Models/apiData.model';
 import { cadFieldIndices, au2ld } from '../../Utils/constants';
-import { Paper, withStyles, Theme } from '@material-ui/core';
+import { withStyles, Theme } from '@material-ui/core';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
 const StyledTableCell = withStyles((theme: Theme) => ({
@@ -175,7 +175,6 @@ export const TableCAD = ({ cadData, period }: IProps) => {
   return (
     <>
       <div className={classes.container}>
-        {/* <Paper className={classes.root}> */}
         <TableContainer className={classes.tableContainer}>
           <Table stickyHeader size="small" aria-label="sticky table">
             <TableHead>
@@ -192,7 +191,7 @@ export const TableCAD = ({ cadData, period }: IProps) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, ind) => {
+              {rows.map((row, ind) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
                     {columns.map((column) => {
@@ -209,16 +208,14 @@ export const TableCAD = ({ cadData, period }: IProps) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        {/* </Paper> */}
+        <div
+          style={{
+            textAlign: 'start',
+            padding: 20
+          }}
+        >
+          Total: {rows.length}
+        </div>
       </div>
     </>
   );

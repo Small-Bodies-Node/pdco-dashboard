@@ -5,4 +5,4 @@ import { fetchAllDataMock } from './fetchAllDataMock';
  * Choose data source depending on environment
  */
 export const fetchAllData =
-  process.env.NODE_ENV === 'production' ? fetchAllDataReal : fetchAllDataMock;
+  !true || process.env.NODE_ENV === 'production' ? fetchAllDataReal : fetchAllDataMock;
