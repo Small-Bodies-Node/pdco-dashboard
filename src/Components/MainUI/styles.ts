@@ -43,15 +43,15 @@ const gridTemplateAreasMobile = `
 export const useStyles = makeStyles(
   (theme) => ({
     container: {
+      position: 'relative',
       width: '100vw',
-      height: '95vh',
+      height: '100vh',
       display: 'grid',
       gridTemplateRows,
       gridTemplateColumns,
       gridTemplateAreas,
       gridGap,
       textAlign: 'center',
-      text: 'center',
       border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
       '& > div': {
         // backgroundColor: 'transparent',

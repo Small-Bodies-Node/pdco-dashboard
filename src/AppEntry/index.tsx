@@ -30,7 +30,7 @@ export const AppEntry = () => {
                 <PageAbout />
               </Route>
             </Switch>
-            <SimpleMenu />
+            {/* <SimpleMenu /> */}
           </Router>
         </Layout>
       </ThemeProvider>

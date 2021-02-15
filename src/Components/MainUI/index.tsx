@@ -7,7 +7,8 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo
+  faRedo,
+  faCog
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
@@ -75,6 +76,17 @@ export const MainUI = () => {
   return (
     <>
       <div className={classes.container}>
+        {/*         <FontAwesomeIcon
+          style={{
+            position: 'fixed',
+            bottom: 30,
+            left: 30
+          }}
+          className="settings"
+          size="2x"
+          icon={faCog}
+        /> */}
+
         <div className={classes.imageLeft}>
           <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
         </div>
@@ -82,7 +94,7 @@ export const MainUI = () => {
           <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
         </div>
         <div className={classes.title} onClick={() => setIsSearching(true)}>
-          <div className="longTitle">{'PDCO STATUS SUMMARY'}</div>
+          <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
           <div className="shortTitle">{'PDCO STATUS'}</div>
           <div className="date">
             <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
@@ -103,7 +115,11 @@ export const MainUI = () => {
         </div>
         <div className={classes.sentry}>
           <TitledCell
-            title={() => <a href="https://cneos.jpl.nasa.gov/sentry/">{'SENTRY STATUS'}</a>}
+            title={() => (
+              <a target="_blank" href="https://cneos.jpl.nasa.gov/sentry/">
+                {'SENTRY STATUS'}
+              </a>
+            )}
             icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
             isDisplayed={!isSearching}
           >
@@ -112,7 +128,7 @@ export const MainUI = () => {
         </div>
         <div className={classes.programs}>
           <TitledCell
-            title="PROGRAMS"
+            title="PROJECTS"
             icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
             isDisplayed={!isSearching}
           >
