@@ -76,10 +76,10 @@ export const MainUI = () => {
     <>
       <div className={classes.container}>
         <div className={classes.imageLeft}>
-          <ImageCell imageUrl="images/pdco-logo.jpg" />
+          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
         </div>
         <div className={classes.imageRight}>
-          <ImageCell imageUrl="images/nasa-logo.png" />
+          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
         </div>
         <div className={classes.title} onClick={() => setIsSearching(true)}>
           <div className="longTitle">{'PDCO STATUS SUMMARY'}</div>
