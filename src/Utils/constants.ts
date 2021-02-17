@@ -34,7 +34,11 @@ export const cadFieldIndices = {
   v_inf: 8,
   t_sigma_f: 9,
   h: 10,
-  fullname: 11
+  fullname: 11,
+  //
+  // Entries added to each data array clientside
+  //
+  size: 12
 };
 
 // Convert distances in AU to LD

@@ -131,17 +131,7 @@ interface IProps {
 export const TableCAD = ({ cadData, period }: IProps) => {
   // -------------------------------------------------->>>
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  console.log('Debug ----->>>', cadData);
 
   // We fetch data at once for both recent and future, which means
   // we have to separate out items here into their respective tables

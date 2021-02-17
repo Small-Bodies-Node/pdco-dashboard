@@ -33,19 +33,31 @@ export const NeoCount = ({ cadData }: IProps) => {
   const [caYearAll, setCaYearAll] = useState(0);
 
   useEffect(() => {
-    // Function to filter cad events within daysThreshold
+    // --------->>>
+
+    // Function to filter cad events to target time period
     const filterDates = (daysThreshold: number) => (datumArr: (string | null)[]) => {
       const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
       if (!dateIsStringOrNull) return false;
-      const dateFromDate = apiDateStringToJsDate(dateIsStringOrNull);
-      const dDays = (+new Date() - +dateFromDate) / (24 * 60 * 60 * 1000); // dMillSecs => Days
-      return dDays <= daysThreshold;
+      const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
+      const daysSinceDateFromData = (+new Date() - +dateFromData) / (24 * 60 * 60 * 1000); // dMillSecs => Days
+      // 0 < days since event < threshold
+      return 0 <= daysSinceDateFromData && daysSinceDateFromData <= daysThreshold;
     };
 
-    // Function to filter cad events within daysThreshold
-    const filterSizes = (sizeThreshold: number) => (datumArr: (string | null)[]) => {
+    // Function to filter cad events to within GEO (~42K km)
+    const filterGEOs = () => (datumArr: (string | null)[]) => {
       const dateIsStringOrNull = datumArr[cadFieldIndices.dist];
       // console.log('>>>> ', dateIsStringOrNull);
+      return true;
+    };
+
+    // Function to filter cad events to within GEO (~42K km)
+    const filter50ms = () => (datumArr: (string | null)[]) => {
+      const sizeIsStringOrNull = datumArr[cadFieldIndices.size];
+      if (!sizeIsStringOrNull) return false;
+
+      console.log('>>>> ', sizeIsStringOrNull);
       return true;
     };
 
@@ -53,15 +65,15 @@ export const NeoCount = ({ cadData }: IProps) => {
     const sizeGEO = 999;
     const size50m = 99;
 
-    const _caWeekGEO = cadData.data.filter(filterSizes(sizeGEO)).filter(filterDates(7)).length;
-    const _caWeek50m = cadData.data.filter(filterSizes(size50m)).filter(filterDates(7)).length;
-    const _caWeekAll = cadData.data.filter(filterSizes(size50m)).filter(filterDates(7)).length;
-    const _caMonthGEO = cadData.data.filter(filterSizes(sizeGEO)).filter(filterDates(30)).length;
-    const _caMonth50m = cadData.data.filter(filterSizes(size50m)).filter(filterDates(30)).length;
-    const _caMonthAll = cadData.data.filter(filterSizes(size50m)).filter(filterDates(30)).length;
-    const _caYearGEO = cadData.data.filter(filterSizes(sizeGEO)).filter(filterDates(365)).length;
-    const _caYear50m = cadData.data.filter(filterSizes(size50m)).filter(filterDates(365)).length;
-    const _caYearAll = cadData.data.filter(filterSizes(size50m)).filter(filterDates(365)).length;
+    const _caWeekGEO = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
+    const _caWeek50m = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
+    const _caWeekAll = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
+    const _caMonthGEO = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
+    const _caMonth50m = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
+    const _caMonthAll = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
+    const _caYearGEO = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
+    const _caYear50m = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
+    const _caYearAll = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
 
     console.log('Debug: ', _caMonth50m, _caMonthGEO);
 

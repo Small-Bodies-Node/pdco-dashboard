@@ -110,7 +110,7 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={!isSearching}
           >
-            {!!storedData && <NeoCount cadData={storedData.cadData1LD} />}
+            {!!storedData && <NeoCount cadData={storedData.cadData} />}
           </TitledCell>
         </div>
         <div className={classes.sentry}>
@@ -141,7 +141,7 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={!isSearching}
           >
-            {!!storedData && <TableCAD period="recent" cadData={storedData.cadData0p05AU} />}
+            {!!storedData && <TableCAD period="recent" cadData={storedData.cadData} />}
           </TitledCell>
         </div>
         <div className={classes.futureTab}>
@@ -150,7 +150,7 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={!isSearching}
           >
-            {!!storedData && <TableCAD period="future" cadData={storedData.cadData0p05AU} />}
+            {!!storedData && <TableCAD period="future" cadData={storedData.cadData} />}
           </TitledCell>
         </div>
       </div>
