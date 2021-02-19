@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,7 +12,7 @@ import { ICadData } from '../../Models/apiData.model';
 import { cadFieldIndices, secsInDay } from '../../Utils/constants';
 import { withStyles, Theme } from '@material-ui/core';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
-import { auToLd } from '../../Utils/conversionFormulae';
+import { auToKm, auToLd, kmToAu, kmToLd } from '../../Utils/conversionFormulae';
 
 const StyledTableCell = withStyles((theme: Theme) => ({
   head: {
@@ -26,7 +26,19 @@ const StyledTableCell = withStyles((theme: Theme) => ({
   }
 }))(TableCell);
 
-const columns = [
+interface ICol {
+  id: keyof typeof cadFieldIndices;
+  label: string;
+  minWidth: number;
+  align: 'left';
+  format: (value: string) => string;
+}
+type TDistUnit = 0 | 1 | 2;
+
+const getCols: (distUnit: TDistUnit) => ICol[] = (distUnit: TDistUnit) => [
+  ///////////////////////////////////////
+  // Displayed Cols
+  ///////////////////////////////////////
   {
     id: 'fullname',
     label: 'Object',
@@ -43,31 +55,17 @@ const columns = [
   },
   {
     id: 'dist',
-    label: 'CA Distance Nominal (LD|AU)',
+    label: `CA Distance (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : 'au'})`,
     minWidth: 170,
     align: 'left',
-    format: formatDist
+    format: (value: string) => parseFloat(value).toFixed(5)
   },
   {
-    id: 'dist_min',
-    label: 'CA Distance Mininum (LD|AU)',
-    minWidth: 170,
-    align: 'left',
-    format: formatDist
-  },
-  {
-    id: 'v_rel',
-    label: 'V Relative (km/s)',
+    id: 'size',
+    label: `Size (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : 'au'})`,
     minWidth: 120,
     align: 'left',
-    format: (value: string) => parseFloat(value).toFixed(2)
-  },
-  {
-    id: 'v_inf',
-    label: 'V Infinity (km/s)',
-    minWidth: 120,
-    align: 'left',
-    format: (value: string) => parseFloat(value).toFixed(2)
+    format: (value: string) => parseFloat(value).toFixed(5)
   },
   {
     id: 'h',
@@ -76,22 +74,21 @@ const columns = [
     align: 'left',
     format: (value: string) => parseFloat(value).toFixed(1)
   }
+
   ///////////////////////////////////////
-  // Not-displayed
+  // Non-Displayed Cols
   ///////////////////////////////////////
+
   // {
   //   id: 'des',
   //   label: 'Designation',
   //   minWidth: 170,
-
   //   format: (value: string) => value
   // },
   // {
   //   id: 'orbit_id',
   //   label: 'Orbit ID',
   //   minWidth: 100,
-
-  //   format: (value: string) => value
   // },
   // {
   //   id: 'jd',
@@ -108,6 +105,13 @@ const columns = [
   //   format: (value: string) => value
   // },
   // {
+  //   id: 'dist_min',
+  //   label: 'CA Distance Mininum (LD|AU)',
+  //   minWidth: 170,
+  //   align: 'left',
+  //   format: formatDist
+  // },
+  // {
   //   id: 't_sigma_f',
   //   label: '3-Sigma Uncertainty',
   //   minWidth: 170,
@@ -120,9 +124,30 @@ const columns = [
   //   minWidth: 170,
   //   align: 'right',
   //   format: (value: string) => value
-  // }
+  // },
+  // {
+  //   id: 'v_rel',
+  //   label: 'V Relative (km/s)',
+  //   minWidth: 120,
+  //   align: 'left',
+  //   format: (value: string) => parseFloat(value).toFixed(2)
+  // },
+  // {
+  //   id: 'v_inf',
+  //   label: 'V Infinity (km/s)',
+  //   minWidth: 120,
+  //   align: 'left',
+  //   format: (value: string) => parseFloat(value).toFixed(2)
+  // },
 ];
 
+interface IRow {
+  fullname: string;
+  cd: string;
+  dist: number;
+  h: number;
+  size: number;
+}
 interface IProps {
   cadData: ICadData;
   period: 'recent' | 'future';
@@ -138,32 +163,84 @@ interface IProps {
 export const TableCAD = ({ cadData, period }: IProps) => {
   // -------------------------------------------------->>>
 
-  // Filter data into 'recent' | 'future' categories
-  const displayData = cadData.data.filter((datumArr: (string | null)[]) => {
-    const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
-    if (!dateIsStringOrNull) return false;
-    const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
-    const dDays = (+new Date() - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
-    return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
-  });
+  // Track clicks on column-title cells to toggle between units
+  const [distUnit, setDistUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
+  const [rawRows, setRawRows] = useState<IRow[]>();
+  const [displayedRows, setDisplayedRows] = useState<IRow[]>();
+
+  const columns = getCols(distUnit);
+
+  useEffect(() => {
+    // --------->>>
+
+    // Filter data into 'recent' | 'future' categories;
+    const filteredData = cadData.data.filter((datumArr: (string | null)[]) => {
+      // --------->>>
+
+      // Remove any datumArr's with null entries in our displayed cols
+      const colHeaderIds = columns.map((col) => col.id);
+      const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind, arr) => {
+        const indicesOfDisplayedCols = colHeaderIds.map(
+          (colHeaderId) => cadFieldIndices[colHeaderId]
+        );
+        return !!el && indicesOfDisplayedCols.includes(ind) ? [...acc, el] : acc;
+      }, []);
+      if (!colDatumEntries.every(Boolean)) return false;
+
+      const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
+      if (!dateIsStringOrNull) return false;
+      const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
+      const dDays = (+new Date() - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
+      return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
+    });
+
+    const filteredDataRows = filteredData.map(
+      (datumArr: (string | null)[]): IRow => {
+        return {
+          fullname: datumArr[cadFieldIndices.fullname]!,
+          cd: datumArr[cadFieldIndices.cd]!,
+          dist: parseFloat(datumArr[cadFieldIndices.dist]!),
+          h: parseFloat(datumArr[cadFieldIndices.h]!),
+          size: parseFloat(datumArr[cadFieldIndices.size]!)
+        };
+      }
+    );
+    setRawRows(filteredDataRows);
+  }, [cadData]);
+
+  console.log('Debug 0');
 
   // Map display data to rows
-  const rows = displayData.map((datumArr: (string | null)[]) => {
-    return {
-      fullname: datumArr[cadFieldIndices.fullname],
-      des: datumArr[cadFieldIndices.des],
-      orbit_id: datumArr[cadFieldIndices.orbit_id],
-      jd: datumArr[cadFieldIndices.jd],
-      cd: datumArr[cadFieldIndices.cd],
-      dist: datumArr[cadFieldIndices.dist],
-      dist_min: datumArr[cadFieldIndices.dist_min],
-      dist_max: datumArr[cadFieldIndices.dist_max],
-      v_rel: datumArr[cadFieldIndices.v_rel],
-      v_inf: datumArr[cadFieldIndices.v_inf],
-      t_sigma_f: datumArr[cadFieldIndices.t_sigma_f],
-      h: datumArr[cadFieldIndices.h]
-    };
-  });
+  useEffect(() => {
+    console.log('???');
+    const newDisplayedRows = rawRows?.map(
+      (rawRow): IRow => {
+        // ----------->>>
+
+        let size = rawRow.size; // km by default
+        let dist = rawRow.dist; // au by default
+
+        // If km selected
+        if (distUnit === 0) {
+          size = size;
+          dist = auToLd(auToKm(dist));
+        }
+        // If ld selected
+        if (distUnit === 1) {
+          size = kmToLd(size);
+          dist = auToLd(dist);
+        }
+        // If au selected
+        if (distUnit === 2) {
+          size = kmToAu(size);
+          dist = dist;
+        }
+        console.log('distUnit', size);
+        return { ...rawRow, dist, size };
+      }
+    );
+    setDisplayedRows(newDisplayedRows);
+  }, [rawRows, distUnit]);
 
   const classes = useStyles();
   return (
@@ -177,7 +254,11 @@ export const TableCAD = ({ cadData, period }: IProps) => {
                   <StyledTableCell
                     key={column.id}
                     align={column.align as any}
-                    style={{ minWidth: column.minWidth }}
+                    style={{
+                      //
+                      minWidth: column.minWidth
+                    }}
+                    onClick={() => setDistUnit((prev) => ((prev + 1) % 3) as 0 | 1 | 2)}
                   >
                     {column.label}
                   </StyledTableCell>
@@ -185,20 +266,21 @@ export const TableCAD = ({ cadData, period }: IProps) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, ind) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
-                    {columns.map((column) => {
-                      const value = (row as any)[column.id];
-                      return (
-                        <StyledTableCell key={column.id} align={(column.align || 'left') as any}>
-                          {column.format(value)}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+              {displayedRows &&
+                displayedRows.map((row, ind) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
+                      {columns.map((column) => {
+                        const value = (row as any)[column.id];
+                        return (
+                          <StyledTableCell key={column.id} align={(column.align || 'left') as any}>
+                            {column.format(value)}
+                          </StyledTableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -208,7 +290,7 @@ export const TableCAD = ({ cadData, period }: IProps) => {
             padding: 20
           }}
         >
-          Total: {rows.length}
+          Total: {displayedRows ? displayedRows.length : -1}
         </div>
       </div>
     </>

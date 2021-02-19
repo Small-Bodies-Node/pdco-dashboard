@@ -9,7 +9,6 @@ import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
 import { ICadData } from '../../Models/apiData.model';
 import { NeoCountRows } from './NeoCountRows';
-import { kmToAu } from '../../Utils/conversionFormulae';
 
 interface IProps {
   cadData: ICadData;
@@ -62,7 +61,7 @@ export const NeoCount = ({ cadData }: IProps) => {
       const sizeIsStringOrNull = datumArr[cadFieldIndices.size];
       if (!sizeIsStringOrNull) return false;
       const size = parseFloat(sizeIsStringOrNull);
-      return size < 1 / 20; // Smaller than 50m
+      return size > 1 / 20; // is size (km) smaller than 50m?
     };
 
     // Numbers calc
@@ -81,8 +80,6 @@ export const NeoCount = ({ cadData }: IProps) => {
     const _caYear50m = cadDataYearAll.filter(filter50ms()).length;
     const _caYearAll = cadDataYearAll.length;
 
-    // console.log('Debug: ', _caMonth50m, _caMonthGEO);
-
     // Calc total events within time periods; API has data from 365 days in past
     setCaWeekGEO(_caWeekGEO);
     setCaMonthGEO(_caMonthGEO);
@@ -94,8 +91,6 @@ export const NeoCount = ({ cadData }: IProps) => {
     setCaMonthAll(_caMonthAll);
     setCaYearAll(_caYearAll);
   }, [cadData]);
-
-  // console.log('Debug: ', caMonth50m, caMonthGEO, caMonthAll);
 
   const classes = useStyles();
   return (

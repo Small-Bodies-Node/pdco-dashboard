@@ -3,24 +3,32 @@ import { oneAuEqualsThisManyKms, oneAuEqualsThisManyLds } from './constants';
 //////////////////////////////////////////////////
 
 export const kmToAu = (distKm: number) => {
-  return distKm * oneAuEqualsThisManyKms;
+  return distKm / oneAuEqualsThisManyKms;
 };
 
 export const auToKm = (distAu: number) => {
-  return distAu / oneAuEqualsThisManyKms;
+  return distAu * oneAuEqualsThisManyKms;
 };
 
 //////////////////////////////////////////////////
 
 export const ldToAu = (distLd: number) => {
-  return distLd * oneAuEqualsThisManyLds;
+  return distLd / oneAuEqualsThisManyLds;
 };
 
 export const auToLd = (distAu: number) => {
-  return distAu / oneAuEqualsThisManyLds;
+  return distAu * oneAuEqualsThisManyLds;
 };
 
 //////////////////////////////////////////////////
+
+export const ldToKm = (distLd: number) => {
+  return auToKm(ldToAu(distLd));
+};
+
+export const kmToLd = (distKm: number) => {
+  return auToLd(kmToAu(distKm));
+};
 
 /**
  * Convert abs mag H into estimated size in km
