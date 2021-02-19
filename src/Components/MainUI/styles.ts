@@ -5,7 +5,7 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  * Define Grid Row-Column Params for Main (non-Mobile) 'Desktop' View
  */
 const gridGap = 20;
-const gridTemplateRows = `minmax(0px,.5fr) minmax(0px,.5fr) minmax(0px,1.5fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
+const gridTemplateRows = `minmax(0px,.5fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
 const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
 const gridTemplateAreas = `
   'imageLeft title     title     title     title     title    title      imageRight'

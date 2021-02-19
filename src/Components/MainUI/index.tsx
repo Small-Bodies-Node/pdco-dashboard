@@ -106,7 +106,11 @@ export const MainUI = () => {
         </div>
         <div className={classes.neoCount}>
           <TitledCell
-            title="CLOSE APPROACHES <1LD"
+            title={() => (
+              <a target="_blank" href="https://cneos.jpl.nasa.gov/ca/">
+                {'CLOSE APPROACHES <1LD'}
+              </a>
+            )}
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={!isSearching}
           >
