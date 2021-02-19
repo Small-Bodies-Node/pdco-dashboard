@@ -5,12 +5,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 import { useStyles } from './styles';
 import { ICadData } from '../../Models/apiData.model';
-import { cadFieldIndices, au2ld } from '../../Utils/constants';
+import { cadFieldIndices, au2ld, secsInDay } from '../../Utils/constants';
 import { withStyles, Theme } from '@material-ui/core';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
@@ -128,22 +127,26 @@ interface IProps {
   period: 'recent' | 'future';
 }
 
+/**
+ * Component to take CAD data and draw a table
+ * CAD data is organized into one array of type (string|null)[] for each NEO
+ * So you need to test each entry for null, and convert the string to type number.
+ * To make it easier to index on these arrays, I have created the object
+ * 'cadFieldIndices'
+ */
 export const TableCAD = ({ cadData, period }: IProps) => {
   // -------------------------------------------------->>>
 
-  console.log('Debug ----->>>', cadData);
-
-  // We fetch data at once for both recent and future, which means
-  // we have to separate out items here into their respective tables
+  // Filter data into 'recent' | 'future' categories
   const displayData = cadData.data.filter((datumArr: (string | null)[]) => {
-    // Filter out CA's that aren't in the designated period
     const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
     if (!dateIsStringOrNull) return false;
     const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
-    const dDays = +new Date() - +dateFromData;
-    return period === 'future' ? dDays < 0 : dDays >= 0;
+    const dDays = (+new Date() - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
+    return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
   });
 
+  // Map display data to rows
   const rows = displayData.map((datumArr: (string | null)[]) => {
     return {
       fullname: datumArr[cadFieldIndices.fullname],

@@ -1,5 +1,5 @@
 import { ISentryData, ICadData, IFetchedData } from '../Models/apiData.model';
-import { cadFieldIndices } from './constants';
+import { cadFieldIndices, secsInDay } from './constants';
 import { magToSize } from './magToSize';
 
 /**
@@ -36,9 +36,8 @@ function getCadUrl() {
   const baseUrl = 'https://ssd-api.jpl.nasa.gov/cad.api?www=1&nea-comet=Y&fullname=true';
 
   // Build string for future date
-  const secsInDay = 60 * 60 * 24;
   const d = new Date();
-  const futureDaysFromNow = 60;
+  const futureDaysFromNow = 365 * 10;
   const futureDate = new Date(d.setUTCSeconds(d.getUTCSeconds() + futureDaysFromNow * secsInDay));
   const futureDateStr = futureDate.toISOString().split('T')[0];
 

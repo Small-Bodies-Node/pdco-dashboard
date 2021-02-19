@@ -56,8 +56,6 @@ export const NeoCount = ({ cadData }: IProps) => {
     const filter50ms = () => (datumArr: (string | null)[]) => {
       const sizeIsStringOrNull = datumArr[cadFieldIndices.size];
       if (!sizeIsStringOrNull) return false;
-
-      console.log('>>>> ', sizeIsStringOrNull);
       return true;
     };
 

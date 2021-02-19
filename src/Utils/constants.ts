@@ -46,3 +46,5 @@ export const au2ld = 389.17037554435;
 
 // This is how often we check to see if the data we fetched needs to be refreshed
 export const intervalToCheckForDataSecs = 2;
+
+export const secsInDay = 60 * 60 * 24;
