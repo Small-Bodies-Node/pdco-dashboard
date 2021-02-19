@@ -4,11 +4,12 @@ import { faCalendar, faCalendarWeek, faCalendarDay } from '@fortawesome/free-sol
 
 import { useStyles } from './styles';
 import { TitledCell } from '../TitledCell';
-import { mobileWidthPxl, cadFieldIndices } from '../../Utils/constants';
+import { mobileWidthPxl, cadFieldIndices, geoDistanceAu } from '../../Utils/constants';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
 import { ICadData } from '../../Models/apiData.model';
 import { NeoCountRows } from './NeoCountRows';
+import { kmToAu } from '../../Utils/conversionFormulae';
 
 interface IProps {
   cadData: ICadData;
@@ -22,6 +23,9 @@ interface IProps {
  * 'All' (non-filtered)
  */
 export const NeoCount = ({ cadData }: IProps) => {
+  // ------------------------------------------>>>
+
+  // Set up state variables for our 3x3 grid
   const [caWeekGEO, setCaWeekGEO] = useState(0);
   const [caWeek50m, setCaWeek50m] = useState(0);
   const [caWeekAll, setCaWeekAll] = useState(0);
@@ -32,48 +36,52 @@ export const NeoCount = ({ cadData }: IProps) => {
   const [caYear50m, setCaYear50m] = useState(0);
   const [caYearAll, setCaYearAll] = useState(0);
 
+  // Update variables when prop changes
   useEffect(() => {
-    // --------->>>
+    //---------->>>
 
     // Function to filter cad events to target time period
-    const filterDates = (daysThreshold: number) => (datumArr: (string | null)[]) => {
+    const filterDates = (pastDaysThreshold: number) => (datumArr: (string | null)[]) => {
       const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
       if (!dateIsStringOrNull) return false;
       const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
       const daysSinceDateFromData = (+new Date() - +dateFromData) / (24 * 60 * 60 * 1000); // dMillSecs => Days
-      // 0 < days since event < threshold
-      return 0 <= daysSinceDateFromData && daysSinceDateFromData <= daysThreshold;
+      return 0 <= daysSinceDateFromData && daysSinceDateFromData <= pastDaysThreshold;
     };
 
     // Function to filter cad events to within GEO (~42K km)
     const filterGEOs = () => (datumArr: (string | null)[]) => {
-      const dateIsStringOrNull = datumArr[cadFieldIndices.dist];
-      // console.log('>>>> ', dateIsStringOrNull);
-      return true;
+      const distIsStringOrNull = datumArr[cadFieldIndices.dist];
+      if (!distIsStringOrNull) return false;
+      const dist = parseFloat(distIsStringOrNull);
+      return dist < geoDistanceAu;
     };
 
     // Function to filter cad events to within GEO (~42K km)
     const filter50ms = () => (datumArr: (string | null)[]) => {
       const sizeIsStringOrNull = datumArr[cadFieldIndices.size];
       if (!sizeIsStringOrNull) return false;
-      return true;
+      const size = parseFloat(sizeIsStringOrNull);
+      return size < 1 / 20; // Smaller than 50m
     };
 
     // Numbers calc
-    const sizeGEO = 999;
-    const size50m = 99;
+    const cadDataWeekAll = cadData.data.filter(filterDates(7));
+    const _caWeekGEO = cadDataWeekAll.filter(filterGEOs()).length;
+    const _caWeek50m = cadDataWeekAll.filter(filter50ms()).length;
+    const _caWeekAll = cadDataWeekAll.length;
 
-    const _caWeekGEO = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
-    const _caWeek50m = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
-    const _caWeekAll = cadData.data.filter(filter50ms()).filter(filterDates(7)).length;
-    const _caMonthGEO = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
-    const _caMonth50m = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
-    const _caMonthAll = cadData.data.filter(filter50ms()).filter(filterDates(30)).length;
-    const _caYearGEO = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
-    const _caYear50m = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
-    const _caYearAll = cadData.data.filter(filter50ms()).filter(filterDates(365)).length;
+    const cadDataMonthAll = cadData.data.filter(filterDates(30));
+    const _caMonthGEO = cadDataMonthAll.filter(filterGEOs()).length;
+    const _caMonth50m = cadDataMonthAll.filter(filter50ms()).length;
+    const _caMonthAll = cadDataMonthAll.length;
 
-    console.log('Debug: ', _caMonth50m, _caMonthGEO);
+    const cadDataYearAll = cadData.data.filter(filterDates(365));
+    const _caYearGEO = cadDataYearAll.filter(filterGEOs()).length;
+    const _caYear50m = cadDataYearAll.filter(filter50ms()).length;
+    const _caYearAll = cadDataYearAll.length;
+
+    // console.log('Debug: ', _caMonth50m, _caMonthGEO);
 
     // Calc total events within time periods; API has data from 365 days in past
     setCaWeekGEO(_caWeekGEO);
@@ -87,7 +95,7 @@ export const NeoCount = ({ cadData }: IProps) => {
     setCaYearAll(_caYearAll);
   }, [cadData]);
 
-  console.log('Debug: ', caMonth50m, caMonthGEO, caMonthAll);
+  // console.log('Debug: ', caMonth50m, caMonthGEO, caMonthAll);
 
   const classes = useStyles();
   return (

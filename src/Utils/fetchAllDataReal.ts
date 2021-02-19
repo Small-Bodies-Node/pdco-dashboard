@@ -1,6 +1,5 @@
 import { ISentryData, ICadData, IFetchedData } from '../Models/apiData.model';
-import { cadFieldIndices, secsInDay } from './constants';
-import { magToSize } from './magToSize';
+import { secsInDay } from './constants';
 
 /**
  * Function to grab all data from NASA API at once
@@ -37,7 +36,7 @@ function getCadUrl() {
 
   // Build string for future date
   const d = new Date();
-  const futureDaysFromNow = 365 * 10;
+  const futureDaysFromNow = 365 * 10; // 10 Years requested from KF
   const futureDate = new Date(d.setUTCSeconds(d.getUTCSeconds() + futureDaysFromNow * secsInDay));
   const futureDateStr = futureDate.toISOString().split('T')[0];
 

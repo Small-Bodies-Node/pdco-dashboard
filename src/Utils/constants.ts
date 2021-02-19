@@ -1,3 +1,5 @@
+import { kmToAu } from './conversionFormulae';
+
 // export const mobileWidthPxl = 600;
 export const mobileWidthPxl = 730;
 
@@ -27,24 +29,28 @@ export const cadFieldIndices = {
   orbit_id: 1,
   jd: 2,
   cd: 3,
-  dist: 4,
-  dist_min: 5,
-  dist_max: 6,
+  dist: 4, // nominal approach distance (au)
+  dist_min: 5, // minimum (3-sigma) approach distance (au)
+  dist_max: 6, // maximum (3-sigma) approach distance (au)
   v_rel: 7,
   v_inf: 8,
   t_sigma_f: 9,
   h: 10,
   fullname: 11,
   //
-  // Entries added to each data array clientside
+  // Entries added to each data array client-side
   //
-  size: 12
+  size: 12 // Size computed in km
 };
-
-// Convert distances in AU to LD
-export const au2ld = 389.17037554435;
 
 // This is how often we check to see if the data we fetched needs to be refreshed
 export const intervalToCheckForDataSecs = 2;
 
+/**
+ * Physical Quantities
+ */
+
+export const oneAuEqualsThisManyLds = 389.17037554435;
+export const oneAuEqualsThisManyKms = 149598000;
 export const secsInDay = 60 * 60 * 24;
+export const geoDistanceAu = kmToAu(42000);

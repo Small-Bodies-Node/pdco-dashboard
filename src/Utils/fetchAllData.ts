@@ -1,7 +1,7 @@
 import { fetchAllDataReal } from './fetchAllDataReal';
 import { fetchAllDataMock } from './fetchAllDataMock';
 import { cadFieldIndices } from './constants';
-import { magToSize } from './magToSize';
+import { magToSizeKm } from './conversionFormulae';
 
 /**
  * Choose data source depending on environment
@@ -26,7 +26,7 @@ export const fetchAllData = async () => {
     if (!magIsStringOrNull || typeof +magIsStringOrNull !== 'number') {
       return [...datumArr, null];
     }
-    return [...datumArr, '' + magToSize(+magIsStringOrNull)];
+    return [...datumArr, '' + magToSizeKm(+magIsStringOrNull)];
   });
   console.log('After', JSON.stringify(allRawData.cadData.data, null, 2));
 

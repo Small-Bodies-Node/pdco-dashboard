@@ -9,9 +9,10 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { useStyles } from './styles';
 import { ICadData } from '../../Models/apiData.model';
-import { cadFieldIndices, au2ld, secsInDay } from '../../Utils/constants';
+import { cadFieldIndices, secsInDay } from '../../Utils/constants';
 import { withStyles, Theme } from '@material-ui/core';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
+import { auToLd } from '../../Utils/conversionFormulae';
 
 const StyledTableCell = withStyles((theme: Theme) => ({
   head: {
@@ -216,7 +217,7 @@ export const TableCAD = ({ cadData, period }: IProps) => {
 
 function formatDist(value: string) {
   const distAU = parseFloat(value);
-  const distLD = distAU * au2ld;
+  const distLD = auToLd(distAU);
   const displayValue = `${distLD.toFixed(2)} | ${distAU.toFixed(5)}`;
   return displayValue;
 }
