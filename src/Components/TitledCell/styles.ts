@@ -1,4 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
+import { mobileWidthPxl } from '../../Utils/constants';
 
 export const useStyles = (isHeightAuto: boolean) =>
   makeStyles(
@@ -21,6 +22,7 @@ export const useStyles = (isHeightAuto: boolean) =>
               alignItems: 'center',
               fontSize: 16,
               fontWeight: 'bold',
+              '& *': { whiteSpace: 'nowrap' },
               '& a': {
                 textDecoration: 'none',
                 color: 'white',
@@ -38,6 +40,11 @@ export const useStyles = (isHeightAuto: boolean) =>
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center'
+            },
+            [`@media (max-width: ${mobileWidthPxl}px)`]: {
+              title: {
+                fontSize: 14
+              }
             }
           }
         : // Mobile: let table size determine height of panel
@@ -53,8 +60,9 @@ export const useStyles = (isHeightAuto: boolean) =>
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: 'bold',
+              '& *': { whiteSpace: 'nowrap' },
               '& a': {
                 textDecoration: 'none',
                 color: 'white',
@@ -70,6 +78,11 @@ export const useStyles = (isHeightAuto: boolean) =>
               display: 'block',
               marginTop: 5,
               marginBottom: 5
+            },
+            [`@media (max-width: ${mobileWidthPxl}px)`]: {
+              title: {
+                fontSize: 14
+              }
             }
           };
     },

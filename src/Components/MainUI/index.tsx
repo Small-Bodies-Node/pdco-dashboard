@@ -84,6 +84,8 @@ export const MainUI = () => {
     }
   }, [isMock, isSearching, setIsSearching]);
 
+  const isDisplayed = !(isSearching || !storedData);
+
   return (
     <div className={classes.container}>
       <div className={classes.imageLeft}>
@@ -109,7 +111,7 @@ export const MainUI = () => {
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at closest approach"
           icon={() => <FontAwesomeIcon icon={faMeteor} />}
-          isDisplayed={!isSearching}
+          isDisplayed={isDisplayed}
         >
           {!!storedData && (
             <NeoCount cadData={storedData.cadData} dateAtDataFetch={storedData.timestamp} />
@@ -122,7 +124,7 @@ export const MainUI = () => {
           link="https://cneos.jpl.nasa.gov/sentry/"
           tooltip="Highest ts_max value in latest sentry data"
           icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
-          isDisplayed={!isSearching}
+          isDisplayed={isDisplayed}
         >
           {!!storedData && <Sentry sentryData={storedData.sentryData} />}
         </TitledCell>
@@ -133,7 +135,7 @@ export const MainUI = () => {
           link=""
           tooltip="Daylight map of world with PDCO project locations"
           icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
-          isDisplayed={!isSearching}
+          isDisplayed={isDisplayed}
         >
           <ProgramsMap />
         </TitledCell>
@@ -144,7 +146,7 @@ export const MainUI = () => {
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at smallest nominal distance"
           icon={() => <FontAwesomeIcon icon={faTable} />}
-          isDisplayed={!isSearching}
+          isDisplayed={isDisplayed}
           isHeightAuto={isMobile}
         >
           {!!storedData && (
@@ -163,7 +165,7 @@ export const MainUI = () => {
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at closest approach"
           icon={() => <FontAwesomeIcon icon={faTable} />}
-          isDisplayed={!isSearching}
+          isDisplayed={isDisplayed}
           isHeightAuto={isMobile}
         >
           {!!storedData && (

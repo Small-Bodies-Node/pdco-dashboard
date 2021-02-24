@@ -50,8 +50,6 @@ interface IRawRow {
   size: string;
 }
 
-type X = Omit<IRawRow, 'cd'>;
-
 interface IDisplayRow extends Omit<IRawRow, 'cd'> {
   cd: string;
   //
@@ -84,7 +82,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   // State
   const classes = useStyles(!!isHeightAuto)();
   const [distUnit, setDistUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
-  const [sizeUnit, setSizeUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
+  const [sizeUnit, setSizeUnit] = useState<0 | 1 | 2>(0); // 0: 'm', 1: 'ld', 2: 'au'
   const [rawRows, setRawRows] = useState<IRawRow[]>();
   const [displayRows, setDisplayRows] = useState<IDisplayRow[]>();
   const containerRef = useRef<HTMLDivElement>(null);
