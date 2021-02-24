@@ -10,6 +10,9 @@ export const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'column',
       // border: `solid 1px ${borderColor}`,
+      '& *': {
+        cursor: 'pointer'
+      },
       '& > div.aux': {
         flex: 1,
         display: 'flex',
@@ -23,10 +26,10 @@ export const useStyles = makeStyles(
       },
       '&:hover': {
         color: 'green',
-        transform: 'scale(2) translate(0%, 0%)',
+        // transform: 'scale(2) translate(0%, 0%)',
         zIndex: 5,
         '& div.auy': {
-          opacity: 0.9,
+          opacity: 0.5,
           zIndex: 6
         },
         '& div.aux ': {
@@ -50,7 +53,8 @@ export const useStyles = makeStyles(
       right: 0,
       bottom: 0,
       opacity: 0.2,
-      zIndex: 1
+      zIndex: 1,
+      transition: 'opacity 0.5s'
     },
     //
     [`@media (max-width: ${mobileWidthPxl}px)`]: {

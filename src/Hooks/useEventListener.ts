@@ -18,7 +18,6 @@ export function useEventListener(eventName: any, handler: any, element = window)
   useEffect(
     () => {
       // Make sure element supports addEventListener
-      // On
       const isSupported = element && element.addEventListener;
       if (!isSupported) return;
 

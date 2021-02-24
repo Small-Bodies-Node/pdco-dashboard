@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useStyles } from './styles';
-import { ISentryData } from '../../Models/data';
+import { ISentryData } from '../../Models/apiData.model';
 
 const triStrokePxl = 10;
 const svgBorder = 20;
@@ -10,7 +10,16 @@ interface IProps {
   sentryData: ISentryData;
 }
 
+/**
+ * Draw warning triangle to display the highest value of ts_max from the many entries
+ * in the latest sentry-data API
+ * FYI -- ts_max is defined [here](https://ssd-api.jpl.nasa.gov/doc/sentry.html) as the
+ * "Maximum detected hazard rating according to the Torino impact hazard scale,
+ *  based on the tabulated impact probability and impact energy"
+ */
 export const Sentry = ({ sentryData }: IProps) => {
+  // ------------------------------------------->>>
+
   const classes = useStyles();
   const [score, setScore] = useState<number>(0);
   const [triColor, setTriColor] = useState<'grey' | 'green' | 'yellow' | 'orange' | 'red'>('grey');
@@ -26,10 +35,10 @@ export const Sentry = ({ sentryData }: IProps) => {
       .map((datum: any) => parseInt(datum.ts_max, 10));
 
     // Now find the highest numeric value within the array
-    const highestTsMaxValues = Math.max.apply(null, tsMaxValues);
+    const highestTsMaxValue = Math.max.apply(null, tsMaxValues);
 
     // Set our stateful variable to the highest-computed ts_max value
-    setScore(highestTsMaxValues);
+    setScore(highestTsMaxValue);
   }, [sentryData]);
 
   useEffect(() => {

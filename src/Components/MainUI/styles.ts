@@ -5,7 +5,7 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  * Define Grid Row-Column Params for Main (non-Mobile) 'Desktop' View
  */
 const gridGap = 20;
-const gridTemplateRows = `minmax(0px,.5fr) minmax(0px,.5fr) minmax(0px,1.5fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
+const gridTemplateRows = `minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
 const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
 const gridTemplateAreas = `
   'imageLeft title     title     title     title     title    title      imageRight'
@@ -16,15 +16,16 @@ const gridTemplateAreas = `
 
 /**
  * Define Grid Row-Column Params for Mobile View
+ * Enable variable-length tables to dictate height of their panels
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
   minmax(0px,70px)
   minmax(0px,120px)
   minmax(0px,150px)
-  minmax(0px,120px)
-  minmax(0px,350px)
-  minmax(0px,350px)
+  minmax(0px,180px)
+  minmax(100px,auto)
+  minmax(100px,auto)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
@@ -38,20 +39,27 @@ const gridTemplateAreasMobile = `
 `;
 
 /**
+ * Misc
+ */
+const panelBorder = `3px solid ${borderColor}`;
+
+/**
  * Now apply these grid settings to the actual styles generator
  */
 export const useStyles = makeStyles(
   (theme) => ({
     container: {
+      position: 'relative',
       width: '100vw',
-      height: '95vh',
+      height: '100vh',
+      minHeight: 650,
+      overflowY: 'scroll',
       display: 'grid',
       gridTemplateRows,
       gridTemplateColumns,
       gridTemplateAreas,
       gridGap,
       textAlign: 'center',
-      text: 'center',
       border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
       '& > div': {
         // backgroundColor: 'transparent',
@@ -76,6 +84,7 @@ export const useStyles = makeStyles(
     },
     title: {
       gridArea: 'title',
+      border: panelBorder,
       backgroundColor: 'blue',
       fontSize: 20,
       fontWeight: 'bold',
@@ -94,34 +103,34 @@ export const useStyles = makeStyles(
         fontSize: 12
       }
     },
-    date: {
-      gridArea: 'date',
-      backgroundColor: 'blue',
-      fontSize: 20,
-      fontWeight: 'bold'
-    },
     clocks: {
       gridArea: 'clocks',
+      border: panelBorder,
       backgroundColor: 'green'
     },
     neoCount: {
       gridArea: 'neoCount',
+      border: panelBorder,
       backgroundColor: 'cyan'
     },
     sentry: {
       gridArea: 'sentry',
+      border: panelBorder,
       backgroundColor: 'purple'
     },
     programs: {
       gridArea: 'programs',
+      border: panelBorder,
       backgroundColor: 'purple'
     },
     recentTab: {
       gridArea: 'recentTab',
+      border: panelBorder,
       backgroundColor: 'brown'
     },
     futureTab: {
       gridArea: 'futureTab',
+      border: panelBorder,
       backgroundColor: 'yellow'
     },
 

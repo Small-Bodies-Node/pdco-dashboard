@@ -6,6 +6,8 @@ Code for PDCO Dashboard.
 
 ## Dev Notes
 
+- Ran into ref-forwarding warning for using functional components within Tooltip. See [here](https://next.material-ui.com/guides/composition/#caveat-with-refs). Upgrading to v5 will remove this need, as I understand things; see [here](https://next.material-ui.com/guides/migration-v4/) for guide to upgrading.
+
 ### Quick Start
 
 1. Install `node` using one of these methods:
@@ -28,7 +30,7 @@ This repo comes with bash scripts for building/deploying on unix-like systems. A
 
 ### Styling & MaterialUI
 
-Global SCSS is available. However, on a per-component basis we're using MaterialUI again, both for its ready theming and for its encapsulate-able scss-like css-in-js stylings.
+Global SCSS is available. However, on a per-component basis we're using MaterialUI both for its ready theming and for its encapsulate-able scss-like css-in-js stylings.
 
 For layout, we're heavily using css grid. If you haven't used css-grid before then see the talk ["CSS Grid Changes Everything"](https://www.youtube.com/watch?v=txZq7Laz7_4).
 

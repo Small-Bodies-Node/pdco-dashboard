@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+import { withStyles, Theme, Tooltip, Zoom } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import * as numeralWithDefault from 'numeral';
 
 import { useStyles } from './styles';
-import { ICadData } from '../../Models/data';
-import { cadFieldIndices, au2ld } from '../../Utils/constants';
-import { Paper, withStyles, Theme } from '@material-ui/core';
+import { ICadData } from '../../Models/apiData.model';
+import { cadFieldIndices, secsInDay } from '../../Utils/constants';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
+import { auToKm, auToLd, kmToAu, kmToLd } from '../../Utils/conversionFormulae';
+import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
 
+const numeral = numeralWithDefault.default;
+
+// See: https://material-ui.com/components/tables/#CustomizedTables.tsx
 const StyledTableCell = withStyles((theme: Theme) => ({
   head: {
     // backgroundColor: theme.palette.primary.main,
@@ -26,72 +31,358 @@ const StyledTableCell = withStyles((theme: Theme) => ({
   }
 }))(TableCell);
 
-const columns = [
+interface ICol {
+  id: keyof typeof cadFieldIndices;
+  label: string;
+  label_tooltip: string;
+  minWidth?: number;
+  maxWidth?: number;
+  align: 'left';
+  format: (value: string) => string;
+  colClickHandler?: () => void;
+}
+
+interface IRawRow {
+  fullname: string;
+  cd: Date;
+  dist: string;
+  h: string;
+  size: string;
+}
+
+type X = Omit<IRawRow, 'cd'>;
+
+interface IDisplayRow extends Omit<IRawRow, 'cd'> {
+  cd: string;
+  //
+  fullname_tooltip: string;
+  cd_tooltip: string;
+  dist_tooltip: string;
+  h_tooltip: string;
+  size_tooltip: string;
+}
+
+type TDistUnit = 0 | 1 | 2;
+
+interface IProps {
+  cadData: ICadData;
+  dateAtDataFetch: string;
+  period: 'recent' | 'future';
+  isHeightAuto?: boolean;
+}
+
+/**
+ * Component to take Close-Approach data (CAD) and draw a table
+ * Each CAD entry is organized as an array of type (string|null)[]
+ * So you need to test each entry for null, and convert the string to type number.
+ * To make it easier to index on these arrays, I have created the object
+ * 'cadFieldIndices'
+ */
+export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IProps) => {
+  // -------------------------------------------------->>>
+
+  // State
+  const classes = useStyles(!!isHeightAuto)();
+  const [distUnit, setDistUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
+  const [sizeUnit, setSizeUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
+  const [rawRows, setRawRows] = useState<IRawRow[]>();
+  const [displayRows, setDisplayRows] = useState<IDisplayRow[]>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { width } = useContainerDimensions(containerRef);
+
+  // Define columns for our table
+  const columns = getCols(distUnit, sizeUnit);
+
+  // Set stateful click handlers on certain columns
+  columns.forEach((col) => {
+    if (col.id === 'dist') {
+      col.colClickHandler = () => setDistUnit((prev) => ((prev + 1) % 3) as TDistUnit);
+    }
+    if (col.id === 'size') {
+      col.colClickHandler = () => setSizeUnit((prev) => ((prev + 1) % 3) as TDistUnit);
+    }
+  });
+
+  // Whenever the API data changes, we need to re-filter it
+  useEffect(() => {
+    // --------->>>
+
+    // Extract arrays of cad data and filter into 'recent' | 'future' categories
+    const filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
+      // Logic to remove any datumArr's with  any null entries in our displayed cols
+      const colIds = columns.map((col) => col.id);
+      const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
+        const indicesOfDisplayedCols = colIds.map((colId) => cadFieldIndices[colId]);
+        return !!el && indicesOfDisplayedCols.includes(ind) ? [...acc, el] : acc;
+      }, []);
+      if (!colDatumEntries.every(Boolean)) return false;
+
+      // Logic to filter out entries NOT in this table's 'period' defn
+      const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
+      if (!dateIsStringOrNull) return false;
+      const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
+      const dDays = (+new Date(dateAtDataFetch) - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
+      return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
+    });
+
+    const newRawRows = filteredDataArrays.map(
+      (datumArr: (string | null)[]): IRawRow => {
+        const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
+        return {
+          fullname: name,
+          cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
+          dist: datumArr[cadFieldIndices.dist]!,
+          h: datumArr[cadFieldIndices.h]!,
+          size: datumArr[cadFieldIndices.size]!
+        };
+      }
+    );
+    setRawRows(newRawRows);
+  }, [cadData]);
+
+  /**
+   * Update the displayed version of the data; we make this a separate effect
+   * from the previous one that sets rawRows because the UI lets the user toggle
+   * between displayed units, and we don't want to recompute filterings on each click
+   */
+  useEffect(() => {
+    // --------->>>
+
+    // Map raw-data rows to displayable text for table cells and tooltips
+    const newDisplayRows = rawRows?.map(
+      (rawRow): IDisplayRow => {
+        // Show abbreviated fullname in cell, unabbreviated in tooltip
+        const fullname = getAbbreviatedName(rawRow.fullname, width);
+        const fullname_tooltip = rawRow.fullname;
+
+        // Show date without time in cell, with time in tooltip
+        const cd = rawRow.cd.toLocaleDateString();
+        const cd_tooltip = rawRow.cd.toString();
+
+        // Show h as is in both cell and tooltip
+        const h = numeral(parseFloat(rawRow.h)).format('0.0');
+        const h_tooltip = rawRow.h;
+
+        // Display dist as different formats depending on unit selected
+        let dist: string; // rawRow.dist is in au by default
+        let dist_tooltip: string;
+        switch (distUnit) {
+          case 0: // km selected
+            /*             dist = ML(auToKm(parseFloat(rawRow.dist)), { precision: 0 });
+            dist = numeral(auToKm(parseFloat(rawRow.dist))).format('0.0'); */
+            dist = numeral(auToKm(parseFloat(rawRow.dist))).format();
+            dist_tooltip = `${auToKm(parseFloat(rawRow.dist))}`;
+            break;
+          case 1: // ld selected
+            dist = auToLd(parseFloat(rawRow.dist)).toPrecision(3);
+            dist_tooltip = `${auToLd(parseFloat(rawRow.dist))}`;
+            break;
+          case 2: // au selected
+            dist = parseFloat(rawRow.dist).toPrecision(3);
+            dist_tooltip = rawRow.dist;
+            break;
+          default:
+            throw 'Not supposed to be possible';
+        }
+
+        // Display size as different formats depending on unit selected
+        let size: string; // rawRow.size is in km by default
+        let size_tooltip: string;
+        switch (sizeUnit) {
+          case 0: // m selected
+            size = parseFloat(rawRow.size).toPrecision(1);
+            size = numeral(parseFloat(rawRow.size) * 1000).format('0');
+            size_tooltip = `${rawRow.size}`;
+            break;
+          case 1: // ld selected
+            size = kmToLd(parseFloat(rawRow.size)).toPrecision(3);
+            size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
+            break;
+          case 2: // au selected
+            size = kmToAu(parseFloat(rawRow.size)).toPrecision(3);
+            size_tooltip = `${kmToAu(parseFloat(rawRow.size))}`;
+            break;
+          default:
+            throw 'Not supposed to be possible';
+        }
+
+        return {
+          fullname,
+          fullname_tooltip,
+          cd,
+          cd_tooltip,
+          dist,
+          dist_tooltip,
+          size,
+          size_tooltip,
+          h,
+          h_tooltip
+        };
+      }
+    );
+    setDisplayRows(newDisplayRows);
+  }, [rawRows, distUnit, sizeUnit, width]);
+
+  const cellPadding = `5px 5px 3px 3px`;
+  const cellFont = ''; // "'Roboto Mono', monospace";
+
+  return (
+    <>
+      <div className={classes.container} ref={containerRef}>
+        <TableContainer className={classes.tableContainer}>
+          <Table stickyHeader size="small" aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <StyledTableCell
+                    width={50}
+                    key={column.id}
+                    align={column.align as any}
+                    style={{
+                      cursor: 'pointer',
+                      fontFamily: cellFont,
+                      padding: cellPadding,
+                      minWidth: column.minWidth,
+                      maxWidth: column.maxWidth
+                    }}
+                    onClick={column.colClickHandler}
+                  >
+                    <Tooltip
+                      title={column.label_tooltip}
+                      placement="top"
+                      TransitionComponent={Zoom}
+                      arrow
+                      classes={{ tooltip: classes.noMaxWidth }}
+                    >
+                      <span
+                        style={{
+                          // whiteSpace: 'nowrap',
+                          display: 'inline-block',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {column.label}
+                      </span>
+                    </Tooltip>
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {displayRows &&
+                displayRows.map((row, ind) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
+                      {columns.map((column) => {
+                        const value = (row as any)[column.id];
+                        const tooltip = (row as any)[column.id + '_tooltip'];
+                        return (
+                          <StyledTableCell
+                            key={column.id}
+                            align={(column.align || 'left') as any}
+                            style={{
+                              cursor: 'pointer',
+                              fontFamily: cellFont,
+                              padding: cellPadding,
+                              minWidth: column.minWidth,
+                              maxWidth: column.maxWidth
+                            }}
+                          >
+                            <Tooltip
+                              title={tooltip}
+                              placement="top"
+                              TransitionComponent={Zoom}
+                              arrow
+                              classes={{ tooltip: classes.noMaxWidth }}
+                            >
+                              <span
+                                style={{
+                                  whiteSpace: 'nowrap',
+                                  display: 'inline-block',
+                                  overflow: 'hidden'
+                                }}
+                              >
+                                {column.format(value)}
+                              </span>
+                            </Tooltip>
+                          </StyledTableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
+      </div>
+    </>
+  );
+};
+
+const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
+  distUnit: TDistUnit,
+  sizeUnit: TDistUnit
+) => [
+  ///////////////////////////////////////
+  // Displayed Cols
+  ///////////////////////////////////////
   {
     id: 'fullname',
     label: 'Object',
-    minWidth: 130,
+    label_tooltip: 'Name of comet or asteroid',
+    minWidth: 90,
+    maxWidth: 90,
     align: 'left',
     format: (value: string) => value
   },
   {
     id: 'cd',
-    label: 'Close Approach Date',
-    minWidth: 190,
+    label: 'Date',
+    label_tooltip: 'Date of closest approach',
+    minWidth: 0,
     align: 'left',
     format: (value: string) => value
   },
   {
     id: 'dist',
-    label: 'CA Distance Nominal (LD|AU)',
-    minWidth: 170,
+    label: `Dist (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : 'au'})`,
+    label_tooltip: 'Close Approach nominal distance',
+    minWidth: 0,
     align: 'left',
-    format: formatDist
+    format: (value: string) => value
   },
   {
-    id: 'dist_min',
-    label: 'CA Distance Mininum (LD|AU)',
-    minWidth: 170,
+    id: 'size',
+    label: `Size (${!sizeUnit ? 'm' : sizeUnit === 1 ? 'ld' : 'au'})`,
+    label_tooltip: 'Diameter derived from H with assumed albedo 0.114',
+    minWidth: 0,
     align: 'left',
-    format: formatDist
-  },
-  {
-    id: 'v_rel',
-    label: 'V Relative (km/s)',
-    minWidth: 120,
-    align: 'left',
-    format: (value: string) => parseFloat(value).toFixed(2)
-  },
-  {
-    id: 'v_inf',
-    label: 'V Infinity (km/s)',
-    minWidth: 120,
-    align: 'left',
-    format: (value: string) => parseFloat(value).toFixed(2)
+    format: (value: string) => value
   },
   {
     id: 'h',
     label: 'H (mag)',
-    minWidth: 100,
+    label_tooltip: 'Absolute magnitude',
+    minWidth: 0,
     align: 'left',
-    format: (value: string) => parseFloat(value).toFixed(1)
+    format: (value: string) => value
   }
+
   ///////////////////////////////////////
+  // Non-Displayed Cols
   ///////////////////////////////////////
-  ///////////////////////////////////////
+
   // {
   //   id: 'des',
   //   label: 'Designation',
   //   minWidth: 170,
-
   //   format: (value: string) => value
   // },
   // {
   //   id: 'orbit_id',
   //   label: 'Orbit ID',
   //   minWidth: 100,
-
-  //   format: (value: string) => value
   // },
   // {
   //   id: 'jd',
@@ -108,6 +399,13 @@ const columns = [
   //   format: (value: string) => value
   // },
   // {
+  //   id: 'dist_min',
+  //   label: 'CA Distance Mininum (LD|AU)',
+  //   minWidth: 170,
+  //   align: 'left',
+  //   format: formatDist
+  // },
+  // {
   //   id: 't_sigma_f',
   //   label: '3-Sigma Uncertainty',
   //   minWidth: 170,
@@ -120,110 +418,56 @@ const columns = [
   //   minWidth: 170,
   //   align: 'right',
   //   format: (value: string) => value
-  // }
+  // },
+  // {
+  //   id: 'v_rel',
+  //   label: 'V Relative (km/s)',
+  //   minWidth: 120,
+  //   align: 'left',
+  //   format: (value: string) => parseFloat(value).toFixed(2)
+  // },
+  // {
+  //   id: 'v_inf',
+  //   label: 'V Infinity (km/s)',
+  //   minWidth: 120,
+  //   align: 'left',
+  //   format: (value: string) => parseFloat(value).toFixed(2)
+  // },
 ];
 
-interface IProps {
-  cadData: ICadData;
-  period: 'recent' | 'future';
-}
+const getAbbreviatedName = (name: string, componentWidth: number) => {
+  // ----------------------------------------------------->>>
 
-export const TableCAD = ({ cadData, period }: IProps) => {
-  //
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  // Perform some screen-responsive calcs
+  // Following numbers determined empirically
+  let maxNameLength = 16;
+  if (componentWidth <= 700) maxNameLength = 14;
+  if (componentWidth <= 570) maxNameLength = 12;
+  if (componentWidth <= 520) maxNameLength = 10;
+  if (componentWidth <= 490) maxNameLength = 8;
+  if (componentWidth <= 410) maxNameLength = 6;
 
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  // We fetch data at once for both recent and future, which means
-  // we have to separate out items here into their respective tables
-  const displayData = cadData.data.filter((datumArr: string[]) => {
-    // Filter out CA's that aren't in the designated period
-    const dateFromData = apiDateStringToJsDate(datumArr[cadFieldIndices.cd]);
-    const dDays = +new Date() - +dateFromData;
-    return period === 'recent' ? dDays < 0 : dDays >= 0;
-  });
-
-  const rows = displayData.map((datumArr: string[]) => {
-    return {
-      fullname: datumArr[cadFieldIndices.fullname],
-      des: datumArr[cadFieldIndices.des],
-      orbit_id: datumArr[cadFieldIndices.orbit_id],
-      jd: datumArr[cadFieldIndices.jd],
-      cd: datumArr[cadFieldIndices.cd],
-      dist: datumArr[cadFieldIndices.dist],
-      dist_min: datumArr[cadFieldIndices.dist_min],
-      dist_max: datumArr[cadFieldIndices.dist_max],
-      v_rel: datumArr[cadFieldIndices.v_rel],
-      v_inf: datumArr[cadFieldIndices.v_inf],
-      t_sigma_f: datumArr[cadFieldIndices.t_sigma_f],
-      h: datumArr[cadFieldIndices.h]
-    };
-  });
-
-  const classes = useStyles();
-  return (
-    <>
-      <div className={classes.container}>
-        {/* <Paper className={classes.root}> */}
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader size="small" aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <StyledTableCell
-                    key={column.id}
-                    align={column.align as any}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.fullname}>
-                    {columns.map((column) => {
-                      const value = (row as any)[column.id];
-                      return (
-                        <StyledTableCell key={column.id} align={(column.align || 'left') as any}>
-                          {column.format(value)}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        {/* </Paper> */}
-      </div>
-    </>
-  );
+  const nameLength = name.length;
+  if (nameLength <= maxNameLength + 0) return name;
+  if (nameLength <= maxNameLength + 1) return name.substring(0, maxNameLength + 1) + '';
+  if (nameLength <= maxNameLength + 2) return name.substring(0, maxNameLength + 2) + '';
+  if (nameLength <= maxNameLength + 3) return name.substring(0, maxNameLength + 3) + '';
+  if (nameLength <= maxNameLength + 4) return name.substring(0, maxNameLength + 4) + '';
+  if (nameLength <= maxNameLength + 5) return name.substring(0, maxNameLength + 5) + '';
+  if (nameLength <= maxNameLength + 6) return name.substring(0, maxNameLength + 3) + '...';
+  return name.substring(0, maxNameLength + 3) + '...';
 };
 
-function formatDist(value: string) {
-  const distAU = parseFloat(value);
-  const distLD = distAU * au2ld;
-  const displayValue = `${distLD.toFixed(2)} | ${distAU.toFixed(5)}`;
-  return displayValue;
-}
+/* console.log(getAbbreviatedName('abcdefghijklmnopqrs'));
+console.log(getAbbreviatedName('abcdefghijklmnopqr'));
+console.log(getAbbreviatedName('abcdefghijklmnopq'));
+console.log(getAbbreviatedName('abcdefghijklmnop'));
+console.log(getAbbreviatedName('abcdefghijklmno'));
+console.log(getAbbreviatedName('abcdefghijklmn'));
+console.log(getAbbreviatedName('abcdefghijklm'));
+console.log(getAbbreviatedName('abcdefghijkl'));
+console.log(getAbbreviatedName('abcdefghijk'));
+console.log(getAbbreviatedName('abcdefghij'));
+console.log(getAbbreviatedName('abcdefghi'));
+console.log(getAbbreviatedName('abcdefgh'));
+console.log(getAbbreviatedName('abcdefg')); */

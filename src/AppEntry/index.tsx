@@ -11,6 +11,8 @@ import { SimpleMenu } from '../Components/SimpleMenu';
 import { Layout } from '../Components/Layout';
 
 export const AppEntry = () => {
+  //------------------------>>>
+
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -26,7 +28,7 @@ export const AppEntry = () => {
                 <PageAbout />
               </Route>
             </Switch>
-            <SimpleMenu />
+            {/* <SimpleMenu /> */}
           </Router>
         </Layout>
       </ThemeProvider>

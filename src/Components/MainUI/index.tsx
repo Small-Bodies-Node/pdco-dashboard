@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,9 +7,11 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo
+  faRedo,
+  faCog
 } from '@fortawesome/free-solid-svg-icons';
 
+// My constants, hooks, etc.
 import { ImageCell } from '../ImageCell';
 import { useStyles } from './styles';
 import { Clocks } from '../Clocks';
@@ -18,95 +20,162 @@ import { ProgramsMap } from '../ProgramsMap';
 import { NeoCount } from '../NeoCount';
 import { TitledCell } from '../TitledCell';
 import { TableCAD } from '../TableCAD';
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { ELocalStorageOptions, useLocalStorage } from '../../Hooks/useLocalStorage';
 import { formattedTimestamp } from '../../Utils/formattedTime';
-import { IFetchedData, fetchAllData } from '../../Utils/fetchAllData';
+import { fetchAllData } from '../../Utils/fetchAllData';
+import { IFetchedData } from '../../Models/apiData.model';
+import { useInterval } from '../../Hooks/useInterval';
+import { useLocation } from 'react-router-dom';
+import { useEventListener } from '../../Hooks/useEventListener';
+import { mobileWidthPxl } from '../../Utils/constants';
 
 export const MainUI = () => {
+  // --------------------->>>
+
+  // State
   const classes = useStyles();
-  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>('APIDATA', null);
-  const [isSearching, setIsSearching] = useState(true);
+  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>(
+    ELocalStorageOptions.API_DATA,
+    null
+  );
+  const [storedIntervalToRefreshDataSecs, setIntervalToRefreshDataSecs] = useLocalStorage<number>(
+    ELocalStorageOptions.CHECK_FOR_DATA_REFRESH_INTERVAL,
+    12 * 60 * 60
+  );
+  const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState('');
 
+  // Check if mock data is to be used
+  const mockQueryParam = new URLSearchParams(useLocation().search);
+  const [isMock] = useState(mockQueryParam.get('mock') === 'true');
+
+  // Choose how long to check if the 'date' needs to be refreshed
+  const intervalToCheckForDataSecs = isMock ? 10000 : 2;
+
+  // Check for changes in window size
+  const [isMobile, setIsMobile] = useState(false);
+  const windowResizeHandler = useCallback(() => {
+    setIsMobile(window.innerWidth < mobileWidthPxl);
+  }, [setIsMobile]);
+  useEventListener('resize', windowResizeHandler);
+  useEffect(windowResizeHandler, []);
+
+  // Set up regular checks to see if it's time to refresh data
+  const checkIfItsTimeForDataUpdate = () => {
+    if (!!storedData) {
+      const dtSecs = (new Date().getTime() - new Date(storedData.timestamp).getTime()) / 1000;
+      if (dtSecs > storedIntervalToRefreshDataSecs) {
+        setIsSearching(true);
+      }
+    }
+  };
+  useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
+
+  // Re-fetch data on pertinent changes
   useEffect(() => {
-    // Ensure localStorage has been initialized with the api data
-    if (!storedData || isSearching) {
-      console.log('Fetching data');
-      fetchAllData().then((data) => {
+    if (!storedData || isSearching || isMock) {
+      fetchAllData(isMock).then((data) => {
         if (!!data) setStoredData(data);
         setIsSearching(false);
+        setDisplayDate(data ? formattedTimestamp(data.timestamp) : '');
       });
     } else {
       setDisplayDate(storedData ? formattedTimestamp(storedData.timestamp) : '');
     }
-  }, [storedData, setStoredData, isSearching, setIsSearching]);
+  }, [isMock, isSearching, setIsSearching]);
 
   return (
-    <>
-      <div className={classes.container}>
-        <div className={classes.imageLeft}>
-          <ImageCell imageUrl="images/pdco-logo.jpg" />
-        </div>
-        <div className={classes.imageRight}>
-          <ImageCell imageUrl="images/nasa-logo.png" />
-        </div>
-        <div className={classes.title} onClick={() => setIsSearching(true)}>
-          <div className="longTitle">{'PDCO STATUS SUMMARY'}</div>
-          <div className="shortTitle">{'PDCO STATUS'}</div>
-          <div className="date">
-            <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-            <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
-          </div>
-        </div>
-        <div className={classes.clocks}>
-          <Clocks />
-        </div>
-        <div className={classes.neoCount}>
-          <TitledCell
-            title="CLOSE APPROACHES <1LD"
-            icon={() => <FontAwesomeIcon icon={faMeteor} />}
-            isDisplayed={!isSearching}
-          >
-            {!!storedData && <NeoCount cadData={storedData.cadData1LD} />}
-          </TitledCell>
-        </div>
-        <div className={classes.sentry}>
-          <TitledCell
-            title={() => <a href="https://cneos.jpl.nasa.gov/sentry/">{'SENTRY STATUS'}</a>}
-            icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
-            isDisplayed={!isSearching}
-          >
-            {!!storedData && <Sentry sentryData={storedData.sentryData} />}
-          </TitledCell>
-        </div>
-        <div className={classes.programs}>
-          <TitledCell
-            title="PROGRAMS"
-            icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
-            isDisplayed={!isSearching}
-          >
-            <ProgramsMap />
-          </TitledCell>
-        </div>
-        <div className={classes.recentTab}>
-          <TitledCell
-            title="RECENT TABLE"
-            icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={!isSearching}
-          >
-            {!!storedData && <TableCAD period="recent" cadData={storedData.cadData0p05AU} />}
-          </TitledCell>
-        </div>
-        <div className={classes.futureTab}>
-          <TitledCell
-            title="FUTURE TABLE"
-            icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={!isSearching}
-          >
-            {!!storedData && <TableCAD period="future" cadData={storedData.cadData0p05AU} />}
-          </TitledCell>
+    <div className={classes.container}>
+      <div className={classes.imageLeft}>
+        <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
+      </div>
+      <div className={classes.imageRight}>
+        <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
+      </div>
+      <div className={classes.title} onClick={() => setIsSearching(true)}>
+        <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
+        <div className="shortTitle">{'PDCO STATUS'}</div>
+        <div className="date">
+          <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
+          <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
         </div>
       </div>
-    </>
+      <div className={classes.clocks}>
+        <Clocks />
+      </div>
+      <div className={classes.neoCount}>
+        <TitledCell
+          title="CLOSE APPROACHES"
+          link="https://cneos.jpl.nasa.gov/ca/"
+          tooltip="Close Approach is defined as <1LD at closest approach"
+          icon={() => <FontAwesomeIcon icon={faMeteor} />}
+          isDisplayed={!isSearching}
+        >
+          {!!storedData && (
+            <NeoCount cadData={storedData.cadData} dateAtDataFetch={storedData.timestamp} />
+          )}
+        </TitledCell>
+      </div>
+      <div className={classes.sentry}>
+        <TitledCell
+          title="SENTRY STATUS"
+          link="https://cneos.jpl.nasa.gov/sentry/"
+          tooltip="Highest ts_max value in latest sentry data"
+          icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
+          isDisplayed={!isSearching}
+        >
+          {!!storedData && <Sentry sentryData={storedData.sentryData} />}
+        </TitledCell>
+      </div>
+      <div className={classes.programs}>
+        <TitledCell
+          title="PROJECTS"
+          link=""
+          tooltip="Daylight map of world with PDCO project locations"
+          icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
+          isDisplayed={!isSearching}
+        >
+          <ProgramsMap />
+        </TitledCell>
+      </div>
+      <div className={classes.recentTab}>
+        <TitledCell
+          title="CLOSE APPROACHES LAST 7 DAYS"
+          link="https://cneos.jpl.nasa.gov/ca/"
+          tooltip="Close Approach is defined as <1LD at smallest nominal distance"
+          icon={() => <FontAwesomeIcon icon={faTable} />}
+          isDisplayed={!isSearching}
+          isHeightAuto={isMobile}
+        >
+          {!!storedData && (
+            <TableCAD
+              period="recent"
+              cadData={storedData.cadData}
+              dateAtDataFetch={storedData.timestamp}
+              isHeightAuto={isMobile}
+            />
+          )}
+        </TitledCell>
+      </div>
+      <div className={classes.futureTab}>
+        <TitledCell
+          title="CLOSE APPROACHES NEXT 10 YEARS"
+          link="https://cneos.jpl.nasa.gov/ca/"
+          tooltip="Close Approach is defined as <1LD at closest approach"
+          icon={() => <FontAwesomeIcon icon={faTable} />}
+          isDisplayed={!isSearching}
+          isHeightAuto={isMobile}
+        >
+          {!!storedData && (
+            <TableCAD
+              period="future"
+              cadData={storedData.cadData}
+              dateAtDataFetch={storedData.timestamp}
+              isHeightAuto={isMobile}
+            />
+          )}
+        </TitledCell>
+      </div>
+    </div>
   );
 };

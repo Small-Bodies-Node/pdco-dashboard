@@ -1,9 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700|Taviraj:300,400');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Roboto+Mono:wght@100&display=swap');
 
 html,
 body,
 .root {
+  // Set default font
+  // font-family: 'Roboto Slab', sans-serif;
+  font-family: 'Roboto Slab', sans-serif;
+  // font-family: 'Akaya Telivigala', cursive;
+  // font-family: 'Roboto Mono', monospace;
+
+  //
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
   width: 100%;
