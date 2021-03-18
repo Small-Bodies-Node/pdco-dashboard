@@ -36,7 +36,10 @@ export const cadFieldIndices = {
   v_inf: 8,
   t_sigma_f: 9,
   h: 10,
-  fullname: 11,
+  // Added March 21
+  diameter: 11,
+  diameter_sigma: 12,
+  fullname: 13,
   //
   // Entries added to each data array client-side
   //
