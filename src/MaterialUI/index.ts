@@ -3,8 +3,8 @@ import { borderColor } from '../Utils/constants';
 
 export const defaultDark = createMuiTheme({
   palette: {
-    type: 'dark',
-    background: { default: 'black' }
+    type: 'dark'
+    // background: { default: 'black' }
   }
 });
 
@@ -21,7 +21,8 @@ export const darklyTheme = createMuiTheme({
     primary: { main: '#375a7f' },
     secondary: { main: '#444' },
     error: { main: '#E74C3C' },
-    background: { default: 'black' }
+    background: { default: 'rgb(0,0,0)' }
+    // background: { default: 'black' }
     // background: { default: borderColor }
     // background: { default: 'rgba(50,50,50)' }
   }

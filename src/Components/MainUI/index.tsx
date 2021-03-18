@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,12 +8,12 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo,
-  faCog
+  faRedo
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
 import { ImageCell } from '../ImageCell';
+import { MyError } from '../MyError';
 import { useStyles } from './styles';
 import { Clocks } from '../Clocks';
 import { Sentry } from '../Sentry';
@@ -87,7 +88,7 @@ export const MainUI = () => {
   const isDisplayed = !(isSearching || !storedData);
 
   return (
-    <div className={classes.container}>
+    <div className={'main-ui-container ' + classes.container}>
       <div className={classes.imageLeft}>
         <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
       </div>
@@ -95,15 +96,19 @@ export const MainUI = () => {
         <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
       </div>
       <div className={classes.title} onClick={() => setIsSearching(true)}>
-        <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
-        <div className="shortTitle">{'PDCO STATUS'}</div>
-        <div className="date">
-          <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-          <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
-        </div>
+        <ErrorBoundary fallbackRender={() => <MyError />}>
+          <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
+          <div className="shortTitle">{'PDCO STATUS'}</div>
+          <div className="date">
+            <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
+            <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
+          </div>
+        </ErrorBoundary>
       </div>
       <div className={classes.clocks}>
-        <Clocks />
+        <ErrorBoundary fallbackRender={() => <MyError />}>
+          <Clocks />
+        </ErrorBoundary>
       </div>
       <div className={classes.neoCount}>
         <TitledCell

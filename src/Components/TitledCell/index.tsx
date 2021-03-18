@@ -2,6 +2,8 @@ import React from 'react';
 
 import { useStyles } from './styles';
 import { CircularProgress, Tooltip, Zoom } from '@material-ui/core';
+import { ErrorBoundary } from 'react-error-boundary';
+import { MyError } from '../MyError';
 
 interface IProps {
   title: string;
@@ -30,25 +32,25 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
   };
 
   return (
-    <>
-      <div className={classes.container}>
-        <div className={classes.title} style={{ justifyContent: props.alignment }}>
-          <Tooltip title={tooltip || ''} placement="top" TransitionComponent={Zoom} arrow>
-            {!!link ? (
-              <a target="_blank" href={link!}>
-                <TitleRow />
-              </a>
-            ) : (
-              <span>
-                <TitleRow />
-              </span>
-            )}
-          </Tooltip>
-        </div>
-        <div className={classes.content}>
-          {props.isDisplayed ? props.children : <CircularProgress />}
-        </div>
+    <div className={classes.container}>
+      <div className={classes.title} style={{ justifyContent: props.alignment }}>
+        <Tooltip title={tooltip || ''} placement="top" TransitionComponent={Zoom} arrow>
+          {!!link ? (
+            <a target="_blank" href={link!}>
+              <TitleRow />
+            </a>
+          ) : (
+            <span>
+              <TitleRow />
+            </span>
+          )}
+        </Tooltip>
       </div>
-    </>
+      <div className={classes.content}>
+        <ErrorBoundary resetKeys={[props.children]} fallbackRender={() => <MyError />}>
+          {props.isDisplayed ? props.children : <CircularProgress />}
+        </ErrorBoundary>
+      </div>
+    </div>
   );
 };

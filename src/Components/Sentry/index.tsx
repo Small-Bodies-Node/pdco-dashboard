@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { useStyles } from './styles';
 import { ISentryData } from '../../Models/apiData.model';
+import { useLocation } from 'react-router';
 
 const triStrokePxl = 10;
 const svgBorder = 20;
@@ -19,6 +20,11 @@ interface IProps {
  */
 export const Sentry = ({ sentryData }: IProps) => {
   // ------------------------------------------->>>
+
+  // if query param supplied, throw an error to demo error handling
+  const induceErrorQueryParam = new URLSearchParams(useLocation().search);
+  const [isError] = useState(induceErrorQueryParam.get('error') === 'true');
+  if (isError) throw new Error('This is an artificial error');
 
   const classes = useStyles();
   const [score, setScore] = useState<number>(0);

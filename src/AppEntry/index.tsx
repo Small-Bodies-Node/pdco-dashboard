@@ -9,28 +9,34 @@ import { PageAbout } from '../Components/PageAbout';
 import { useStyles } from './styles';
 import { SimpleMenu } from '../Components/SimpleMenu';
 import { Layout } from '../Components/Layout';
+import { MyError } from '../Components/MyError';
+import { ErrorBoundary } from 'react-error-boundary';
+
+const rootErrorMessage = `A an error occurred near the start/root of this web app -- please contact site admin!`;
 
 export const AppEntry = () => {
   //------------------------>>>
 
   const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <div className={'app-entry-container ' + classes.container}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Layout>
-          <Router basename={process.env.REACT_APP_BASE_HREF || '/'}>
-            <Switch>
-              <Route exact path="/">
-                <PageHome />
-              </Route>
-              <Route path="/about">
-                <PageAbout />
-              </Route>
-            </Switch>
-            {/* <SimpleMenu /> */}
-          </Router>
-        </Layout>
+        <ErrorBoundary fallbackRender={() => <MyError message={rootErrorMessage} />}>
+          <Layout>
+            <Router basename={process.env.REACT_APP_BASE_HREF || '/'}>
+              <Switch>
+                <Route exact path="/">
+                  <PageHome />
+                </Route>
+                <Route path="/about">
+                  <PageAbout />
+                </Route>
+              </Switch>
+              {/* <SimpleMenu /> */}
+            </Router>
+          </Layout>
+        </ErrorBoundary>
       </ThemeProvider>
     </div>
   );
