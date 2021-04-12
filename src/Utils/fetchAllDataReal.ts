@@ -32,7 +32,8 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
 }
 
 function getCadUrl() {
-  const baseUrl = 'https://ssd-api.jpl.nasa.gov/cad.api?www=1&nea-comet=Y&fullname=true';
+  const baseUrl =
+    'https://ssd-api.jpl.nasa.gov/cad.api?www=1&nea-comet=Y&fullname=true&diameter=true';
 
   // Build string for future date
   const d = new Date();
