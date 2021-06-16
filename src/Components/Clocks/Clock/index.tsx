@@ -33,7 +33,7 @@ export const Clock = (props: IProps) => {
     // Compute the time difference
     const now = moment.utc();
     const diff = moment.tz.zone(props.timezone)!.utcOffset(now as any) / 60;
-    timeString = `UTC${diff >= 0 ? '+' : ''}${diff}`;
+    timeString = `UTC${-diff >= 0 ? '+' : ''}${-diff}`;
   }
 
   return (
