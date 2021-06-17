@@ -52,5 +52,7 @@ export const cadFieldIndices = {
 
 export const oneAuEqualsThisManyLds = 389.17037554435;
 export const oneAuEqualsThisManyKms = 149598000;
+export const oneAuEqualsThisManyFt = 490800000000;
+export const oneAuEqualsThisManyMi = 92960000;
 export const secsInDay = 60 * 60 * 24;
 export const geoDistanceAu = kmToAu(42000);
