@@ -92,7 +92,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
 
   // State
   const classes = useStyles(!!isHeightAuto)();
-  const [distUnit, setDistUnit] = useState<0 | 1 | 2 | 3>(0); // 0: 'km', 1: 'ld', 2: 'au', 3: 'mi'
+  const [distUnit, setDistUnit] = useState<0 | 1 | 2 | 3>(0); // 0: 'ld', 1: 'km', 2: 'au', 3: 'mi'
   const [sizeUnit, setSizeUnit] = useState<0 | 1>(0); // 0: 'm', 1: 'ft'
   const [rawRows, setRawRows] = useState<IRawRow[]>();
   const [displayRows, setDisplayRows] = useState<IDisplayRow[]>();
@@ -177,15 +177,15 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         let dist: string; // rawRow.dist is in au by default
         let dist_tooltip: string;
         switch (distUnit) {
-          case 0: // km selected
+          case 0: // ld selected
+            dist = auToLd(parseFloat(rawRow.dist)).toPrecision(3);
+            dist_tooltip = `${auToLd(parseFloat(rawRow.dist))}`;
+            break;
+          case 1: // km selected
             /*             dist = ML(auToKm(parseFloat(rawRow.dist)), { precision: 0 });
             dist = numeral(auToKm(parseFloat(rawRow.dist))).format('0.0'); */
             dist = numeral(auToKm(parseFloat(rawRow.dist))).format();
             dist_tooltip = `${auToKm(parseFloat(rawRow.dist))}`;
-            break;
-          case 1: // ld selected
-            dist = auToLd(parseFloat(rawRow.dist)).toPrecision(3);
-            dist_tooltip = `${auToLd(parseFloat(rawRow.dist))}`;
             break;
           case 2: // au selected
             dist = parseFloat(rawRow.dist).toPrecision(3);
@@ -383,7 +383,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   },
   {
     id: 'dist',
-    label: `Dist (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : distUnit === 2 ? 'au' : 'mi'})`,
+    label: `Dist (${!distUnit ? 'ld' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
