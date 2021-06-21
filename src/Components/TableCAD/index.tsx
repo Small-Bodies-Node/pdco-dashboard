@@ -13,7 +13,15 @@ import { useStyles } from './styles';
 import { ICadData } from '../../Models/apiData.model';
 import { cadFieldIndices, secsInDay } from '../../Utils/constants';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
-import { auToKm, auToLd, kmToAu, kmToLd } from '../../Utils/conversionFormulae';
+import {
+  auToKm,
+  auToLd,
+  kmToAu,
+  kmToFt,
+  kmToLd,
+  auToMi,
+  magToSizeKm
+} from '../../Utils/conversionFormulae';
 import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
 
 const numeral = numeralWithDefault.default;
@@ -39,6 +47,7 @@ interface ICol {
   maxWidth?: number;
   align: 'left';
   format: (value: string) => string;
+  formatWithSigma?: (value: string, sigma: string) => string;
   colClickHandler?: () => void;
 }
 
@@ -48,6 +57,7 @@ interface IRawRow {
   dist: string;
   h: string;
   size: string;
+  sigma: string;
 }
 
 interface IDisplayRow extends Omit<IRawRow, 'cd'> {
@@ -60,7 +70,8 @@ interface IDisplayRow extends Omit<IRawRow, 'cd'> {
   size_tooltip: string;
 }
 
-type TDistUnit = 0 | 1 | 2;
+type TDistUnit = 0 | 1 | 2 | 3;
+type TSizeUnit = 0 | 1;
 
 interface IProps {
   cadData: ICadData;
@@ -81,8 +92,8 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
 
   // State
   const classes = useStyles(!!isHeightAuto)();
-  const [distUnit, setDistUnit] = useState<0 | 1 | 2>(0); // 0: 'km', 1: 'ld', 2: 'au'
-  const [sizeUnit, setSizeUnit] = useState<0 | 1 | 2>(0); // 0: 'm', 1: 'ld', 2: 'au'
+  const [distUnit, setDistUnit] = useState<0 | 1 | 2 | 3>(0); // 0: 'km', 1: 'ld', 2: 'au', 3: 'mi'
+  const [sizeUnit, setSizeUnit] = useState<0 | 1>(0); // 0: 'm', 1: 'ft'
   const [rawRows, setRawRows] = useState<IRawRow[]>();
   const [displayRows, setDisplayRows] = useState<IDisplayRow[]>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,10 +105,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   // Set stateful click handlers on certain columns
   columns.forEach((col) => {
     if (col.id === 'dist') {
-      col.colClickHandler = () => setDistUnit((prev) => ((prev + 1) % 3) as TDistUnit);
+      col.colClickHandler = () => setDistUnit((prev) => ((prev + 1) % 4) as TDistUnit);
     }
     if (col.id === 'size') {
-      col.colClickHandler = () => setSizeUnit((prev) => ((prev + 1) % 3) as TDistUnit);
+      col.colClickHandler = () => setSizeUnit((prev) => ((prev + 1) % 2) as TSizeUnit);
     }
   });
 
@@ -131,7 +142,8 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
-          size: datumArr[cadFieldIndices.size]!
+          size: datumArr[cadFieldIndices.diameter]!,
+          sigma: datumArr[cadFieldIndices.diameter_sigma] ?? '0'
         };
       }
     );
@@ -179,6 +191,16 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             dist = parseFloat(rawRow.dist).toPrecision(3);
             dist_tooltip = rawRow.dist;
             break;
+          case 3: // mi selected
+            /**
+             * Can be quite large, and toLocaleString preserves number
+             * w/o scientific notation while toPrecision does not
+             */
+            dist = auToMi(parseFloat(rawRow.dist)).toLocaleString('en-US', {
+              maximumFractionDigits: 3
+            });
+            dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
+            break;
           default:
             throw 'Not supposed to be possible';
         }
@@ -186,19 +208,30 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         // Display size as different formats depending on unit selected
         let size: string; // rawRow.size is in km by default
         let size_tooltip: string;
+        // Calculate size from h if there is no size from API
+        rawRow.size = rawRow.size ? rawRow.size : magToSizeKm(parseFloat(rawRow.h)).toString();
         switch (sizeUnit) {
           case 0: // m selected
             size = parseFloat(rawRow.size).toPrecision(1);
             size = numeral(parseFloat(rawRow.size) * 1000).format('0');
             size_tooltip = `${rawRow.size}`;
             break;
-          case 1: // ld selected
-            size = kmToLd(parseFloat(rawRow.size)).toPrecision(3);
+          case 1: // ft selected
+            size = kmToFt(parseFloat(rawRow.size)).toPrecision(3);
             size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
             break;
-          case 2: // au selected
-            size = kmToAu(parseFloat(rawRow.size)).toPrecision(3);
-            size_tooltip = `${kmToAu(parseFloat(rawRow.size))}`;
+          default:
+            throw 'Not supposed to be possible';
+        }
+
+        let sigma: string; // rawRow.sigma is in km by default
+        switch (sizeUnit) {
+          case 0: // m selected
+            sigma = parseFloat(rawRow.sigma).toPrecision(1);
+            sigma = numeral(parseFloat(rawRow.sigma) * 1000).format('0');
+            break;
+          case 1: // ft selected
+            sigma = kmToFt(parseFloat(rawRow.sigma)).toPrecision(3);
             break;
           default:
             throw 'Not supposed to be possible';
@@ -214,7 +247,8 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           size,
           size_tooltip,
           h,
-          h_tooltip
+          h_tooltip,
+          sigma
         };
       }
     );
@@ -300,7 +334,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   overflow: 'hidden'
                                 }}
                               >
-                                {column.format(value)}
+                                {column.id === 'size' && (value === '0' || value == 'NaN')
+                                  ? '-'
+                                  : column.id === 'size' && parseInt(row.sigma) != 0
+                                  ? column.formatWithSigma &&
+                                    column.formatWithSigma(value, row.sigma)
+                                  : column.format(value)}
                               </span>
                             </Tooltip>
                           </StyledTableCell>
@@ -344,7 +383,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   },
   {
     id: 'dist',
-    label: `Dist (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : 'au'})`,
+    label: `Dist (${!distUnit ? 'km' : distUnit === 1 ? 'ld' : distUnit === 2 ? 'au' : 'mi'})`,
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
@@ -352,11 +391,13 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   },
   {
     id: 'size',
-    label: `Size (${!sizeUnit ? 'm' : sizeUnit === 1 ? 'ld' : 'au'})`,
+    label: `Size (${!sizeUnit ? 'm' : 'ft'})`,
     label_tooltip: 'Diameter derived from H with assumed albedo 0.114',
     minWidth: 0,
     align: 'left',
-    format: (value: string) => value
+    format: (value: string) => value,
+    formatWithSigma: (value: string, sigma: string) =>
+      `${parseFloat(value) - parseFloat(sigma)} -  ${parseFloat(value) + parseFloat(sigma)}`
   },
   {
     id: 'h',
