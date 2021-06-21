@@ -52,10 +52,10 @@ export const kmToFt = (distKm: number) => {
  * Source of equation: https://cneos.jpl.nasa.gov/tools/ast_size_est.html
  * Source of meanAlbedo value: https://arxiv.org/abs/2001.03550
  */
-export const magToSizeKm = (H: number) => {
+export const magToSizeKm = (H: number, meanAlbedo: number = 0.147) => {
   // ----------------------------------->>>
 
-  const meanAlbedo = 0.147;
-  const diameterKm = 10 ** (3.1236 - 0.5 * Math.log10(meanAlbedo) - 0.2 * H);
+  const albedo = meanAlbedo ?? 0.147;
+  const diameterKm = 10 ** (3.1236 - 0.5 * Math.log10(albedo) - 0.2 * H);
   return diameterKm;
 };
