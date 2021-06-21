@@ -16,7 +16,6 @@ import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 import {
   auToKm,
   auToLd,
-  kmToAu,
   kmToFt,
   kmToLd,
   auToMi,
@@ -143,7 +142,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
           size: datumArr[cadFieldIndices.diameter]!,
-          sigma: datumArr[cadFieldIndices.diameter_sigma] ?? '0'
+          sigma: datumArr[cadFieldIndices.diameter_sigma]!
         };
       }
     );
@@ -205,19 +204,28 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             throw 'Not supposed to be possible';
         }
 
+        // Calculate size and sigma from h if there is no size from API
+        if (!rawRow.size && !rawRow.sigma) {
+          rawRow.sigma = (
+            (magToSizeKm(parseFloat(rawRow.h), 0.05) - magToSizeKm(parseFloat(rawRow.h), 0.25)) /
+            2
+          ).toString();
+          rawRow.size = (
+            (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
+            2
+          ).toString();
+        }
+
         // Display size as different formats depending on unit selected
         let size: string; // rawRow.size is in km by default
         let size_tooltip: string;
-        // Calculate size from h if there is no size from API
-        rawRow.size = rawRow.size ? rawRow.size : magToSizeKm(parseFloat(rawRow.h)).toString();
         switch (sizeUnit) {
           case 0: // m selected
-            size = parseFloat(rawRow.size).toPrecision(1);
-            size = numeral(parseFloat(rawRow.size) * 1000).format('0');
+            size = (parseFloat(rawRow.size) * 1000).toFixed(2);
             size_tooltip = `${rawRow.size}`;
             break;
           case 1: // ft selected
-            size = kmToFt(parseFloat(rawRow.size)).toPrecision(3);
+            size = kmToFt(parseFloat(rawRow.size)).toFixed(3);
             size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
             break;
           default:
@@ -227,11 +235,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         let sigma: string; // rawRow.sigma is in km by default
         switch (sizeUnit) {
           case 0: // m selected
-            sigma = parseFloat(rawRow.sigma).toPrecision(1);
-            sigma = numeral(parseFloat(rawRow.sigma) * 1000).format('0');
+            sigma = (parseFloat(rawRow.sigma) * 1000).toFixed(2);
             break;
           case 1: // ft selected
-            sigma = kmToFt(parseFloat(rawRow.sigma)).toPrecision(3);
+            sigma = kmToFt(parseFloat(rawRow.sigma)).toFixed(3);
             break;
           default:
             throw 'Not supposed to be possible';
@@ -397,7 +404,9 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     align: 'left',
     format: (value: string) => value,
     formatWithSigma: (value: string, sigma: string) =>
-      `${parseFloat(value) - parseFloat(sigma)} -  ${parseFloat(value) + parseFloat(sigma)}`
+      `${(parseFloat(value) - parseFloat(sigma)).toFixed(2)} -  ${(
+        parseFloat(value) + parseFloat(sigma)
+      ).toFixed(2)}`
   },
   {
     id: 'h',
