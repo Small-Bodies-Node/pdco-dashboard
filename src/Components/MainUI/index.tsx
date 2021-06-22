@@ -112,7 +112,7 @@ export const MainUI = () => {
       </div>
       <div className={classes.neoCount}>
         <TitledCell
-          title="CLOSE APPROACHES"
+          title="RECENT CLOSE APPROACHES"
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at closest approach"
           icon={() => <FontAwesomeIcon icon={faMeteor} />}
