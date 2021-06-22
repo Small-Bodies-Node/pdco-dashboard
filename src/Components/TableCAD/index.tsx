@@ -394,7 +394,12 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
-    format: (value: string) => value
+    format: (value: string) =>
+      !distUnit
+        ? (Math.round(parseFloat(value) * 100) / 100).toString()
+        : distUnit === 3
+        ? Math.round(parseFloat(value)).toString()
+        : value
   },
   {
     id: 'size',
@@ -404,9 +409,9 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     align: 'left',
     format: (value: string) => value,
     formatWithSigma: (value: string, sigma: string) =>
-      `${(parseFloat(value) - parseFloat(sigma)).toFixed(2)} -  ${(
+      `${Math.round(parseFloat(value) - parseFloat(sigma))} -  ${Math.round(
         parseFloat(value) + parseFloat(sigma)
-      ).toFixed(2)}`
+      )}`
   },
   {
     id: 'h',
