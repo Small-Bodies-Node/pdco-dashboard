@@ -1,8 +1,8 @@
 import {
   oneAuEqualsThisManyKms,
   oneAuEqualsThisManyLds,
-  oneAuEqualsThisManyFt,
-  oneAuEqualsThisManyMi
+  oneAuEqualsThisManyMi,
+  oneKmEqualsThisManyFt
 } from './constants';
 
 //////////////////////////////////////////////////
@@ -13,10 +13,6 @@ export const kmToAu = (distKm: number) => {
 
 export const auToKm = (distAu: number) => {
   return distAu * oneAuEqualsThisManyKms;
-};
-
-export const auToFt = (distAu: number) => {
-  return distAu * oneAuEqualsThisManyFt;
 };
 
 export const auToMi = (distAu: number) => {
@@ -44,7 +40,7 @@ export const kmToLd = (distKm: number) => {
 };
 
 export const kmToFt = (distKm: number) => {
-  return auToFt(kmToAu(distKm));
+  return distKm * oneKmEqualsThisManyFt;
 };
 
 /**

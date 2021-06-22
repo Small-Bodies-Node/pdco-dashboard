@@ -195,9 +195,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
              * Can be quite large, and toLocaleString preserves number
              * w/o scientific notation while toPrecision does not
              */
-            dist = auToMi(parseFloat(rawRow.dist)).toLocaleString('en-US', {
-              maximumFractionDigits: 3
-            });
+            dist = auToMi(parseFloat(rawRow.dist)).toString();
             dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
             break;
           default:
@@ -394,7 +392,12 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
-    format: (value: string) => value
+    format: (value: string) =>
+      !distUnit
+        ? (Math.round(parseFloat(value) * 100) / 100).toString()
+        : distUnit === 3
+        ? Math.round(parseFloat(value)).toLocaleString('en-us')
+        : value
   },
   {
     id: 'size',
@@ -404,9 +407,9 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     align: 'left',
     format: (value: string) => value,
     formatWithSigma: (value: string, sigma: string) =>
-      `${(parseFloat(value) - parseFloat(sigma)).toFixed(2)} -  ${(
+      `${Math.round(parseFloat(value) - parseFloat(sigma))} -  ${Math.round(
         parseFloat(value) + parseFloat(sigma)
-      ).toFixed(2)}`
+      )}`
   },
   {
     id: 'h',
