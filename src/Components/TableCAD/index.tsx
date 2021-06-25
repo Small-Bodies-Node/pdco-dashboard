@@ -22,6 +22,7 @@ import {
   magToSizeKm
 } from '../../Utils/conversionFormulae';
 import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
+import { ObjectModal } from '../ObjectModal';
 
 const numeral = numeralWithDefault.default;
 
@@ -50,13 +51,16 @@ interface ICol {
   colClickHandler?: () => void;
 }
 
-interface IRawRow {
+export interface IRawRow {
   fullname: string;
   cd: Date;
   dist: string;
   h: string;
   size: string;
   sigma: string;
+
+  min_distance: string;
+  max_distance: string;
 }
 
 interface IDisplayRow extends Omit<IRawRow, 'cd'> {
@@ -97,6 +101,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   const [displayRows, setDisplayRows] = useState<IDisplayRow[]>();
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useContainerDimensions(containerRef);
+
+  const [unchangedRawRows, setUnchangedRawRows] = useState<IRawRow[]>();
+  const [isObjectModalShown, setIsObjectModalShown] = useState(false);
+  const [selectedRawRow, setSelectedRawRow] = useState<IRawRow | undefined>();
 
   // Define columns for our table
   const columns = getCols(distUnit, sizeUnit);
@@ -142,10 +150,14 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
           size: datumArr[cadFieldIndices.diameter]!,
-          sigma: datumArr[cadFieldIndices.diameter_sigma]!
+          sigma: datumArr[cadFieldIndices.diameter_sigma]!,
+          min_distance: datumArr[cadFieldIndices.dist_min]!,
+          max_distance: datumArr[cadFieldIndices.dist_max]!
         };
       }
     );
+
+    setUnchangedRawRows(newRawRows);
     setRawRows(newRawRows);
   }, [cadData]);
 
@@ -191,10 +203,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             dist_tooltip = rawRow.dist;
             break;
           case 3: // mi selected
-            /**
-             * Can be quite large, and toLocaleString preserves number
-             * w/o scientific notation while toPrecision does not
-             */
             dist = auToMi(parseFloat(rawRow.dist)).toString();
             dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
             break;
@@ -253,7 +261,9 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           size_tooltip,
           h,
           h_tooltip,
-          sigma
+          sigma,
+          min_distance: rawRow.min_distance,
+          max_distance: rawRow.max_distance
         };
       }
     );
@@ -265,6 +275,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
 
   return (
     <>
+      <ObjectModal
+        isShown={isObjectModalShown}
+        setIsShown={setIsObjectModalShown}
+        rawRow={selectedRawRow}
+      />
+
       <div className={classes.container} ref={containerRef}>
         <TableContainer className={classes.tableContainer}>
           <Table stickyHeader size="small" aria-label="sticky table">
@@ -309,7 +325,16 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
               {displayRows &&
                 displayRows.map((row, ind) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={ind}
+                      onClick={() => {
+                        setIsObjectModalShown(true);
+                        unchangedRawRows && setSelectedRawRow(unchangedRawRows[ind]);
+                      }}
+                    >
                       {columns.map((column) => {
                         const value = (row as any)[column.id];
                         const tooltip = (row as any)[column.id + '_tooltip'];
