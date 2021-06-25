@@ -69,8 +69,11 @@ interface IDisplayRow extends Omit<IRawRow, 'cd'> {
   size_tooltip: string;
 }
 
-type TDistUnit = 0 | 1 | 2 | 3;
-type TSizeUnit = 0 | 1;
+const distanceUnits = [0, 1, 2, 3] as const;
+const sizeUnits = [0, 1] as const;
+
+type TDistUnit = typeof distanceUnits[number];
+type TSizeUnit = typeof sizeUnits[number];
 
 interface IProps {
   cadData: ICadData;
@@ -104,10 +107,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   // Set stateful click handlers on certain columns
   columns.forEach((col) => {
     if (col.id === 'dist') {
-      col.colClickHandler = () => setDistUnit((prev) => ((prev + 1) % 4) as TDistUnit);
+      col.colClickHandler = () =>
+        setDistUnit((prev) => ((prev + 1) % distanceUnits.length) as TDistUnit);
     }
     if (col.id === 'size') {
-      col.colClickHandler = () => setSizeUnit((prev) => ((prev + 1) % 2) as TSizeUnit);
+      col.colClickHandler = () =>
+        setSizeUnit((prev) => ((prev + 1) % sizeUnits.length) as TSizeUnit);
     }
   });
 
