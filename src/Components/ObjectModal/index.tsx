@@ -112,7 +112,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     setSizeUnit((sizeUnit + 1) % (Object.keys(SizeUnits).length / 2));
   };
 
-  const getUrlFromFullName = (fullName: string): string => {
+  const getSSDUrlFromFullName = (fullName: string): string => {
     const baseUrl = 'https://ssd.jpl.nasa.gov/sbdb.cgi?sstr=';
     const nameParts = fullName.split(' ');
 
@@ -120,6 +120,17 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
       return baseUrl + nameParts[0];
     } else {
       return baseUrl + fullName.replaceAll(' ', '%20');
+    }
+  };
+
+  const getMPCUrlFromFullName = (fullName: string): string => {
+    const baseUrl = 'https://minorplanetcenter.net/db_search/show_object?object_id=';
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length >= 3 && !isNaN(+nameParts[0])) {
+      return baseUrl + nameParts[0];
+    } else {
+      return baseUrl + fullName.replaceAll(' ', '+');
     }
   };
 
@@ -138,12 +149,24 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
         <TitledCell
           title={`${rawRow.fullname} DETAILED DATA`}
-          link={getUrlFromFullName(rawRow.fullname)}
+          link={getSSDUrlFromFullName(rawRow.fullname)}
           tooltip={'Detailed data for ' + rawRow.fullname}
           icon={() => <FontAwesomeIcon icon={faTable} />}
           isDisplayed={true}
           isHeightAuto={true}
         >
+          {/** LINK TO MPC SITE */}
+          <div className={classes.mpcLinkContainer}>
+            <a
+              href={getMPCUrlFromFullName(rawRow.fullname)}
+              className={classes.mpcLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View on MPC
+            </a>
+          </div>
+
           {/** DISTANCES TABLE */}
           <TableContainer className={classes.tableContainer}>
             <Table
@@ -264,7 +287,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
               <TableBody>
                 <TableRowWithCells
-                  title="V relative (km/s)"
+                  title="Velocity (km/s)"
                   cellOneData={parseFloat(rawRow.v_rel).toLocaleString('en-US', {
                     maximumFractionDigits: 5
                   })}

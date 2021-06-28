@@ -21,7 +21,8 @@ export const useStyles = makeStyles(
       width: '50%',
       height: '50%',
       borderRadius: '0.5rem',
-      padding: '1rem'
+      padding: '1rem',
+      overflow: 'auto'
     },
     closeButtonContainer: {
       display: 'flex',
@@ -37,6 +38,13 @@ export const useStyles = makeStyles(
     },
     tableContainer: {
       marginTop: '1rem'
+    },
+    mpcLinkContainer: {
+      display: 'flex'
+    },
+    mpcLink: {
+      margin: '0 auto 0 0',
+      color: 'white'
     },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
