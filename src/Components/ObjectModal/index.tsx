@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +15,7 @@ import { TitledCell } from '../TitledCell';
 import { useStyles } from './styles';
 import { IRawRow } from '../TableCAD/index';
 import { Theme, withStyles } from '@material-ui/core';
-import { auToKm, auToLd, auToMi } from '../../Utils/conversionFormulae';
+import { auToKm, auToLd, auToMi, kmToFt } from '../../Utils/conversionFormulae';
 
 // See: https://material-ui.com/components/tables/#CustomizedTables.tsx
 const StyledTableCell = withStyles((theme: Theme) => ({
@@ -38,6 +38,11 @@ enum DistanceUnits {
   mi
 }
 
+enum SizeUnits {
+  m,
+  ft
+}
+
 interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
@@ -49,6 +54,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
   // State
   const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.ld);
+  const [sizeUnit, setSizeUnit] = useState<number>(SizeUnits.m);
 
   if (!isShown || !rawRow) {
     return null;
@@ -81,8 +87,40 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     return dist;
   };
 
+  const convertKmTo = (value: string): string => {
+    let size: string;
+
+    switch (sizeUnit) {
+      case SizeUnits.m:
+        size = (parseFloat(value) * 1000).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        break;
+      case SizeUnits.ft:
+        size = kmToFt(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        break;
+      default:
+        throw 'Not supposed to be possible';
+    }
+
+    return size;
+  };
+
   const incrementDistanceUnit = () => {
-    setDistanceUnit((distanceUnit + 1) % 4);
+    setDistanceUnit((distanceUnit + 1) % (Object.keys(DistanceUnits).length / 2));
+  };
+
+  const incrementSizeUnit = () => {
+    setSizeUnit((sizeUnit + 1) % (Object.keys(SizeUnits).length / 2));
+  };
+
+  const getUrlFromFullName = (fullName: string): string => {
+    const baseUrl = 'https://ssd.jpl.nasa.gov/sbdb.cgi?sstr=';
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length >= 3 && !isNaN(+nameParts[0])) {
+      return baseUrl + nameParts[0];
+    } else {
+      return baseUrl + fullName.replaceAll(' ', '%20');
+    }
   };
 
   return (
@@ -100,18 +138,23 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
         <TitledCell
           title={`${rawRow.fullname} DETAILED DATA`}
-          //link="https://cneos.jpl.nasa.gov/ca/"
+          link={getUrlFromFullName(rawRow.fullname)}
           tooltip={'Detailed data for ' + rawRow.fullname}
           icon={() => <FontAwesomeIcon icon={faTable} />}
           isDisplayed={true}
           isHeightAuto={true}
         >
           <TableContainer className={classes.tableContainer}>
-            <Table stickyHeader size="small" aria-label="sticky table">
+            <Table
+              stickyHeader
+              size="small"
+              aria-label="sticky table"
+              style={{ tableLayout: 'auto' }}
+            >
               <TableHead>
                 <TableRow>
                   <StyledTableCell
-                    width={50}
+                    width={175}
                     align="left"
                     style={{
                       cursor: 'pointer',
@@ -123,7 +166,6 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                   </StyledTableCell>
 
                   <StyledTableCell
-                    width={50}
                     align="left"
                     style={{
                       cursor: 'pointer',
@@ -154,12 +196,33 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 />
 
                 <TableRowWithCells
-                  title="Minimum Size (m)"
-                  data={(parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toFixed(3)}
+                  title={`Minimum Size (${SizeUnits[sizeUnit]})`}
+                  data={convertKmTo(
+                    (parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toString()
+                  )}
+                  onClick={incrementSizeUnit}
                 />
                 <TableRowWithCells
-                  title="Maximum Size (m)"
-                  data={(parseFloat(rawRow.size) + parseFloat(rawRow.sigma)).toFixed(3)}
+                  title={`Maximum Size (${SizeUnits[sizeUnit]})`}
+                  data={convertKmTo(
+                    (parseFloat(rawRow.size) + parseFloat(rawRow.sigma)).toString()
+                  )}
+                  onClick={incrementSizeUnit}
+                />
+
+                <TableRowWithCells title="H (mag)" data={rawRow.h} />
+
+                <TableRowWithCells
+                  title={`V relative (km/s)`}
+                  data={parseFloat(rawRow.v_rel).toLocaleString('en-US', {
+                    maximumFractionDigits: 5
+                  })}
+                />
+                <TableRowWithCells
+                  title={`V infinity (km/s)`}
+                  data={parseFloat(rawRow.v_inf).toLocaleString('en-US', {
+                    maximumFractionDigits: 5
+                  })}
                 />
               </TableBody>
             </Table>

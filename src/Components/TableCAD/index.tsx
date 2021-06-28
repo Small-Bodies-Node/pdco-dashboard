@@ -61,6 +61,9 @@ export interface IRawRow {
 
   min_distance: string;
   max_distance: string;
+
+  v_rel: string;
+  v_inf: string;
 }
 
 interface IDisplayRow extends Omit<IRawRow, 'cd'> {
@@ -152,7 +155,9 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           size: datumArr[cadFieldIndices.diameter]!,
           sigma: datumArr[cadFieldIndices.diameter_sigma]!,
           min_distance: datumArr[cadFieldIndices.dist_min]!,
-          max_distance: datumArr[cadFieldIndices.dist_max]!
+          max_distance: datumArr[cadFieldIndices.dist_max]!,
+          v_rel: datumArr[cadFieldIndices.v_rel]!,
+          v_inf: datumArr[cadFieldIndices.v_inf]!
         };
       }
     );
@@ -263,7 +268,9 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           h_tooltip,
           sigma,
           min_distance: rawRow.min_distance,
-          max_distance: rawRow.max_distance
+          max_distance: rawRow.max_distance,
+          v_rel: rawRow.v_rel,
+          v_inf: rawRow.v_inf
         };
       }
     );
