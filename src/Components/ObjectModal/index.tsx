@@ -144,6 +144,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           isDisplayed={true}
           isHeightAuto={true}
         >
+          {/** DISTANCES TABLE */}
           <TableContainer className={classes.tableContainer}>
             <Table
               stickyHeader
@@ -151,76 +152,123 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
               aria-label="sticky table"
               style={{ tableLayout: 'auto' }}
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell
-                    width={175}
-                    align="left"
-                    style={{
-                      cursor: 'pointer',
-                      fontFamily: cellFont,
-                      padding: cellPadding
-                    }}
-                  >
-                    Data Point
-                  </StyledTableCell>
+              <colgroup>
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+              </colgroup>
 
-                  <StyledTableCell
-                    align="left"
-                    style={{
-                      cursor: 'pointer',
-                      fontFamily: cellFont,
-                      padding: cellPadding
-                    }}
-                  >
-                    Value
-                  </StyledTableCell>
-                </TableRow>
+              <TableHead>
+                <TableRowWithCells
+                  title="Data Point"
+                  cellOneData="Nominal"
+                  cellTwoData="Minimum"
+                  cellThreeData="Maximum"
+                />
               </TableHead>
 
               <TableBody>
                 <TableRowWithCells
-                  title={`Nominal Distance (${DistanceUnits[distanceUnit]})`}
-                  data={convertAuTo(rawRow.dist)}
+                  title={`Distance (${DistanceUnits[distanceUnit]})`}
+                  cellOneData={convertAuTo(rawRow.dist)}
+                  cellTwoData={convertAuTo(rawRow.min_distance)}
+                  cellThreeData={convertAuTo(rawRow.max_distance)}
                   onClick={incrementDistanceUnit}
                 />
-                <TableRowWithCells
-                  title={`Minimum Distance (${DistanceUnits[distanceUnit]})`}
-                  data={convertAuTo(rawRow.min_distance)}
-                  onClick={incrementDistanceUnit}
-                />
-                <TableRowWithCells
-                  title={`Maximum Distance (${DistanceUnits[distanceUnit]})`}
-                  data={convertAuTo(rawRow.max_distance)}
-                  onClick={incrementDistanceUnit}
-                />
+              </TableBody>
+            </Table>
+          </TableContainer>
 
+          {/** SIZES TABLE */}
+          <TableContainer className={classes.tableContainer}>
+            <Table
+              stickyHeader
+              size="small"
+              aria-label="sticky table"
+              style={{ tableLayout: 'auto' }}
+            >
+              <colgroup>
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+              </colgroup>
+
+              <TableHead>
+                <TableRowWithCells title="Data Point" cellOneData="Minimum" cellTwoData="Maximum" />
+              </TableHead>
+
+              <TableBody>
                 <TableRowWithCells
-                  title={`Minimum Size (${SizeUnits[sizeUnit]})`}
-                  data={convertKmTo(
+                  title={`Size (${SizeUnits[sizeUnit]})`}
+                  cellOneData={convertKmTo(
                     (parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toString()
                   )}
-                  onClick={incrementSizeUnit}
-                />
-                <TableRowWithCells
-                  title={`Maximum Size (${SizeUnits[sizeUnit]})`}
-                  data={convertKmTo(
+                  cellTwoData={convertKmTo(
                     (parseFloat(rawRow.size) + parseFloat(rawRow.sigma)).toString()
                   )}
                   onClick={incrementSizeUnit}
                 />
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-                <TableRowWithCells title="H (mag)" data={rawRow.h} />
+          {/** H TABLE */}
+          <TableContainer className={classes.tableContainer}>
+            <Table
+              stickyHeader
+              size="small"
+              aria-label="sticky table"
+              style={{ tableLayout: 'auto' }}
+            >
+              <colgroup>
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+              </colgroup>
 
+              <TableHead>
+                <TableRowWithCells title="Data Point" cellOneData="Value" />
+              </TableHead>
+
+              <TableBody>
+                <TableRowWithCells title="H (mag)" cellOneData={rawRow.h} />
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/** V TABLE */}
+          <TableContainer className={classes.tableContainer}>
+            <Table
+              stickyHeader
+              size="small"
+              aria-label="sticky table"
+              style={{ tableLayout: 'auto' }}
+            >
+              <colgroup>
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+              </colgroup>
+
+              <TableHead>
                 <TableRowWithCells
-                  title={`V relative (km/s)`}
-                  data={parseFloat(rawRow.v_rel).toLocaleString('en-US', {
+                  title="Data Point"
+                  cellOneData="Relative"
+                  cellTwoData="Infinity"
+                />
+              </TableHead>
+
+              <TableBody>
+                <TableRowWithCells
+                  title="V relative (km/s)"
+                  cellOneData={parseFloat(rawRow.v_rel).toLocaleString('en-US', {
                     maximumFractionDigits: 5
                   })}
-                />
-                <TableRowWithCells
-                  title={`V infinity (km/s)`}
-                  data={parseFloat(rawRow.v_inf).toLocaleString('en-US', {
+                  cellTwoData={parseFloat(rawRow.v_inf).toLocaleString('en-US', {
                     maximumFractionDigits: 5
                   })}
                 />
@@ -233,13 +281,56 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   );
 };
 
+// const TableRowWithCells = ({
+//   title,
+//   data,
+//   onClick
+// }: {
+//   title: string;
+//   data: string;
+//   onClick?: () => void;
+// }) => {
+//   const cellPadding = `5px 5px 3px 3px`;
+//   const cellFont = ''; // "'Roboto Mono', monospace";
+
+//   return (
+//     <TableRow hover role="checkbox" tabIndex={-1} onClick={onClick}>
+//       <StyledTableCell
+//         align="left"
+//         style={{
+//           cursor: 'pointer',
+//           fontFamily: cellFont,
+//           padding: cellPadding
+//         }}
+//       >
+//         {title}
+//       </StyledTableCell>
+
+//       <StyledTableCell
+//         align="left"
+//         style={{
+//           cursor: 'pointer',
+//           fontFamily: cellFont,
+//           padding: cellPadding
+//         }}
+//       >
+//         {data}
+//       </StyledTableCell>
+//     </TableRow>
+//   );
+// };
+
 const TableRowWithCells = ({
   title,
-  data,
+  cellOneData,
+  cellTwoData,
+  cellThreeData,
   onClick
 }: {
   title: string;
-  data: string;
+  cellOneData: string;
+  cellTwoData?: string;
+  cellThreeData?: string;
   onClick?: () => void;
 }) => {
   const cellPadding = `5px 5px 3px 3px`;
@@ -266,7 +357,29 @@ const TableRowWithCells = ({
           padding: cellPadding
         }}
       >
-        {data}
+        {cellOneData}
+      </StyledTableCell>
+
+      <StyledTableCell
+        align="left"
+        style={{
+          cursor: 'pointer',
+          fontFamily: cellFont,
+          padding: cellPadding
+        }}
+      >
+        {cellTwoData}
+      </StyledTableCell>
+
+      <StyledTableCell
+        align="left"
+        style={{
+          cursor: 'pointer',
+          fontFamily: cellFont,
+          padding: cellPadding
+        }}
+      >
+        {cellThreeData}
       </StyledTableCell>
     </TableRow>
   );

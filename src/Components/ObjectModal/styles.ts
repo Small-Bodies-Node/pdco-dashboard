@@ -35,6 +35,9 @@ export const useStyles = makeStyles(
         opacity: '0.7'
       }
     },
+    tableContainer: {
+      marginTop: '1rem'
+    },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       mainContentContainer: {
