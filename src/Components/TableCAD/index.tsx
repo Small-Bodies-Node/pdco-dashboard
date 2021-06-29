@@ -377,6 +377,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   ? column.formatWithSigma &&
                                     column.formatWithSigma(value, row.sigma)
                                   : column.format(value)}
+
+                                {column.id === 'dist' &&
+                                  auToLd(parseFloat(row.dist)) -
+                                    auToLd(parseFloat(row.min_distance)) >
+                                    0.1 &&
+                                  '*'}
                               </span>
                             </Tooltip>
                           </StyledTableCell>
