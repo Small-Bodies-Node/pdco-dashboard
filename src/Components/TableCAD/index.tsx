@@ -379,7 +379,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   : column.format(value)}
 
                                 {column.id === 'dist' &&
-                                  auToLd(parseFloat(row.dist)) -
+                                  auToLd(parseFloat(rawRows ? rawRows[ind].dist : '0')) -
                                     auToLd(parseFloat(row.min_distance)) >
                                     0.1 &&
                                   '*'}
@@ -434,7 +434,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
       !distUnit
         ? (Math.round(parseFloat(value) * 100) / 100).toString()
         : distUnit === 3
-        ? Math.round(parseFloat(value)).toLocaleString('en-us')
+        ? Math.round(parseFloat(value)).toLocaleString('en-US')
         : value
   },
   {
