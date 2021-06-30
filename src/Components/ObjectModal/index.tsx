@@ -148,7 +148,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
         </div>
 
         <TitledCell
-          title={`${rawRow.fullname} DETAILED DATA`}
+          title={`${rawRow.fullname} DETAILED DATA ON SBDB`}
           link={getSSDUrlFromFullName(rawRow.fullname)}
           tooltip={'Detailed data for ' + rawRow.fullname}
           icon={() => <FontAwesomeIcon icon={faTable} />}
@@ -203,17 +203,9 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 <TableRowWithCells
                   title={`Size (${SizeUnits[sizeUnit]})`}
                   // Shows size from API (nominal size) or just size (which is calculated)
-                  cellOneData={convertKmTo(
-                    parseFloat(rawRow.nominal_size).toString() !== 'NaN'
-                      ? parseFloat(rawRow.nominal_size).toString()
-                      : parseFloat(rawRow.size).toString()
-                  )}
-                  cellTwoData={convertKmTo(
-                    (parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toString()
-                  )}
-                  cellThreeData={convertKmTo(
-                    (parseFloat(rawRow.size) + parseFloat(rawRow.sigma)).toString()
-                  )}
+                  cellOneData={convertKmTo(rawRow.nominal_size)}
+                  cellTwoData={convertKmTo(rawRow.minimum_size)}
+                  cellThreeData={convertKmTo(rawRow.maximum_size)}
                   onClick={incrementSizeUnit}
                 />
               </TableBody>
