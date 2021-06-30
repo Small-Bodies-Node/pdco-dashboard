@@ -54,8 +54,10 @@ interface ICol {
 export interface IRawRow {
   fullname: string;
   cd: Date;
+  cd_sigma: string;
   dist: string;
   h: string;
+  nominal_size: string;
   size: string;
   sigma: string;
 
@@ -150,8 +152,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         return {
           fullname: name,
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
+          cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
+          nominal_size: datumArr[cadFieldIndices.diameter]!,
           size: datumArr[cadFieldIndices.diameter]!,
           sigma: datumArr[cadFieldIndices.diameter_sigma]!,
           min_distance: datumArr[cadFieldIndices.dist_min]!,
@@ -221,6 +225,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             (magToSizeKm(parseFloat(rawRow.h), 0.05) - magToSizeKm(parseFloat(rawRow.h), 0.25)) /
             2
           ).toString();
+
           rawRow.size = (
             (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
             2
@@ -259,9 +264,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           fullname,
           fullname_tooltip,
           cd,
+          cd_sigma: rawRow.cd_sigma,
           cd_tooltip,
           dist,
           dist_tooltip,
+          nominal_size: rawRow.nominal_size,
           size,
           size_tooltip,
           h,

@@ -167,7 +167,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             </a>
           </div>
 
-          {/** DISTANCES TABLE */}
+          {/** DISTANCE & SIZE TABLE */}
           <TableContainer className={classes.tableContainer}>
             <Table
               stickyHeader
@@ -199,36 +199,19 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                   cellThreeData={convertAuTo(rawRow.max_distance)}
                   onClick={incrementDistanceUnit}
                 />
-              </TableBody>
-            </Table>
-          </TableContainer>
 
-          {/** SIZES TABLE */}
-          <TableContainer className={classes.tableContainer}>
-            <Table
-              stickyHeader
-              size="small"
-              aria-label="sticky table"
-              style={{ tableLayout: 'auto' }}
-            >
-              <colgroup>
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-              </colgroup>
-
-              <TableHead>
-                <TableRowWithCells title="Data Point" cellOneData="Minimum" cellTwoData="Maximum" />
-              </TableHead>
-
-              <TableBody>
                 <TableRowWithCells
                   title={`Size (${SizeUnits[sizeUnit]})`}
+                  // Shows size from API (nominal size) or just size (which is calculated)
                   cellOneData={convertKmTo(
-                    (parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toString()
+                    parseFloat(rawRow.nominal_size).toString() !== 'NaN'
+                      ? parseFloat(rawRow.nominal_size).toString()
+                      : parseFloat(rawRow.size).toString()
                   )}
                   cellTwoData={convertKmTo(
+                    (parseFloat(rawRow.size) - parseFloat(rawRow.sigma)).toString()
+                  )}
+                  cellThreeData={convertKmTo(
                     (parseFloat(rawRow.size) + parseFloat(rawRow.sigma)).toString()
                   )}
                   onClick={incrementSizeUnit}
@@ -237,7 +220,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             </Table>
           </TableContainer>
 
-          {/** H TABLE */}
+          {/** OTHER VALUES TABLE */}
           <TableContainer className={classes.tableContainer}>
             <Table
               stickyHeader
@@ -247,9 +230,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             >
               <colgroup>
                 <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
+                <col style={{ width: '75%' }} />
               </colgroup>
 
               <TableHead>
@@ -257,41 +238,25 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
               </TableHead>
 
               <TableBody>
-                <TableRowWithCells title="H (mag)" cellOneData={rawRow.h} />
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          {/** V TABLE */}
-          <TableContainer className={classes.tableContainer}>
-            <Table
-              stickyHeader
-              size="small"
-              aria-label="sticky table"
-              style={{ tableLayout: 'auto' }}
-            >
-              <colgroup>
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-              </colgroup>
-
-              <TableHead>
                 <TableRowWithCells
-                  title="Data Point"
-                  cellOneData="Relative"
-                  cellTwoData="Infinity"
+                  title="Close Approach Date"
+                  cellOneData={`${rawRow.cd.toLocaleDateString()} ${rawRow.cd.toLocaleTimeString()} ± ${
+                    rawRow.cd_sigma
+                  }`}
                 />
-              </TableHead>
 
-              <TableBody>
+                <TableRowWithCells title="H (mag)" cellOneData={rawRow.h} />
+
                 <TableRowWithCells
-                  title="Velocity (km/s)"
+                  title="V-rel (km/s)"
                   cellOneData={parseFloat(rawRow.v_rel).toLocaleString('en-US', {
                     maximumFractionDigits: 5
                   })}
-                  cellTwoData={parseFloat(rawRow.v_inf).toLocaleString('en-US', {
+                />
+
+                <TableRowWithCells
+                  title="V-inf (km/s)"
+                  cellOneData={parseFloat(rawRow.v_inf).toLocaleString('en-US', {
                     maximumFractionDigits: 5
                   })}
                 />
