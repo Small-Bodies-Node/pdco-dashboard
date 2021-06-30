@@ -58,8 +58,8 @@ export interface IRawRow {
   dist: string;
   h: string;
   nominal_size: string;
-  size: string;
-  sigma: string;
+  minimum_size: string;
+  maximum_size: string;
 
   min_distance: string;
   max_distance: string;
@@ -156,8 +156,14 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
           nominal_size: datumArr[cadFieldIndices.diameter]!,
-          size: datumArr[cadFieldIndices.diameter]!,
-          sigma: datumArr[cadFieldIndices.diameter_sigma]!,
+          minimum_size: (
+            parseFloat(datumArr[cadFieldIndices.diameter]!) -
+            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+          ).toString(),
+          maximum_size: (
+            parseFloat(datumArr[cadFieldIndices.diameter]!) +
+            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+          ).toString(),
           min_distance: datumArr[cadFieldIndices.dist_min]!,
           max_distance: datumArr[cadFieldIndices.dist_max]!,
           v_rel: datumArr[cadFieldIndices.v_rel]!,
@@ -219,42 +225,34 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             throw 'Not supposed to be possible';
         }
 
-        // Calculate size and sigma from h if there is no size from API
-        if (!rawRow.size && !rawRow.sigma) {
-          rawRow.sigma = (
-            (magToSizeKm(parseFloat(rawRow.h), 0.05) - magToSizeKm(parseFloat(rawRow.h), 0.25)) /
-            2
-          ).toString();
-
-          rawRow.size = (
+        // Calculate size from h if there is no size from API
+        if (
+          !rawRow.nominal_size &&
+          rawRow.minimum_size === 'NaN' &&
+          rawRow.maximum_size === 'NaN'
+        ) {
+          rawRow.nominal_size = (
             (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
             2
           ).toString();
+          rawRow.minimum_size = magToSizeKm(parseFloat(rawRow.h), 0.25).toString();
+          rawRow.maximum_size = magToSizeKm(parseFloat(rawRow.h), 0.05).toString();
         }
 
         // Display size as different formats depending on unit selected
-        let size: string; // rawRow.size is in km by default
+        let minimum_size: string; // rawRow.size is in km by default
+        let maximum_size: string; // rawRow.size is in km by default
         let size_tooltip: string;
         switch (sizeUnit) {
           case 0: // m selected
-            size = (parseFloat(rawRow.size) * 1000).toFixed(2);
-            size_tooltip = `${rawRow.size}`;
+            minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
+            maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
+            size_tooltip = `${rawRow.nominal_size}`;
             break;
           case 1: // ft selected
-            size = kmToFt(parseFloat(rawRow.size)).toFixed(3);
-            size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
-            break;
-          default:
-            throw 'Not supposed to be possible';
-        }
-
-        let sigma: string; // rawRow.sigma is in km by default
-        switch (sizeUnit) {
-          case 0: // m selected
-            sigma = (parseFloat(rawRow.sigma) * 1000).toFixed(2);
-            break;
-          case 1: // ft selected
-            sigma = kmToFt(parseFloat(rawRow.sigma)).toFixed(3);
+            minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
+            maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
+            size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
             break;
           default:
             throw 'Not supposed to be possible';
@@ -269,11 +267,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           dist,
           dist_tooltip,
           nominal_size: rawRow.nominal_size,
-          size,
+          minimum_size,
+          maximum_size,
           size_tooltip,
           h,
           h_tooltip,
-          sigma,
           min_distance: rawRow.min_distance,
           max_distance: rawRow.max_distance,
           v_rel: rawRow.v_rel,
@@ -378,11 +376,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   overflow: 'hidden'
                                 }}
                               >
-                                {column.id === 'size' && (value === '0' || value == 'NaN')
-                                  ? '-'
-                                  : column.id === 'size' && parseInt(row.sigma) != 0
-                                  ? column.formatWithSigma &&
-                                    column.formatWithSigma(value, row.sigma)
+                                {column.id === 'size'
+                                  ? `${column.format(row.minimum_size)} - ${column.format(
+                                      row.maximum_size
+                                    )}`
                                   : column.format(value)}
 
                                 {column.id === 'dist' &&
