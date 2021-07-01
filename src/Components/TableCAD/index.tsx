@@ -55,12 +55,12 @@ export interface IRawRow {
   fullname: string;
   cd: Date;
   cd_sigma: string;
-  dist: string;
   h: string;
   nominal_size: string;
   minimum_size: string;
   maximum_size: string;
 
+  dist: string;
   min_distance: string;
   max_distance: string;
 
@@ -153,7 +153,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           fullname: name,
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
-          dist: datumArr[cadFieldIndices.dist]!,
           h: datumArr[cadFieldIndices.h]!,
           nominal_size: datumArr[cadFieldIndices.diameter]!,
           minimum_size: (
@@ -164,6 +163,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             parseFloat(datumArr[cadFieldIndices.diameter]!) +
             parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
           ).toString(),
+          dist: datumArr[cadFieldIndices.dist]!,
           min_distance: datumArr[cadFieldIndices.dist_min]!,
           max_distance: datumArr[cadFieldIndices.dist_max]!,
           v_rel: datumArr[cadFieldIndices.v_rel]!,

@@ -35,14 +35,14 @@ const rawRowKeyNames: IRawRowKeyNames = {
   fullname: 'Name',
   cd: 'Close Approach Date/Time',
   cd_sigma: 'Close Approach Date/Time Uncertainty',
-  dist: 'Nominal Distance (au)',
+  dist: 'Nominal Distance',
   h: 'H (mag)',
-  nominal_size: 'Nominal Size (km)',
-  minimum_size: 'Minimum Size (km)',
-  maximum_size: 'Maximum Size (km)',
+  nominal_size: 'Nominal Size',
+  minimum_size: 'Minimum Size',
+  maximum_size: 'Maximum Size',
 
-  min_distance: 'Minimum Distance (au)',
-  max_distance: 'Maximum Distance (au)',
+  min_distance: 'Minimum Distance',
+  max_distance: 'Maximum Distance',
 
   v_rel: 'V-Relative (km/s)',
   v_inf: 'V-Infinity (km/s)'
@@ -77,9 +77,6 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   if (!isShown || !rawRow) {
     return null;
   }
-
-  const cellPadding = `5px 5px 3px 3px`;
-  const cellFont = ''; // "'Roboto Mono', monospace";
 
   const convertAuTo = (value: string): string => {
     // Display dist as different formats depending on unit selected
@@ -154,18 +151,33 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
   const downloadDataAsCSV = (): void => {
     const keysArray: string[] = [];
-    const valuesArray = [];
+    const valuesArray: string[] = [];
 
     for (const key of Object.keys(rawRow)) {
+      if (key.includes('_size')) {
+        keysArray.push((rawRowKeyNames as any)[key] + ` (${SizeUnits[sizeUnit]})`);
+        continue;
+      } else if (key.includes('dist')) {
+        keysArray.push((rawRowKeyNames as any)[key] + ` (${DistanceUnits[distanceUnit]})`);
+        continue;
+      }
       keysArray.push((rawRowKeyNames as any)[key]);
     }
-    for (const value of Object.values(rawRow)) {
+    for (const [key, value] of Object.entries(rawRow)) {
+      if (key.includes('_size')) {
+        valuesArray.push(convertKmTo(value));
+        continue;
+      } else if (key.includes('dist')) {
+        valuesArray.push(convertAuTo(value));
+        continue;
+      }
       valuesArray.push(value);
     }
 
     const rows = [keysArray, valuesArray];
 
-    const csvData = 'data:text/csv;charset=utf-8,' + rows.map((e) => e.join(',')).join('\n');
+    const csvData =
+      'data:text/csv;charset=utf-8,' + rows.map((e) => `"${e.join('","')}"`).join('\n');
 
     const encodedUri = encodeURI(csvData);
     const link = document.createElement('a');
