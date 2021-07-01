@@ -220,11 +220,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         switch (sizeUnit) {
           case 0: // m selected
             size = (parseFloat(rawRow.size) * 1000).toFixed(2);
-            size_tooltip = `${rawRow.size}`;
+            size_tooltip = `${parseFloat(rawRow.size) * 1000}`;
             break;
           case 1: // ft selected
             size = kmToFt(parseFloat(rawRow.size)).toFixed(3);
-            size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
+            size_tooltip = `${kmToFt(parseFloat(rawRow.size))}`;
             break;
           default:
             throw 'Not supposed to be possible';
