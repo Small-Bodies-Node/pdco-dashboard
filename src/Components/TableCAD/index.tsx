@@ -402,7 +402,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   {
     id: 'size',
     label: `Size (${!sizeUnit ? 'm' : 'ft'})`,
-    label_tooltip: 'Diameter derived from H with assumed albedo 0.114',
+    label_tooltip: 'Diameter from API, or average value using H of 0.25 and 0.05',
     minWidth: 0,
     align: 'left',
     format: (value: string) => value,
