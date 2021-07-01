@@ -30,6 +30,24 @@ const StyledTableCell = withStyles((theme: Theme) => ({
   }
 }))(TableCell);
 
+type IRawRowKeyNames = Omit<IRawRow, 'cd'> & { cd: string };
+const rawRowKeyNames: IRawRowKeyNames = {
+  fullname: 'Name',
+  cd: 'Close Approach Date/Time',
+  cd_sigma: 'Close Approach Date/Time Uncertainty',
+  dist: 'Nominal Distance (au)',
+  h: 'H (mag)',
+  nominal_size: 'Nominal Size (km)',
+  minimum_size: 'Minimum Size (km)',
+  maximum_size: 'Maximum Size (km)',
+
+  min_distance: 'Minimum Distance (au)',
+  max_distance: 'Maximum Distance (au)',
+
+  v_rel: 'V-Relative (km/s)',
+  v_inf: 'V-Infinity (km/s)'
+};
+
 // Types for distance (values will count up from 0)
 enum DistanceUnits {
   ld,
@@ -134,6 +152,29 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     }
   };
 
+  const downloadDataAsCSV = (): void => {
+    const keysArray: string[] = [];
+    const valuesArray = [];
+
+    for (const key of Object.keys(rawRow)) {
+      keysArray.push((rawRowKeyNames as any)[key]);
+    }
+    for (const value of Object.values(rawRow)) {
+      valuesArray.push(value);
+    }
+
+    const rows = [keysArray, valuesArray];
+
+    const csvData = 'data:text/csv;charset=utf-8,' + rows.map((e) => e.join(',')).join('\n');
+
+    const encodedUri = encodeURI(csvData);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `${rawRow.fullname.replaceAll(' ', '+')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+  };
+
   return (
     <div className={classes.backgroundContainer} onClick={() => setIsShown(false)}>
       <div className={classes.mainContentContainer} onClick={(e) => e.stopPropagation()}>
@@ -165,6 +206,13 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             >
               View on MPC
             </a>
+          </div>
+
+          {/** BUTTON TO DOWNLOAD AS CSV */}
+          <div className={classes.mpcLinkContainer}>
+            <button onClick={downloadDataAsCSV} className={classes.downloadButton}>
+              Download as CSV
+            </button>
           </div>
 
           {/** DISTANCE & SIZE TABLE */}

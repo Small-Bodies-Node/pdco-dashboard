@@ -44,7 +44,19 @@ export const useStyles = makeStyles(
     },
     mpcLink: {
       margin: '0 auto 0 0',
-      color: 'white'
+      color: 'white',
+      fontSize: '1rem'
+    },
+    downloadButton: {
+      outline: 'none',
+      border: 'none',
+      background: 'none',
+      color: 'white',
+      padding: '0',
+      margin: '0.5rem 0 0 0',
+      textDecoration: 'underline',
+      fontSize: '1rem',
+      cursor: 'pointer'
     },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
