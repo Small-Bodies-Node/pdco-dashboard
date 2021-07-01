@@ -247,12 +247,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           case 0: // m selected
             minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
             maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
-            size_tooltip = `${rawRow.nominal_size}`;
+            size_tooltip = `${parseFloat(rawRow.nominal_size) * 1000}`;
             break;
           case 1: // ft selected
             minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
             maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
-            size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
+            size_tooltip = `${kmToFt(parseFloat(rawRow.nominal_size))}`;
             break;
           default:
             throw 'Not supposed to be possible';
