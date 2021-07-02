@@ -153,28 +153,41 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     const keysArray: string[] = [];
     const valuesArray: string[] = [];
 
-    for (const key of Object.keys(rawRow)) {
-      if (key.includes('_size')) {
-        keysArray.push((rawRowKeyNames as any)[key] + ` (${SizeUnits[sizeUnit]})`);
-        continue;
-      } else if (key.includes('dist')) {
-        keysArray.push((rawRowKeyNames as any)[key] + ` (${DistanceUnits[distanceUnit]})`);
-        continue;
-      }
-      keysArray.push((rawRowKeyNames as any)[key]);
-    }
+    // for (const key of Object.keys(rawRow)) {
+    //   if (key.includes('_size')) {
+    //     keysArray.push((rawRowKeyNames as any)[key] + ` (${SizeUnits[sizeUnit]})`);
+    //     continue;
+    //   } else if (key.includes('dist')) {
+    //     keysArray.push((rawRowKeyNames as any)[key] + ` (${DistanceUnits[distanceUnit]})`);
+    //     continue;
+    //   }
+    //   keysArray.push((rawRowKeyNames as any)[key]);
+    // }
+
+    const rows: string[][] = [];
     for (const [key, value] of Object.entries(rawRow)) {
+      const tempRow: string[] = [];
+
       if (key.includes('_size')) {
-        valuesArray.push(convertKmTo(value));
-        continue;
+        tempRow.push((rawRowKeyNames as any)[key] + ` (${SizeUnits[sizeUnit]})`);
       } else if (key.includes('dist')) {
-        valuesArray.push(convertAuTo(value));
-        continue;
+        tempRow.push((rawRowKeyNames as any)[key] + ` (${DistanceUnits[distanceUnit]})`);
+      } else {
+        tempRow.push((rawRowKeyNames as any)[key]);
       }
-      valuesArray.push(value);
+
+      if (key.includes('_size')) {
+        tempRow.push(convertKmTo(value));
+      } else if (key.includes('dist')) {
+        tempRow.push(convertAuTo(value));
+      } else {
+        tempRow.push(value);
+      }
+
+      rows.push(tempRow);
     }
 
-    const rows = [keysArray, valuesArray];
+    //const rows = [keysArray, valuesArray];
 
     const csvData =
       'data:text/csv;charset=utf-8,' + rows.map((e) => `"${e.join('","')}"`).join('\n');
