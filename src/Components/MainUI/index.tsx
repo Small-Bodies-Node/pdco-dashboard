@@ -29,6 +29,7 @@ import { useInterval } from '../../Hooks/useInterval';
 import { useLocation } from 'react-router-dom';
 import { useEventListener } from '../../Hooks/useEventListener';
 import { mobileWidthPxl } from '../../Utils/constants';
+import { MoonPhase } from '../MoonPhase';
 
 export const MainUI = () => {
   // --------------------->>>
@@ -97,11 +98,19 @@ export const MainUI = () => {
       </div>
       <div className={classes.title} onClick={() => setIsSearching(true)}>
         <ErrorBoundary fallbackRender={() => <MyError />}>
-          <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
-          <div className="shortTitle">{'PDCO STATUS'}</div>
-          <div className="date">
-            <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-            <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
+          <div className={classes.titleLeft}>
+            <div className="longTitle">
+              {'Planetary Defense Coordination Office Status Summary'}
+            </div>
+            <div className="shortTitle">{'PDCO STATUS'}</div>
+            <div className="date">
+              <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
+              <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
+            </div>
+          </div>
+
+          <div className={classes.titleRight}>
+            <MoonPhase />
           </div>
         </ErrorBoundary>
       </div>
