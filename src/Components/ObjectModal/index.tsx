@@ -53,12 +53,14 @@ enum DistanceUnits {
   ld,
   km,
   au,
-  mi
+  mi,
+  __LENGTH
 }
 
 enum SizeUnits {
   m,
-  ft
+  ft,
+  __LENGTH
 }
 
 interface IProps {
@@ -120,11 +122,11 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   };
 
   const incrementDistanceUnit = () => {
-    setDistanceUnit((distanceUnit + 1) % (Object.keys(DistanceUnits).length / 2));
+    setDistanceUnit((distanceUnit + 1) % DistanceUnits.__LENGTH);
   };
 
   const incrementSizeUnit = () => {
-    setSizeUnit((sizeUnit + 1) % (Object.keys(SizeUnits).length / 2));
+    setSizeUnit((sizeUnit + 1) % SizeUnits.__LENGTH);
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
@@ -163,11 +165,11 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
       }
 
       if (key.includes('_size')) {
-        tempRow.push(convertKmTo(value));
+        tempRow.push(convertKmTo(value as string));
       } else if (key.includes('dist')) {
-        tempRow.push(convertAuTo(value));
+        tempRow.push(convertAuTo(value as string));
       } else {
-        tempRow.push(value);
+        tempRow.push(value as string);
       }
 
       rows.push(tempRow);
