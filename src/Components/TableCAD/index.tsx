@@ -220,11 +220,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         switch (sizeUnit) {
           case 0: // m selected
             size = (parseFloat(rawRow.size) * 1000).toFixed(2);
-            size_tooltip = `${rawRow.size}`;
+            size_tooltip = `${parseFloat(rawRow.size) * 1000}`;
             break;
           case 1: // ft selected
             size = kmToFt(parseFloat(rawRow.size)).toFixed(3);
-            size_tooltip = `${kmToLd(parseFloat(rawRow.size))}`;
+            size_tooltip = `${kmToFt(parseFloat(rawRow.size))}`;
             break;
           default:
             throw 'Not supposed to be possible';
@@ -400,7 +400,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   {
     id: 'size',
     label: `Size (${!sizeUnit ? 'm' : 'ft'})`,
-    label_tooltip: 'Diameter derived from H with assumed albedo 0.114',
+    label_tooltip: 'Diameter from API, or average value using H of 0.25 and 0.05',
     minWidth: 0,
     align: 'left',
     format: (value: string) => value,
