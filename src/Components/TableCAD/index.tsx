@@ -339,9 +339,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   overflow: 'hidden'
                                 }}
                               >
-                                {column.id === 'size' && (value === '0' || value == 'NaN')
-                                  ? '-'
-                                  : column.id === 'size' && parseInt(row.sigma) != 0
+                                {column.id === 'size'
                                   ? column.formatWithSigma &&
                                     column.formatWithSigma(value, row.sigma)
                                   : column.format(value)}
