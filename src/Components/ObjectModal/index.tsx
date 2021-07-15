@@ -200,7 +200,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
         </div>
 
         <TitledCell
-          title={`${rawRow.fullname} DETAILED DATA ON SBDB`}
+          title={`${rawRow.fullname} - DETAILED DATA ON SBDB`}
           link={getSSDUrlFromFullName(rawRow.fullname)}
           tooltip={'Detailed data for ' + rawRow.fullname}
           icon={() => <FontAwesomeIcon icon={faTable} />}
