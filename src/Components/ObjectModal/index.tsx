@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faTable } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faTable, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -207,23 +207,37 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           isDisplayed={true}
           isHeightAuto={true}
         >
-          {/** LINK TO MPC SITE */}
-          <div className={classes.mpcLinkContainer}>
-            <a
-              href={getMPCUrlFromFullName(rawRow.fullname)}
-              className={classes.mpcLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on MPC
-            </a>
-          </div>
+          <div className={classes.rowContainer}>
+            {/** LINK TO SBDB SITE WITH ORBIT DIAGRAM */}
+            <div className={classes.linkContainer}>
+              <a
+                href={getSSDUrlFromFullName(rawRow.fullname) + ';orb=1;cov=0;log=0;cad=0#orb'}
+                className={classes.mpcLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Orbit Diagram
+              </a>
+            </div>
 
-          {/** BUTTON TO DOWNLOAD AS CSV */}
-          <div className={classes.mpcLinkContainer}>
-            <button onClick={downloadDataAsCSV} className={classes.downloadButton}>
-              Download as CSV
-            </button>
+            {/** LINK TO MPC SITE */}
+            <div className={classes.linkContainer}>
+              <a
+                href={getMPCUrlFromFullName(rawRow.fullname)}
+                className={classes.mpcLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on MPC
+              </a>
+            </div>
+
+            {/** BUTTON TO DOWNLOAD AS CSV */}
+            <div className={classes.linkContainer} onClick={downloadDataAsCSV}>
+              <FontAwesomeIcon icon={faDownload} size="sm" />
+
+              <p style={{ marginLeft: '9px' }}>CSV</p>
+            </div>
           </div>
 
           {/** DISTANCE & SIZE TABLE */}
