@@ -98,19 +98,11 @@ export const MainUI = () => {
       </div>
       <div className={classes.title} onClick={() => setIsSearching(true)}>
         <ErrorBoundary fallbackRender={() => <MyError />}>
-          <div className={classes.titleLeft}>
-            <div className="longTitle">
-              {'Planetary Defense Coordination Office Status Summary'}
-            </div>
-            <div className="shortTitle">{'PDCO STATUS'}</div>
-            <div className="date">
-              <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-              <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
-            </div>
-          </div>
-
-          <div className={classes.titleRight}>
-            <MoonPhase />
+          <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
+          <div className="shortTitle">{'PDCO STATUS'}</div>
+          <div className="date">
+            <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
+            <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
           </div>
         </ErrorBoundary>
       </div>

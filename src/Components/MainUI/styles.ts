@@ -92,7 +92,7 @@ export const useStyles = makeStyles(
       //
       display: 'flex',
       position: 'relative',
-      flexDirection: 'row',
+      flexDirection: 'column',
       '& div': {
         paddingBottom: 2
       },
@@ -104,20 +104,6 @@ export const useStyles = makeStyles(
       '& .date': {
         fontSize: 12
       }
-    },
-    titleLeft: {
-      margin: '0 auto 0 2rem',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      textAlign: 'left'
-    },
-    titleRight: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-      justifyContent: 'center',
-      margin: '0 2rem 0 auto'
     },
     clocks: {
       gridArea: 'clocks',
@@ -165,12 +151,6 @@ export const useStyles = makeStyles(
         '& .longTitle': {
           display: 'none'
         }
-      },
-      titleLeft: {
-        marginLeft: '0.5rem'
-      },
-      titleRight: {
-        marginRight: '0.5rem'
       }
     }
   }),
