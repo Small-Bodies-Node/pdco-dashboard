@@ -23,8 +23,7 @@ export const MoonPhase = () => {
   // Use calculations from https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
   useEffect(() => {
     // Get JD
-    // '17 July 2021 00:12:00 PDT'
-    const date = new Date('9 Aug 2021 00:12:00 PDT');
+    const date = new Date();
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     const day = date.getDate();
@@ -88,7 +87,7 @@ export const MoonPhase = () => {
 
   return (
     <div className={classes.container}>
-      <p className={classes.moonPhaseText}>{moonPhaseEmoji}</p>
+      <p className={classes.moonPhaseEmoji}>{moonPhaseEmoji}</p>
 
       <p className={classes.moonPhaseText}>{moonPhase}</p>
 
