@@ -8,7 +8,8 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo
+  faRedo,
+  faMoon
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
@@ -29,6 +30,7 @@ import { useInterval } from '../../Hooks/useInterval';
 import { useLocation } from 'react-router-dom';
 import { useEventListener } from '../../Hooks/useEventListener';
 import { mobileWidthPxl } from '../../Utils/constants';
+import { MoonPhase } from '../MoonPhase';
 
 export const MainUI = () => {
   // --------------------->>>
@@ -132,6 +134,16 @@ export const MainUI = () => {
           isDisplayed={isDisplayed}
         >
           {!!storedData && <Sentry sentryData={storedData.sentryData} />}
+        </TitledCell>
+      </div>
+      <div className={classes.moonPhase}>
+        <TitledCell
+          title="MOON PHASE"
+          tooltip=""
+          icon={() => <FontAwesomeIcon icon={faMoon} />}
+          isDisplayed={isDisplayed}
+        >
+          <MoonPhase />
         </TitledCell>
       </div>
       <div className={classes.programs}>
