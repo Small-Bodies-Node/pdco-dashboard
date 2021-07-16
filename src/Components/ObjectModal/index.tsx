@@ -291,9 +291,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
               <TableBody>
                 <TableRowWithCells
                   title="Close Approach Date"
-                  cellOneData={`${rawRow.cd.toLocaleDateString()} ${rawRow.cd.toLocaleTimeString()} ± ${
-                    rawRow.cd_sigma
-                  }`}
+                  cellOneData={`${rawRow.cd.toUTCString()} ± ${rawRow.cd_sigma}`}
                 />
 
                 <TableRowWithCells title="H (mag)" cellOneData={rawRow.h} />
