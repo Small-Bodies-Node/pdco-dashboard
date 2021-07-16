@@ -435,7 +435,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   },
   {
     id: 'dist',
-    label: `Dist (${!distUnit ? 'ld' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
+    label: `Dist (${!distUnit ? 'LD' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
