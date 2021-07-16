@@ -50,7 +50,7 @@ const rawRowKeyNames: IRawRowKeyNames = {
 
 // Types for distance (values will count up from 0)
 enum DistanceUnits {
-  ld,
+  LD,
   km,
   au,
   mi,
@@ -73,7 +73,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   const classes = useStyles();
 
   // State
-  const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.ld);
+  const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.LD);
   const [sizeUnit, setSizeUnit] = useState<number>(SizeUnits.m);
 
   if (!isShown || !rawRow) {
@@ -85,7 +85,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     let dist: string; // rawRow.dist is in au by default
 
     switch (distanceUnit) {
-      case DistanceUnits.ld: // ld selected
+      case DistanceUnits.LD: // ld selected
         dist = auToLd(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 5 });
         break;
       case DistanceUnits.km: // km selected
