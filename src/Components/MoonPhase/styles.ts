@@ -9,21 +9,26 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  moonPhaseEmoji: {
+    fontSize: 24,
+    margin: 0
+  },
   moonPhaseText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 600,
     margin: '6px 0 0 0'
   },
   moonCycleText: {
-    fontSize: 14,
+    fontSize: 16,
     color: 'rgba(255, 255, 255, 0.6)',
     margin: 0
   },
   [`@media (max-width: ${mobileWidthPxl}px)`]: {
     moonPhaseText: {
-      fontSize: 13
+      fontSize: 16
     },
     moonCycleText: {
-      fontSize: 11
+      fontSize: 14
     }
   }
 }));

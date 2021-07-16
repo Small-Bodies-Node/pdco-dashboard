@@ -8,7 +8,8 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo
+  faRedo,
+  faMoon
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
@@ -133,6 +134,16 @@ export const MainUI = () => {
           isDisplayed={isDisplayed}
         >
           {!!storedData && <Sentry sentryData={storedData.sentryData} />}
+        </TitledCell>
+      </div>
+      <div className={classes.moonPhase}>
+        <TitledCell
+          title="MOON PHASE"
+          tooltip=""
+          icon={() => <FontAwesomeIcon icon={faMoon} />}
+          isDisplayed={isDisplayed}
+        >
+          <MoonPhase />
         </TitledCell>
       </div>
       <div className={classes.programs}>
