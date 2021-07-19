@@ -24,9 +24,9 @@ export const MoonPhase = () => {
   useEffect(() => {
     // Get JD
     const date = new Date();
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    const day = date.getDate();
+    let year = date.getUTCFullYear();
+    let month = date.getUTCMonth() + 1;
+    const day = date.getUTCDate();
 
     if (month <= 2) {
       year -= 1;
@@ -51,28 +51,33 @@ export const MoonPhase = () => {
     moonCycle = parseFloat(moonCycle.toFixed(2));
     console.log('cycle: ', moonCycle);
 
-    if (moonCycle < 0.5) {
+    const progress = moonCycle / 29.53;
+    console.log('progress: ' + moonCycle / 29.53);
+
+    console.log(`test: ${0.5 - 0.5 * Math.cos((2 * Math.PI * moonCycle) / 29.53)}`);
+
+    if (progress < 0.05) {
       moonPhaseType = EMoonPhaseTypes.New;
       moonPhaseEmoji = '🌑';
-    } else if (moonCycle < 7) {
-      moonPhaseType = EMoonPhaseTypes.WaningCrescent;
+    } else if (progress < 0.25) {
+      moonPhaseType = EMoonPhaseTypes.WaxingCrescent;
       moonPhaseEmoji = '🌘';
-    } else if (moonCycle < 11) {
+    } else if (progress === 0.25) {
       moonPhaseType = EMoonPhaseTypes.FirstQuarter;
       moonPhaseEmoji = '🌗';
-    } else if (moonCycle < 14.5) {
-      moonPhaseType = EMoonPhaseTypes.WaningGibbous;
+    } else if (progress < 0.5) {
+      moonPhaseType = EMoonPhaseTypes.WaxingGibbous;
       moonPhaseEmoji = '🌖';
-    } else if (moonCycle < 15.5) {
+    } else if (progress === 0.5) {
       moonPhaseType = EMoonPhaseTypes.Full;
       moonPhaseEmoji = '🌕';
-    } else if (moonCycle < 22) {
-      moonPhaseType = EMoonPhaseTypes.WaxingGibbous;
+    } else if (progress < 0.75) {
+      moonPhaseType = EMoonPhaseTypes.WaningGibbous;
       moonPhaseEmoji = '🌔';
-    } else if (moonCycle < 25.75) {
+    } else if (progress === 0.75) {
       moonPhaseType = EMoonPhaseTypes.ThirdQuarter;
       moonPhaseEmoji = '🌓';
-    } else if (moonCycle < 29) {
+    } else if (progress < 1) {
       moonPhaseType = EMoonPhaseTypes.WaxingCrescent;
       moonPhaseEmoji = '🌒';
     } else {
@@ -92,7 +97,7 @@ export const MoonPhase = () => {
       <p className={classes.moonPhaseText}>{moonPhase}</p>
 
       <p className={classes.moonCycleText}>{`${(
-        ((parseInt(moonCycle.toFixed(2)) <= 14.75 ? moonCycle : 29.5 - moonCycle) / 14.75) *
+        ((parseInt(moonCycle.toFixed(2)) <= 14.75 ? moonCycle : 29.53 - moonCycle) / 14.75) *
         100
       ).toFixed(1)}%`}</p>
     </div>
