@@ -200,7 +200,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
         </div>
 
         <TitledCell
-          title={`${rawRow.fullname} - DETAILED DATA ON SBDB`}
+          title={rawRow.fullname}
           link={getSSDUrlFromFullName(rawRow.fullname)}
           tooltip={'Detailed data for ' + rawRow.fullname}
           icon={() => <FontAwesomeIcon icon={faTable} />}
@@ -208,6 +208,18 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           isHeightAuto={true}
         >
           <div className={classes.rowContainer}>
+            {/** LINK TO SBDB SITE */}
+            <div className={classes.linkContainer}>
+              <a
+                href={getSSDUrlFromFullName(rawRow.fullname)}
+                className={classes.mpcLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View SBDB Data
+              </a>
+            </div>
+
             {/** LINK TO SBDB SITE WITH ORBIT DIAGRAM */}
             <div className={classes.linkContainer}>
               <a
@@ -229,6 +241,18 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 rel="noopener noreferrer"
               >
                 View on MPC
+              </a>
+            </div>
+
+            {/** LINK TO CNEOS CA PAGE */}
+            <div className={classes.linkContainer}>
+              <a
+                href="https://cneos.jpl.nasa.gov/ca/"
+                className={classes.mpcLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View CNEOS CA
               </a>
             </div>
 

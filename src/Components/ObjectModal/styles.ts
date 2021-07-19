@@ -42,9 +42,9 @@ export const useStyles = makeStyles(
     rowContainer: {
       display: 'flex',
       flexDirection: 'row',
+      flexWrap: 'wrap',
       alignItems: 'center',
       justifyContent: 'center',
-      margin: '0.5rem 0 0 0',
 
       '& button, a, p': {
         outline: 'none',
@@ -64,7 +64,7 @@ export const useStyles = makeStyles(
       borderRadius: '0.4rem',
 
       padding: '0.35rem',
-      margin: '0 0.35rem',
+      margin: '0 0.35rem 0.75rem 0.35rem',
 
       transition: 'ease-in-out 0.12s',
 
