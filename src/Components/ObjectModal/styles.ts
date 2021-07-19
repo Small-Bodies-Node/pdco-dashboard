@@ -39,13 +39,44 @@ export const useStyles = makeStyles(
     tableContainer: {
       marginTop: '1rem'
     },
-    mpcLinkContainer: {
-      display: 'flex'
+    rowContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      justifyContent: 'center',
+
+      '& button, a, p': {
+        outline: 'none',
+        border: 'none',
+        textDecoration: 'none',
+        margin: 0,
+        padding: 0,
+        fontSize: '0.9rem'
+      }
+    },
+    linkContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+
+      border: 'solid 1px white',
+      borderRadius: '0.4rem',
+
+      padding: '0.35rem',
+      margin: '0 0.35rem 0.75rem 0.35rem',
+
+      transition: 'ease-in-out 0.12s',
+
+      cursor: 'pointer',
+
+      '&:hover': {
+        backgroundColor: '#333A61'
+      }
     },
     mpcLink: {
-      margin: '0 auto 0 0',
-      color: 'white',
-      fontSize: '1rem'
+      margin: '0',
+      color: 'white'
     },
     downloadButton: {
       outline: 'none',
@@ -53,9 +84,7 @@ export const useStyles = makeStyles(
       background: 'none',
       color: 'white',
       padding: '0',
-      margin: '0.5rem 0 0 0',
-      textDecoration: 'underline',
-      fontSize: '1rem',
+      margin: '0',
       cursor: 'pointer'
     },
 
