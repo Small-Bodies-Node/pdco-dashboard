@@ -26,7 +26,7 @@ const gridTemplateRowsMobile = `
   minmax(0px,180px)
   minmax(100px,auto)
   minmax(100px,auto)
-  minmax(130px,auto)
+  minmax(175px,auto)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
@@ -55,7 +55,7 @@ export const useStyles = makeStyles(
       width: '100vw',
       height: '100vh',
       minHeight: 650,
-      overflowY: 'scroll',
+      overflowY: 'auto',
       display: 'grid',
       gridTemplateRows,
       gridTemplateColumns,
