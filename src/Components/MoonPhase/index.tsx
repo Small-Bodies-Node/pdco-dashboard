@@ -34,6 +34,7 @@ export const MoonPhase = () => {
     fetch(url)
       .then((res) => res.text())
       .then((data) => {
+        // Get and clean data between markers
         const dataLines = data
           .substring(data.indexOf('$$SOE') + 1, data.indexOf('$$EOE'))
           .split(/\r?\n/);
@@ -54,6 +55,7 @@ export const MoonPhase = () => {
           return dataArray;
         });
 
+        // If illumination percent is increasing, set to waxing
         if (
           parseFloat(moonResultRows[moonResultRows.length - 1][3]) >
           parseFloat(moonResultRows[0][3])
@@ -62,46 +64,45 @@ export const MoonPhase = () => {
         }
 
         return {
-          progress: todayIllumination / 100.0,
+          illuminated: todayIllumination / 100.0,
           waningOrWaxing: waningOrWaxing
         };
       })
       .then((result) => {
-        //const progress = result.progress;
-        const progress = result.progress;
+        const illuminated = result.illuminated;
 
         let moonPhaseType;
 
-        // INNACURATE, NEED TO UPDATE
-        if (progress < 0.02) {
+        // Set moonPhaseType depending on illumination and waxing/waning
+        if (illuminated < 0.02) {
           moonPhaseType = EMoonPhaseTypes.New;
-        } else if (progress < 0.48) {
+        } else if (illuminated < 0.48) {
           moonPhaseType =
             result.waningOrWaxing === 'Waxing'
               ? EMoonPhaseTypes.WaxingCrescent
               : EMoonPhaseTypes.WaningCrescent;
-        } else if (progress < 0.52) {
+        } else if (illuminated < 0.52) {
           moonPhaseType =
             result.waningOrWaxing === 'Waxing'
               ? EMoonPhaseTypes.FirstQuarter
               : EMoonPhaseTypes.ThirdQuarter;
-        } else if (progress < 0.99) {
+        } else if (illuminated < 0.99) {
           moonPhaseType =
             result.waningOrWaxing === 'Waxing'
               ? EMoonPhaseTypes.WaxingGibbous
               : EMoonPhaseTypes.WaningGibbous;
-        } else if (progress < 1) {
+        } else if (illuminated < 1) {
           moonPhaseType = EMoonPhaseTypes.Full;
         } else {
           moonPhaseType = EMoonPhaseTypes.New;
         }
 
-        setMoonCyclePercent(result.progress);
+        setMoonCyclePercent(result.illuminated);
         setMoonPhase(moonPhaseType);
       });
   }, []);
 
-  // Uses formula from NASA site to generate number and URL for moon phase image
+  // Generated image path from current moon phase text
   const getMoonImageURL = (): string => {
     const baseImageURL = 'images/moons/';
     return baseImageURL + moonPhase.replaceAll(' ', '') + '.jpg';
