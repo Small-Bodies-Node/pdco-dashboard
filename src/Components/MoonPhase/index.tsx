@@ -16,9 +16,8 @@ enum EMoonPhaseTypes {
 export const MoonPhase = () => {
   const classes = useStyles();
 
-  const [moonCycle, setMoonCycle] = useState(0);
+  const [moonCyclePercent, setMoonCyclePercent] = useState(0);
   const [moonPhase, setMoonPhase] = useState('');
-  const [moonPhaseEmoji, setMoonPhaseEmoji] = useState('');
 
   // Use calculations from https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
   useEffect(() => {
@@ -28,78 +27,93 @@ export const MoonPhase = () => {
     let month = date.getUTCMonth() + 1;
     const day = date.getUTCDate();
 
-    if (month <= 2) {
-      year -= 1;
-      month += 12;
-    }
+    const url = `https://ssd.jpl.nasa.gov/horizons_batch.cgi?batch=1&COMMAND='301'&MAKE_EPHEM='YES'&TABLE_TYPE='OBSERVER'&START_TIME='${year}-${month}-${day}'&STOP_TIME='${year}-${month}-${
+      day + 1
+    }'&STEP_SIZE='1%20h'&QUANTITIES='10'`;
 
-    const a = Math.floor(year / 100);
-    const b = Math.floor(a / 4);
-    const c = 2 - a + b;
-    const e = Math.floor(365.25 * (year + 4716));
-    const f = Math.floor(30.6001 * (month + 1));
+    fetch(url)
+      .then((res) => res.text())
+      .then((data) => {
+        const dataLines = data
+          .substring(data.indexOf('$$SOE') + 1, data.indexOf('$$EOE'))
+          .split(/\r?\n/);
+        dataLines.shift();
+        dataLines.pop();
 
-    const JD = c + day + e + f - 1524.5;
-    const daysSinceNew = JD - 2451549.5;
+        let waningOrWaxing: 'Waning' | 'Waxing' = 'Waning';
 
-    const newMoons = daysSinceNew / 29.53;
+        let todayIllumination = 0;
+        const moonResultRows = dataLines.map((item) => {
+          const dataArray = item.split(/\s+/);
 
-    let moonCycle = (newMoons % 1) * 29.53;
+          // If illumination value is greater than currently stored value, update it
+          if (parseFloat(dataArray[3]) > todayIllumination) {
+            todayIllumination = parseFloat(dataArray[3]);
+          }
 
-    let moonPhaseType: EMoonPhaseTypes;
-    let moonPhaseEmoji: string = '';
-    moonCycle = parseFloat(moonCycle.toFixed(2));
-    console.log('cycle: ', moonCycle);
+          return dataArray;
+        });
 
-    const progress = moonCycle / 29.53;
-    console.log('progress: ' + moonCycle / 29.53);
+        if (
+          parseFloat(moonResultRows[moonResultRows.length - 1][3]) >
+          parseFloat(moonResultRows[0][3])
+        ) {
+          waningOrWaxing = 'Waxing';
+        }
 
-    console.log(`test: ${0.5 - 0.5 * Math.cos((2 * Math.PI * moonCycle) / 29.53)}`);
+        return {
+          progress: todayIllumination / 100.0,
+          waningOrWaxing: waningOrWaxing
+        };
+      })
+      .then((result) => {
+        //const progress = result.progress;
+        const progress = result.progress;
 
-    if (progress < 0.05) {
-      moonPhaseType = EMoonPhaseTypes.New;
-      moonPhaseEmoji = '🌑';
-    } else if (progress < 0.25) {
-      moonPhaseType = EMoonPhaseTypes.WaxingCrescent;
-      moonPhaseEmoji = '🌘';
-    } else if (progress === 0.25) {
-      moonPhaseType = EMoonPhaseTypes.FirstQuarter;
-      moonPhaseEmoji = '🌗';
-    } else if (progress < 0.5) {
-      moonPhaseType = EMoonPhaseTypes.WaxingGibbous;
-      moonPhaseEmoji = '🌖';
-    } else if (progress === 0.5) {
-      moonPhaseType = EMoonPhaseTypes.Full;
-      moonPhaseEmoji = '🌕';
-    } else if (progress < 0.75) {
-      moonPhaseType = EMoonPhaseTypes.WaningGibbous;
-      moonPhaseEmoji = '🌔';
-    } else if (progress === 0.75) {
-      moonPhaseType = EMoonPhaseTypes.ThirdQuarter;
-      moonPhaseEmoji = '🌓';
-    } else if (progress < 1) {
-      moonPhaseType = EMoonPhaseTypes.WaxingCrescent;
-      moonPhaseEmoji = '🌒';
-    } else {
-      moonPhaseType = EMoonPhaseTypes.New;
-      moonPhaseEmoji = '🌑';
-    }
+        let moonPhaseType;
 
-    setMoonCycle(moonCycle);
-    setMoonPhase(moonPhaseType);
-    setMoonPhaseEmoji(moonPhaseEmoji);
-  }, [moonPhase]);
+        // INNACURATE, NEED TO UPDATE
+        if (progress < 0.02) {
+          moonPhaseType = EMoonPhaseTypes.New;
+        } else if (progress < 0.48) {
+          moonPhaseType =
+            result.waningOrWaxing === 'Waxing'
+              ? EMoonPhaseTypes.WaxingCrescent
+              : EMoonPhaseTypes.WaningCrescent;
+        } else if (progress < 0.52) {
+          moonPhaseType =
+            result.waningOrWaxing === 'Waxing'
+              ? EMoonPhaseTypes.FirstQuarter
+              : EMoonPhaseTypes.ThirdQuarter;
+        } else if (progress < 0.99) {
+          moonPhaseType =
+            result.waningOrWaxing === 'Waxing'
+              ? EMoonPhaseTypes.WaxingGibbous
+              : EMoonPhaseTypes.WaningGibbous;
+        } else if (progress < 1) {
+          moonPhaseType = EMoonPhaseTypes.Full;
+        } else {
+          moonPhaseType = EMoonPhaseTypes.New;
+        }
+
+        setMoonCyclePercent(result.progress);
+        setMoonPhase(moonPhaseType);
+      });
+  }, []);
+
+  // Uses formula from NASA site to generate number and URL for moon phase image
+  const getMoonImageURL = (): string => {
+    const baseImageURL = 'images/moons/';
+    return baseImageURL + moonPhase.replaceAll(' ', '') + '.jpg';
+  };
 
   return (
     <div className={classes.container}>
-      <p className={classes.moonPhaseEmoji}>{moonPhaseEmoji}</p>
+      <img className={classes.moonImage} src={getMoonImageURL()} alt="Moon phase" />
 
-      <p className={classes.moonPhaseText}>{moonPhase}</p>
+      {<p className={classes.moonPhaseText}>{moonPhase}</p>}
 
-      <p className={classes.moonCycleText}>{`${(
-        ((parseInt(moonCycle.toFixed(2)) <= 14.75 ? moonCycle : 29.53 - moonCycle) / 14.75) *
-        100
-      ).toFixed(1)}%`}</p>
+      <p className={classes.moonCycleText}>{`${(moonCyclePercent * 100).toFixed(1)}%`}</p>
     </div>
   );
 };
