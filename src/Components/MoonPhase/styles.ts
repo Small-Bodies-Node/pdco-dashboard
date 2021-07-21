@@ -7,11 +7,13 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: '100%'
   },
-  moonPhaseEmoji: {
-    fontSize: 24,
-    margin: 0
+  moonImage: {
+    width: '60%',
+    borderRadius: '50%',
+    marginBottom: '1rem'
   },
   moonPhaseText: {
     fontSize: 18,
@@ -24,6 +26,11 @@ export const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   [`@media (max-width: ${mobileWidthPxl}px)`]: {
+    moonImage: {
+      width: 'auto',
+      height: '50%',
+      marginBottom: '0.5rem'
+    },
     moonPhaseText: {
       fontSize: 16
     },
