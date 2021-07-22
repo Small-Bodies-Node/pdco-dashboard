@@ -56,3 +56,5 @@ export const oneAuEqualsThisManyMi = 92_955_807;
 export const oneKmEqualsThisManyFt = 3280.84;
 export const secsInDay = 60 * 60 * 24;
 export const geoDistanceAu = kmToAu(42000);
+
+export const earthMeanRadiusKm = 6371;

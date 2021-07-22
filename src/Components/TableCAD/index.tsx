@@ -347,6 +347,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                       role="checkbox"
                       tabIndex={-1}
                       key={ind}
+                      className={
+                        rawRows && auToKm(parseFloat(rawRows[ind]?.min_distance)) < 42164
+                          ? classes.tableRowHighlighted
+                          : undefined
+                      }
                       onClick={() => {
                         setIsObjectModalShown(true);
                         unchangedRawRows && setSelectedRawRow(unchangedRawRows[ind]);

@@ -15,7 +15,8 @@ import { TitledCell } from '../TitledCell';
 import { useStyles } from './styles';
 import { IRawRow } from '../TableCAD/index';
 import { Theme, withStyles } from '@material-ui/core';
-import { auToKm, auToLd, auToMi, kmToFt } from '../../Utils/conversionFormulae';
+import { auToKm, auToLd, auToMi, kmToAu, kmToFt } from '../../Utils/conversionFormulae';
+import { earthMeanRadiusKm } from '../../Utils/constants';
 
 // See: https://material-ui.com/components/tables/#CustomizedTables.tsx
 const StyledTableCell = withStyles((theme: Theme) => ({
@@ -63,6 +64,12 @@ enum SizeUnits {
   __LENGTH
 }
 
+enum SurfaceDistanceUnits {
+  km,
+  mi,
+  __LENGTH
+}
+
 interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
@@ -75,6 +82,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   // State
   const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.LD);
   const [sizeUnit, setSizeUnit] = useState<number>(SizeUnits.m);
+  const [surfaceDistance, setSurfaceDistance] = useState<number>(SurfaceDistanceUnits.km);
 
   if (!isShown || !rawRow) {
     return null;
@@ -121,12 +129,37 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     return size;
   };
 
+  const convertSurfaceDistanceAu = (value: string): string => {
+    let dist: string;
+
+    switch (surfaceDistance) {
+      case SurfaceDistanceUnits.km:
+        dist = (auToKm(parseFloat(value)) - earthMeanRadiusKm).toLocaleString('en-US', {
+          maximumFractionDigits: 2
+        });
+        break;
+      case SurfaceDistanceUnits.mi:
+        dist = auToMi(parseFloat(value) - kmToAu(earthMeanRadiusKm)).toLocaleString('en-US', {
+          maximumFractionDigits: 2
+        });
+        break;
+      default:
+        throw 'Not supposed to be possible';
+    }
+
+    return dist;
+  };
+
   const incrementDistanceUnit = () => {
     setDistanceUnit((distanceUnit + 1) % DistanceUnits.__LENGTH);
   };
 
   const incrementSizeUnit = () => {
     setSizeUnit((sizeUnit + 1) % SizeUnits.__LENGTH);
+  };
+
+  const incrementSurfaceDistUnit = () => {
+    setSurfaceDistance((surfaceDistance + 1) % SurfaceDistanceUnits.__LENGTH);
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
@@ -299,11 +332,25 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
                 <TableRowWithCells
                   title={`Size (${SizeUnits[sizeUnit]})`}
-                  // Shows size from API (nominal size) or just size (which is calculated)
+                  // Shows sizes from API (nominal, min, and max sizes)
                   cellOneData={convertKmTo(rawRow.nominal_size)}
                   cellTwoData={convertKmTo(rawRow.minimum_size)}
                   cellThreeData={convertKmTo(rawRow.maximum_size)}
                   onClick={incrementSizeUnit}
+                />
+
+                <TableRowWithCells
+                  title={
+                    <span>
+                      Distance - R<sub>E</sub> ({SurfaceDistanceUnits[surfaceDistance]})
+                    </span>
+                  }
+                  // Shows size from API (nominal size) or just size (which is calculated)
+                  // With Earth radius subtracted
+                  cellOneData={convertSurfaceDistanceAu(rawRow.dist)}
+                  cellTwoData={convertSurfaceDistanceAu(rawRow.min_distance)}
+                  cellThreeData={convertSurfaceDistanceAu(rawRow.max_distance)}
+                  onClick={incrementSurfaceDistUnit}
                 />
               </TableBody>
             </Table>
@@ -402,7 +449,7 @@ const TableRowWithCells = ({
   cellThreeData,
   onClick
 }: {
-  title: string;
+  title: string | JSX.Element;
   cellOneData: string;
   cellTwoData?: string;
   cellThreeData?: string;

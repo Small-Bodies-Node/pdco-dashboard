@@ -21,6 +21,11 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             noMaxWidth: {
               maxWidth: 'none'
+            },
+            tableRowHighlighted: {
+              '& td, tr': {
+                color: 'yellow'
+              }
             }
           }
         : {
@@ -40,6 +45,11 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             noMaxWidth: {
               maxWidth: 'none'
+            },
+            tableRowHighlighted: {
+              '& td, tr': {
+                color: 'yellow'
+              }
             }
           },
     { name: 'table-cad' }
