@@ -13,6 +13,17 @@ enum EMoonPhaseTypes {
   WaxingCrescent = 'Waxing Crescent'
 }
 
+enum EMoonPhaseTypesByNumber {
+  New,
+  WaxingCrescent,
+  FirstQuarter,
+  WaxingGibbous,
+  Full,
+  WaningGibbous,
+  ThirdQuarter,
+  WaningCrescent
+}
+
 export const MoonPhase = () => {
   const classes = useStyles();
 
@@ -20,86 +31,77 @@ export const MoonPhase = () => {
   const [moonPhase, setMoonPhase] = useState('');
 
   // Use calculations from https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
-  useEffect(() => {
-    // Get JD
-    const date = new Date();
+  // Moon cycle length from http://www.agopax.it/Libri_astronomia/pdf/Astronomical%20Algorithms.pdf
+  const getMoonPhase = (
+    date: Date
+  ): { illuminationFraction: number; cycleProgress: number; moonPhase: string } => {
+    const moonCycleLength = 29.530588861;
+
+    // Define date components variables
     let year = date.getUTCFullYear();
     let month = date.getUTCMonth() + 1;
     const day = date.getUTCDate();
 
-    const url = `https://ssd.jpl.nasa.gov/horizons_batch.cgi?batch=1&COMMAND='301'&MAKE_EPHEM='YES'&TABLE_TYPE='OBSERVER'&START_TIME='${year}-${month}-${day}'&STOP_TIME='${year}-${month}-${
-      day + 1
-    }'&STEP_SIZE='1%20h'&QUANTITIES='10'`;
+    if (month <= 2) {
+      year -= 1;
+      month += 12;
+    }
 
-    fetch(url)
-      .then((res) => res.text())
-      .then((data) => {
-        // Get and clean data between markers
-        const dataLines = data
-          .substring(data.indexOf('$$SOE') + 1, data.indexOf('$$EOE'))
-          .split(/\r?\n/);
-        dataLines.shift();
-        dataLines.pop();
+    // Define variables to be used in calculation
+    const a = Math.floor(year / 100);
+    const b = Math.floor(a / 4);
+    const c = 2 - a + b;
+    const e = 365.25 * (year + 4716);
+    const f = 30.6001 * (month + 1);
+    const JD = c + day + e + f - 1524.5;
 
-        let waningOrWaxing: 'Waning' | 'Waxing' = 'Waning';
+    const daysSinceNewMoon = JD - 2451549.5;
+    const numberNewMoons = daysSinceNewMoon / moonCycleLength;
+    const currentMoonCycleFraction = numberNewMoons % 1;
 
-        let todayIllumination = 0;
-        const moonResultRows = dataLines.map((item) => {
-          const dataArray = item.split(/\s+/);
+    let illuminationFraction;
+    if (currentMoonCycleFraction <= 0.5) {
+      illuminationFraction = currentMoonCycleFraction / 0.5;
+    } else {
+      illuminationFraction = (1 - currentMoonCycleFraction) / 0.5;
+    }
 
-          // If illumination value is greater than currently stored value, update it
-          if (parseFloat(dataArray[3]) > todayIllumination) {
-            todayIllumination = parseFloat(dataArray[3]);
-          }
+    // Calculate moon phase based on progress in lunar cycle
+    let moonPhase: string;
+    if (currentMoonCycleFraction <= 0.03) {
+      moonPhase = EMoonPhaseTypes.New;
+    } else if (currentMoonCycleFraction <= 0.3) {
+      moonPhase = EMoonPhaseTypes.WaxingCrescent;
+    } else if (currentMoonCycleFraction <= 0.36) {
+      moonPhase = EMoonPhaseTypes.FirstQuarter;
+    } else if (currentMoonCycleFraction <= 0.48) {
+      moonPhase = EMoonPhaseTypes.WaxingGibbous;
+    } else if (currentMoonCycleFraction <= 0.52) {
+      moonPhase = EMoonPhaseTypes.Full;
+    } else if (currentMoonCycleFraction <= 0.79) {
+      moonPhase = EMoonPhaseTypes.WaningGibbous;
+    } else if (currentMoonCycleFraction <= 0.85) {
+      moonPhase = EMoonPhaseTypes.ThirdQuarter;
+    } else if (currentMoonCycleFraction <= 0.97) {
+      moonPhase = EMoonPhaseTypes.WaningCrescent;
+    } else {
+      moonPhase = EMoonPhaseTypes.New;
+    }
 
-          return dataArray;
-        });
+    return {
+      illuminationFraction,
+      cycleProgress: currentMoonCycleFraction,
+      moonPhase
+    };
+  };
 
-        // If illumination percent is increasing, set to waxing
-        if (
-          parseFloat(moonResultRows[moonResultRows.length - 1][3]) >
-          parseFloat(moonResultRows[0][3])
-        ) {
-          waningOrWaxing = 'Waxing';
-        }
+  useEffect(() => {
+    const date = new Date('July 24, 2021');
+    const moonPhaseData = getMoonPhase(date);
+    console.log(moonPhaseData);
 
-        return {
-          illuminated: todayIllumination / 100.0,
-          waningOrWaxing: waningOrWaxing
-        };
-      })
-      .then((result) => {
-        const illuminated = result.illuminated;
-
-        let moonPhaseType;
-
-        // Set moonPhaseType depending on illumination and waxing/waning
-        if (illuminated < 0.02) {
-          moonPhaseType = EMoonPhaseTypes.New;
-        } else if (illuminated < 0.48) {
-          moonPhaseType =
-            result.waningOrWaxing === 'Waxing'
-              ? EMoonPhaseTypes.WaxingCrescent
-              : EMoonPhaseTypes.WaningCrescent;
-        } else if (illuminated < 0.52) {
-          moonPhaseType =
-            result.waningOrWaxing === 'Waxing'
-              ? EMoonPhaseTypes.FirstQuarter
-              : EMoonPhaseTypes.ThirdQuarter;
-        } else if (illuminated < 0.99) {
-          moonPhaseType =
-            result.waningOrWaxing === 'Waxing'
-              ? EMoonPhaseTypes.WaxingGibbous
-              : EMoonPhaseTypes.WaningGibbous;
-        } else if (illuminated < 1) {
-          moonPhaseType = EMoonPhaseTypes.Full;
-        } else {
-          moonPhaseType = EMoonPhaseTypes.New;
-        }
-
-        setMoonCyclePercent(result.illuminated);
-        setMoonPhase(moonPhaseType);
-      });
+    setMoonCyclePercent(moonPhaseData.illuminationFraction);
+    setMoonPhase(moonPhaseData.moonPhase);
   }, []);
 
   // Generated image path from current moon phase text
@@ -112,9 +114,9 @@ export const MoonPhase = () => {
     <div className={classes.container}>
       <img className={classes.moonImage} src={getMoonImageURL()} alt="Moon phase" />
 
-      {<p className={classes.moonPhaseText}>{moonPhase}</p>}
+      <p className={classes.moonPhaseText}>{moonPhase}</p>
 
-      <p className={classes.moonCycleText}>{`${(moonCyclePercent * 100).toFixed(1)}%`}</p>
+      <p className={classes.moonCycleText}>{`${(moonCyclePercent * 100).toFixed(0)}%`}</p>
     </div>
   );
 };
