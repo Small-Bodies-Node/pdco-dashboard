@@ -13,18 +13,12 @@ enum EMoonPhaseTypes {
   WaxingCrescent = 'Waxing Crescent'
 }
 
-enum EMoonPhaseTypesByNumber {
-  New,
-  WaxingCrescent,
-  FirstQuarter,
-  WaxingGibbous,
-  Full,
-  WaningGibbous,
-  ThirdQuarter,
-  WaningCrescent
+interface IProps {
+  mobileWidthFull?: boolean;
+  moonDate?: Date;
 }
 
-export const MoonPhase = () => {
+export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
   const classes = useStyles();
 
   const [moonCyclePercent, setMoonCyclePercent] = useState(0);
@@ -96,13 +90,12 @@ export const MoonPhase = () => {
   };
 
   useEffect(() => {
-    const date = new Date('July 24, 2021');
+    const date = moonDate ?? new Date();
     const moonPhaseData = getMoonPhase(date);
-    console.log(moonPhaseData);
 
     setMoonCyclePercent(moonPhaseData.illuminationFraction);
     setMoonPhase(moonPhaseData.moonPhase);
-  }, []);
+  }, [moonDate]);
 
   // Generated image path from current moon phase text
   const getMoonImageURL = (): string => {
@@ -112,7 +105,12 @@ export const MoonPhase = () => {
 
   return (
     <div className={classes.container}>
-      <img className={classes.moonImage} src={getMoonImageURL()} alt="Moon phase" />
+      <img
+        className={classes.moonImage}
+        src={getMoonImageURL()}
+        alt="Moon phase"
+        style={mobileWidthFull ? { width: '100%', height: 'unset' } : undefined}
+      />
 
       <p className={classes.moonPhaseText}>{moonPhase}</p>
 

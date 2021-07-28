@@ -18,7 +18,8 @@ export const useStyles = makeStyles((theme) => ({
   moonPhaseText: {
     fontSize: 18,
     fontWeight: 600,
-    margin: '6px 0 0 0'
+    margin: '6px 0 0 0',
+    textAlign: 'center'
   },
   moonCycleText: {
     fontSize: 16,

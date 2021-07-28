@@ -23,9 +23,10 @@ export const useStyles = (isHeightAuto: boolean) =>
               fontSize: 16,
               fontWeight: 'bold',
               '& *': { whiteSpace: 'nowrap' },
-              '& a': {
+              '& a, p': {
                 textDecoration: 'none',
                 color: 'white',
+                cursor: 'pointer',
                 '&:hover': {
                   color: 'cyan'
                 }
@@ -63,7 +64,7 @@ export const useStyles = (isHeightAuto: boolean) =>
               fontSize: 14,
               fontWeight: 'bold',
               '& *': { whiteSpace: 'nowrap' },
-              '& a': {
+              '& a, p': {
                 textDecoration: 'none',
                 color: 'white',
                 '&:hover': {
