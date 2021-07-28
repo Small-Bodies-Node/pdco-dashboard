@@ -105,17 +105,17 @@ export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
         >
           <div className={classes.innerContent}>
             <div className={classes.headerContainer}>
-              <button style={{ marginRight: 'auto' }} onClick={decrementMonth}>
-                {'<'} Previous Month
-              </button>
+              <div className={classes.previousMonthButton}>
+                <button onClick={decrementMonth}>{'<'} Previous Month</button>
+              </div>
 
               <p className={classes.header}>
                 {months[selectedDate.getMonth()]} {selectedDate.getFullYear()}
               </p>
 
-              <button style={{ marginLeft: 'auto' }} onClick={incrementMonth}>
-                Next Month {'>'}
-              </button>
+              <div className={classes.nextMonthButton}>
+                <button onClick={incrementMonth}>Next Month {'>'}</button>
+              </div>
             </div>
 
             <div className={classes.monthGrid}>{moonPhases}</div>
