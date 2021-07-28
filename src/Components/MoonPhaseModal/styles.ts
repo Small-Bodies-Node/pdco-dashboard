@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import { mobileWidthPxl } from '../../Utils/constants';
 
 const moonPhaseGridTemplateColumns = `repeat(6,minmax(0px,1fr))`;
-const moonPhaseGridTemplateColumnsMobile = `repeat(1,minmax(0px,1fr))`;
+const moonPhaseGridTemplateColumnsMobile = `repeat(2,minmax(0px,1fr))`;
 
 export const useStyles = makeStyles(
   (theme) => ({
@@ -37,8 +37,8 @@ export const useStyles = makeStyles(
     headerContainer: {
       width: '100%',
 
-      display: 'flex',
-      flexDirection: 'row',
+      display: 'grid',
+      gridTemplateColumns: '1fr 2fr 1fr',
 
       '& button': {
         display: 'flex',
@@ -69,7 +69,14 @@ export const useStyles = makeStyles(
     header: {
       fontSize: '1.35rem',
       fontWeight: 600,
-      margin: 0
+      textAlign: 'center',
+      margin: '0 auto'
+    },
+    previousMonthButton: {
+      margin: '0 auto 0 0'
+    },
+    nextMonthButton: {
+      margin: '0 0 0 auto'
     },
     closeButtonContainer: {
       display: 'flex',
@@ -115,6 +122,16 @@ export const useStyles = makeStyles(
       },
       monthGrid: {
         gridTemplateColumns: moonPhaseGridTemplateColumnsMobile
+      },
+      headerContainer: {
+        gridTemplateColumns: '1fr',
+        gridTemplateRows: '1fr 1fr 1fr'
+      },
+      previousMonthButton: {
+        margin: '0 auto'
+      },
+      nextMonthButton: {
+        margin: '0 auto'
       }
     }
   }),
