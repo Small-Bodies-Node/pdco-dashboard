@@ -143,6 +143,8 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }, []);
       if (!colDatumEntries.every(Boolean)) return false;
 
+      if (auToLd(parseFloat(datumArr[cadFieldIndices.dist] ?? '0')) > 1) return false;
+
       // Logic to filter out entries NOT in this table's 'period' defn
       const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
       if (!dateIsStringOrNull) return false;
@@ -409,6 +411,11 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           </Table>
         </TableContainer>
         <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
+        <div className={classes.legend}>
+          * - Minimum and nominal {'>'} 0.1LD apart
+          <br />
+          Yellow - Minimum distance is below geosynchronous orbit
+        </div>
       </div>
     </>
   );

@@ -26,6 +26,10 @@ export const useStyles = (isHeightAuto: boolean) =>
               '& td, tr': {
                 color: 'yellow'
               }
+            },
+            legend: {
+              textAlign: 'start',
+              color: 'rgba(255, 255, 255, 0.7)'
             }
           }
         : {
@@ -50,6 +54,10 @@ export const useStyles = (isHeightAuto: boolean) =>
               '& td, tr': {
                 color: 'yellow'
               }
+            },
+            legend: {
+              textAlign: 'start',
+              color: 'rgba(255, 255, 255, 0.7)'
             }
           },
     { name: 'table-cad' }
