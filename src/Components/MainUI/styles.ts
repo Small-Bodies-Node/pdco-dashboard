@@ -53,7 +53,7 @@ export const useStyles = makeStyles(
       width: '100vw',
       height: '100vh',
       minHeight: 650,
-      overflowY: 'scroll',
+      overflowY: 'auto',
       display: 'grid',
       gridTemplateRows,
       gridTemplateColumns,
