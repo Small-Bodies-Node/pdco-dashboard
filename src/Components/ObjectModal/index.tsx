@@ -118,13 +118,11 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           `${parseFloat(rawRow.v_rel).toLocaleString('en-US', { maximumFractionDigits: 1 })} km/s`
         );
     rawRow?.min_distance &&
-      form
-        .getTextField('MinDistance')
-        .setText(
-          `${auToKm(parseFloat(rawRow.min_distance)).toLocaleString('en-US', {
-            maximumFractionDigits: 1
-          })} km`
-        );
+      form.getTextField('MinDistance').setText(
+        `${auToKm(parseFloat(rawRow.min_distance)).toLocaleString('en-US', {
+          maximumFractionDigits: 1
+        })} km`
+      );
     form.getTextField('Magnitude').setText(`${rawRow?.h}`);
 
     const pdfDataUri = await doc.saveAsBase64({ dataUri: true });
@@ -357,12 +355,12 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
               <p style={{ marginLeft: '9px' }}>CSV</p>
             </div>
 
-            {/** BUTTON TO DOWNLOAD AS PDF */}
+            {/** BUTTON TO DOWNLOAD AS PDF
             <div className={classes.linkContainer} onClick={downloadPdfFactSheet}>
               <FontAwesomeIcon icon={faDownload} size="sm" />
 
               <p style={{ marginLeft: '9px' }}>PDF (Fact Sheet)</p>
-            </div>
+            </div>*/}
           </div>
 
           {/** DISTANCE & SIZE TABLE */}
