@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +15,10 @@ import { TitledCell } from '../TitledCell';
 import { useStyles } from './styles';
 import { IRawRow } from '../TableCAD/index';
 import { Theme, withStyles } from '@material-ui/core';
-import { auToKm, auToLd, auToMi, kmToFt } from '../../Utils/conversionFormulae';
+import { auToKm, auToLd, auToMi, kmToAu, kmToFt } from '../../Utils/conversionFormulae';
+import { earthMeanRadiusKm } from '../../Utils/constants';
+
+import { PDFDocument } from 'pdf-lib';
 
 // See: https://material-ui.com/components/tables/#CustomizedTables.tsx
 const StyledTableCell = withStyles((theme: Theme) => ({
@@ -63,6 +66,12 @@ enum SizeUnits {
   __LENGTH
 }
 
+enum SurfaceDistanceUnits {
+  km,
+  mi,
+  __LENGTH
+}
+
 interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
@@ -72,27 +81,81 @@ interface IProps {
 export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   const classes = useStyles();
 
+  const downloadPdfFactSheet = async () => {
+    const res = await fetch(process.env.PUBLIC_URL + '/CloseApproachFactSheetForm.pdf');
+    const buffer = await res.arrayBuffer();
+
+    const doc = await PDFDocument.load(buffer);
+    const form = doc.getForm();
+
+    // Fill in form fields
+    form.getTextField('Name').setText(`Close Approach Fact Sheet - ${rawRow?.fullname}`);
+    form.getTextField('Date').setText(`Will pass by Earth on: ${rawRow?.cd.toUTCString()}`);
+    rawRow?.min_distance &&
+      form
+        .getTextField('Distance')
+        .setText(
+          `At a minimum distance of: ${auToLd(
+            parseFloat(rawRow.min_distance)
+          ).toLocaleString('en-US', { maximumFractionDigits: 4 })} ld (${auToKm(
+            parseFloat(rawRow.min_distance)
+          ).toLocaleString('en-US', { maximumFractionDigits: 1 })} km)`
+        );
+    rawRow?.minimum_size &&
+      rawRow?.maximum_size &&
+      form
+        .getTextField('Size')
+        .setText(
+          `${convertKmTo(rawRow.minimum_size, 1)}${SizeUnits[sizeUnit]} - ${convertKmTo(
+            rawRow.maximum_size,
+            1
+          )}${SizeUnits[sizeUnit]}`
+        );
+    rawRow?.v_rel &&
+      form
+        .getTextField('Velocity')
+        .setText(
+          `${parseFloat(rawRow.v_rel).toLocaleString('en-US', { maximumFractionDigits: 1 })} km/s`
+        );
+    rawRow?.min_distance &&
+      form.getTextField('MinDistance').setText(
+        `${auToKm(parseFloat(rawRow.min_distance)).toLocaleString('en-US', {
+          maximumFractionDigits: 1
+        })} km`
+      );
+    form.getTextField('Magnitude').setText(`${rawRow?.h}`);
+
+    const pdfDataUri = await doc.saveAsBase64({ dataUri: true });
+    const link = document.createElement('a');
+    link.download = `${rawRow?.fullname.replaceAll(' ', '')}-FactSheet.pdf`;
+    link.href = pdfDataUri;
+    link.click();
+  };
+
   // State
   const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.LD);
   const [sizeUnit, setSizeUnit] = useState<number>(SizeUnits.m);
+  const [surfaceDistance, setSurfaceDistance] = useState<number>(SurfaceDistanceUnits.km);
 
   if (!isShown || !rawRow) {
     return null;
   }
 
-  const convertAuTo = (value: string): string => {
+  const convertAuTo = (value: string, digits?: number): string => {
     // Display dist as different formats depending on unit selected
     let dist: string; // rawRow.dist is in au by default
 
     switch (distanceUnit) {
       case DistanceUnits.LD: // ld selected
-        dist = auToLd(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        dist = auToLd(parseFloat(value)).toLocaleString('en-US', {
+          maximumFractionDigits: digits ?? 5
+        });
         break;
       case DistanceUnits.km: // km selected
         dist = auToKm(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 0 });
         break;
       case DistanceUnits.au: // au selected
-        dist = parseFloat(value).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        dist = parseFloat(value).toLocaleString('en-US', { maximumFractionDigits: digits ?? 5 });
         break;
       case DistanceUnits.mi: // mi selected
         dist = auToMi(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 0 });
@@ -104,15 +167,19 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     return dist;
   };
 
-  const convertKmTo = (value: string): string => {
+  const convertKmTo = (value: string, digits?: number): string => {
     let size: string;
 
     switch (sizeUnit) {
       case SizeUnits.m:
-        size = (parseFloat(value) * 1000).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        size = (parseFloat(value) * 1000).toLocaleString('en-US', {
+          maximumFractionDigits: digits ?? 0
+        });
         break;
       case SizeUnits.ft:
-        size = kmToFt(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 5 });
+        size = kmToFt(parseFloat(value)).toLocaleString('en-US', {
+          maximumFractionDigits: digits ?? 0
+        });
         break;
       default:
         throw 'Not supposed to be possible';
@@ -121,12 +188,37 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     return size;
   };
 
+  const convertSurfaceDistanceAu = (value: string): string => {
+    let dist: string;
+
+    switch (surfaceDistance) {
+      case SurfaceDistanceUnits.km:
+        dist = (auToKm(parseFloat(value)) - earthMeanRadiusKm).toLocaleString('en-US', {
+          maximumFractionDigits: 0
+        });
+        break;
+      case SurfaceDistanceUnits.mi:
+        dist = auToMi(parseFloat(value) - kmToAu(earthMeanRadiusKm)).toLocaleString('en-US', {
+          maximumFractionDigits: 0
+        });
+        break;
+      default:
+        throw 'Not supposed to be possible';
+    }
+
+    return dist;
+  };
+
   const incrementDistanceUnit = () => {
     setDistanceUnit((distanceUnit + 1) % DistanceUnits.__LENGTH);
   };
 
   const incrementSizeUnit = () => {
     setSizeUnit((sizeUnit + 1) % SizeUnits.__LENGTH);
+  };
+
+  const incrementSurfaceDistUnit = () => {
+    setSurfaceDistance((surfaceDistance + 1) % SurfaceDistanceUnits.__LENGTH);
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
@@ -262,6 +354,13 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
               <p style={{ marginLeft: '9px' }}>CSV</p>
             </div>
+
+            {/** BUTTON TO DOWNLOAD AS PDF
+            <div className={classes.linkContainer} onClick={downloadPdfFactSheet}>
+              <FontAwesomeIcon icon={faDownload} size="sm" />
+
+              <p style={{ marginLeft: '9px' }}>PDF (Fact Sheet)</p>
+            </div>*/}
           </div>
 
           {/** DISTANCE & SIZE TABLE */}
@@ -299,11 +398,25 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
 
                 <TableRowWithCells
                   title={`Size (${SizeUnits[sizeUnit]})`}
-                  // Shows size from API (nominal size) or just size (which is calculated)
+                  // Shows sizes from API (nominal, min, and max sizes)
                   cellOneData={convertKmTo(rawRow.nominal_size)}
                   cellTwoData={convertKmTo(rawRow.minimum_size)}
                   cellThreeData={convertKmTo(rawRow.maximum_size)}
                   onClick={incrementSizeUnit}
+                />
+
+                <TableRowWithCells
+                  title={
+                    <span>
+                      Distance - R<sub>E</sub> ({SurfaceDistanceUnits[surfaceDistance]})
+                    </span>
+                  }
+                  // Shows size from API (nominal size) or just size (which is calculated)
+                  // With Earth radius subtracted
+                  cellOneData={convertSurfaceDistanceAu(rawRow.dist)}
+                  cellTwoData={convertSurfaceDistanceAu(rawRow.min_distance)}
+                  cellThreeData={convertSurfaceDistanceAu(rawRow.max_distance)}
+                  onClick={incrementSurfaceDistUnit}
                 />
               </TableBody>
             </Table>
@@ -402,7 +515,7 @@ const TableRowWithCells = ({
   cellThreeData,
   onClick
 }: {
-  title: string;
+  title: string | JSX.Element;
   cellOneData: string;
   cellTwoData?: string;
   cellThreeData?: string;

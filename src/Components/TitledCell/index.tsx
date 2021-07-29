@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useStyles } from './styles';
-import { CircularProgress, Tooltip, Zoom } from '@material-ui/core';
+import { CircularProgress, StylesProvider, Tooltip, Zoom } from '@material-ui/core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { MyError } from '../MyError';
 
@@ -13,6 +13,7 @@ interface IProps {
   alignment?: 'left' | 'center' | 'right';
   isDisplayed?: boolean;
   isHeightAuto?: boolean;
+  onClick?: () => void;
 }
 
 export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
@@ -39,6 +40,10 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
             <a target="_blank" href={link!}>
               <TitleRow />
             </a>
+          ) : !!props.onClick ? (
+            <p onClick={props.onClick}>
+              <TitleRow />
+            </p>
           ) : (
             <span>
               <TitleRow />

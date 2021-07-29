@@ -18,8 +18,10 @@ export const useStyles = makeStyles(
     },
     mainContentContainer: {
       backgroundColor: '#181b2e',
-      width: '50%',
-      height: '50%',
+      minWidth: '50%',
+      maxWidth: '70%',
+      minHeight: '50%',
+      maxHeight: '70%',
       borderRadius: '0.5rem',
       padding: '1rem',
       overflow: 'auto'
@@ -90,8 +92,8 @@ export const useStyles = makeStyles(
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       mainContentContainer: {
-        width: '90%',
-        height: '80%'
+        maxWidth: '90%',
+        maxHeight: '80%'
       }
     }
   }),

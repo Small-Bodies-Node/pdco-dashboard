@@ -8,9 +8,9 @@ const gridGap = 20;
 const gridTemplateRows = `minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
 const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
 const gridTemplateAreas = `
-  'imageLeft title     title     title     title     title    title      imageRight'
-  'imageLeft clocks    clocks    clocks    clocks    clocks   clocks     imageRight'
-  'neoCount  neoCount  neoCount  neoCount  sentry    sentry   programs   programs'
+  'imageLeft title     title     title     title     title     title     imageRight'
+  'imageLeft clocks    clocks    clocks    clocks    clocks    clocks    imageRight'
+  'neoCount  neoCount  neoCount  neoCount  sentry    moonPhase programs  programs'
   'recentTab recentTab recentTab recentTab futureTab futureTab futureTab futureTab'
 `;
 
@@ -20,12 +20,13 @@ const gridTemplateAreas = `
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
-  minmax(0px,70px)
+  minmax(0px,90px)
   minmax(0px,120px)
   minmax(0px,150px)
   minmax(0px,180px)
   minmax(100px,auto)
   minmax(100px,auto)
+  minmax(175px,auto)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
@@ -35,7 +36,8 @@ const gridTemplateAreasMobile = `
   'sentry    sentry    programs  programs '
   'neoCount  neoCount  neoCount  neoCount'
   'recentTab recentTab recentTab recentTab'
-  'futureTab futureTab futureTab  futureTab'
+  'futureTab futureTab futureTab futureTab'
+  'moonPhase moonPhase moonPhase moonPhase'
 `;
 
 /**
@@ -53,7 +55,7 @@ export const useStyles = makeStyles(
       width: '100vw',
       height: '100vh',
       minHeight: 650,
-      overflowY: 'scroll',
+      overflowY: 'auto',
       display: 'grid',
       gridTemplateRows,
       gridTemplateColumns,
@@ -88,18 +90,20 @@ export const useStyles = makeStyles(
       backgroundColor: 'blue',
       fontSize: 20,
       fontWeight: 'bold',
+      height: '100%',
       //
       display: 'flex',
       position: 'relative',
       flexDirection: 'column',
-      '& > div': {
+      '& div': {
         paddingBottom: 2
       },
-      '& > .shortTitle': {
+      '& .shortTitle': {
         display: 'none',
-        paddingBottom: 2
+        paddingBottom: 2,
+        fontSize: 16
       },
-      '& > .date': {
+      '& .date': {
         fontSize: 12
       }
     },
@@ -115,6 +119,11 @@ export const useStyles = makeStyles(
     },
     sentry: {
       gridArea: 'sentry',
+      border: panelBorder,
+      backgroundColor: 'purple'
+    },
+    moonPhase: {
+      gridArea: 'moonPhase',
       border: panelBorder,
       backgroundColor: 'purple'
     },
@@ -143,10 +152,10 @@ export const useStyles = makeStyles(
         gridTemplateAreas: gridTemplateAreasMobile
       },
       title: {
-        '& > .shortTitle': {
+        '& .shortTitle': {
           display: 'block'
         },
-        '& > .longTitle': {
+        '& .longTitle': {
           display: 'none'
         }
       }

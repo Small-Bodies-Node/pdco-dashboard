@@ -8,7 +8,8 @@ import {
   faShieldAlt,
   faTable,
   faGlobeAmericas,
-  faRedo
+  faRedo,
+  faMoon
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
@@ -29,6 +30,8 @@ import { useInterval } from '../../Hooks/useInterval';
 import { useLocation } from 'react-router-dom';
 import { useEventListener } from '../../Hooks/useEventListener';
 import { mobileWidthPxl } from '../../Utils/constants';
+import { MoonPhase } from '../MoonPhase';
+import { MoonPhaseModal } from '../MoonPhaseModal/index';
 
 export const MainUI = () => {
   // --------------------->>>
@@ -45,6 +48,8 @@ export const MainUI = () => {
   );
   const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState('');
+
+  const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
 
   // Check if mock data is to be used
   const mockQueryParam = new URLSearchParams(useLocation().search);
@@ -88,101 +93,118 @@ export const MainUI = () => {
   const isDisplayed = !(isSearching || !storedData);
 
   return (
-    <div className={'main-ui-container ' + classes.container}>
-      <div className={classes.imageLeft}>
-        <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
+    <>
+      <MoonPhaseModal isShown={isMoonPhaseModalShown} setIsShown={setIsMoonPhaseModalShown} />
+
+      <div className={'main-ui-container ' + classes.container}>
+        <div className={classes.imageLeft}>
+          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
+        </div>
+        <div className={classes.imageRight}>
+          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
+        </div>
+        <div className={classes.title} onClick={() => setIsSearching(true)}>
+          <ErrorBoundary fallbackRender={() => <MyError />}>
+            <div className="longTitle">
+              {'Planetary Defense Coordination Office Status Summary'}
+            </div>
+            <div className="shortTitle">{'PDCO STATUS'}</div>
+            <div className="date">
+              <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
+              <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
+            </div>
+          </ErrorBoundary>
+        </div>
+        <div className={classes.clocks}>
+          <ErrorBoundary fallbackRender={() => <MyError />}>
+            <Clocks />
+          </ErrorBoundary>
+        </div>
+        <div className={classes.neoCount}>
+          <TitledCell
+            title="RECENT CLOSE APPROACHES"
+            link="https://cneos.jpl.nasa.gov/ca/"
+            tooltip="Close Approach is defined as <1LD at closest approach"
+            icon={() => <FontAwesomeIcon icon={faMeteor} />}
+            isDisplayed={isDisplayed}
+          >
+            {!!storedData && (
+              <NeoCount cadData={storedData.cadData} dateAtDataFetch={storedData.timestamp} />
+            )}
+          </TitledCell>
+        </div>
+        <div className={classes.sentry}>
+          <TitledCell
+            title="SENTRY STATUS"
+            link="https://cneos.jpl.nasa.gov/sentry/"
+            tooltip="Highest ts_max value in latest sentry data"
+            icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
+            isDisplayed={isDisplayed}
+          >
+            {!!storedData && <Sentry sentryData={storedData.sentryData} />}
+          </TitledCell>
+        </div>
+        <div className={classes.moonPhase}>
+          <TitledCell
+            title="MOON PHASE"
+            tooltip=""
+            icon={() => <FontAwesomeIcon icon={faMoon} />}
+            isDisplayed={isDisplayed}
+            onClick={() => setIsMoonPhaseModalShown(true)}
+          >
+            <MoonPhase />
+          </TitledCell>
+        </div>
+        <div className={classes.programs}>
+          <TitledCell
+            title="PROJECTS"
+            link=""
+            tooltip="Daylight map of world with PDCO project locations"
+            icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
+            isDisplayed={isDisplayed}
+          >
+            <ProgramsMap />
+          </TitledCell>
+        </div>
+        <div className={classes.recentTab}>
+          <TitledCell
+            title="CLOSE APPROACHES LAST 7 DAYS"
+            link="https://cneos.jpl.nasa.gov/ca/"
+            tooltip="Close Approach is defined as <1LD at smallest nominal distance"
+            icon={() => <FontAwesomeIcon icon={faTable} />}
+            isDisplayed={isDisplayed}
+            isHeightAuto={isMobile}
+          >
+            {!!storedData && (
+              <TableCAD
+                period="recent"
+                cadData={storedData.cadData}
+                dateAtDataFetch={storedData.timestamp}
+                isHeightAuto={isMobile}
+              />
+            )}
+          </TitledCell>
+        </div>
+        <div className={classes.futureTab}>
+          <TitledCell
+            title="CLOSE APPROACHES NEXT 10 YEARS"
+            link="https://cneos.jpl.nasa.gov/ca/"
+            tooltip="Close Approach is defined as <1LD at closest approach"
+            icon={() => <FontAwesomeIcon icon={faTable} />}
+            isDisplayed={isDisplayed}
+            isHeightAuto={isMobile}
+          >
+            {!!storedData && (
+              <TableCAD
+                period="future"
+                cadData={storedData.cadData}
+                dateAtDataFetch={storedData.timestamp}
+                isHeightAuto={isMobile}
+              />
+            )}
+          </TitledCell>
+        </div>
       </div>
-      <div className={classes.imageRight}>
-        <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
-      </div>
-      <div className={classes.title} onClick={() => setIsSearching(true)}>
-        <ErrorBoundary fallbackRender={() => <MyError />}>
-          <div className="longTitle">{'Planetary Defense Coordination Office Status Summary'}</div>
-          <div className="shortTitle">{'PDCO STATUS'}</div>
-          <div className="date">
-            <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-            <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
-          </div>
-        </ErrorBoundary>
-      </div>
-      <div className={classes.clocks}>
-        <ErrorBoundary fallbackRender={() => <MyError />}>
-          <Clocks />
-        </ErrorBoundary>
-      </div>
-      <div className={classes.neoCount}>
-        <TitledCell
-          title="RECENT CLOSE APPROACHES"
-          link="https://cneos.jpl.nasa.gov/ca/"
-          tooltip="Close Approach is defined as <1LD at closest approach"
-          icon={() => <FontAwesomeIcon icon={faMeteor} />}
-          isDisplayed={isDisplayed}
-        >
-          {!!storedData && (
-            <NeoCount cadData={storedData.cadData} dateAtDataFetch={storedData.timestamp} />
-          )}
-        </TitledCell>
-      </div>
-      <div className={classes.sentry}>
-        <TitledCell
-          title="SENTRY STATUS"
-          link="https://cneos.jpl.nasa.gov/sentry/"
-          tooltip="Highest ts_max value in latest sentry data"
-          icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
-          isDisplayed={isDisplayed}
-        >
-          {!!storedData && <Sentry sentryData={storedData.sentryData} />}
-        </TitledCell>
-      </div>
-      <div className={classes.programs}>
-        <TitledCell
-          title="PROJECTS"
-          link=""
-          tooltip="Daylight map of world with PDCO project locations"
-          icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
-          isDisplayed={isDisplayed}
-        >
-          <ProgramsMap />
-        </TitledCell>
-      </div>
-      <div className={classes.recentTab}>
-        <TitledCell
-          title="CLOSE APPROACHES LAST 7 DAYS"
-          link="https://cneos.jpl.nasa.gov/ca/"
-          tooltip="Close Approach is defined as <1LD at smallest nominal distance"
-          icon={() => <FontAwesomeIcon icon={faTable} />}
-          isDisplayed={isDisplayed}
-          isHeightAuto={isMobile}
-        >
-          {!!storedData && (
-            <TableCAD
-              period="recent"
-              cadData={storedData.cadData}
-              dateAtDataFetch={storedData.timestamp}
-              isHeightAuto={isMobile}
-            />
-          )}
-        </TitledCell>
-      </div>
-      <div className={classes.futureTab}>
-        <TitledCell
-          title="CLOSE APPROACHES NEXT 10 YEARS"
-          link="https://cneos.jpl.nasa.gov/ca/"
-          tooltip="Close Approach is defined as <1LD at closest approach"
-          icon={() => <FontAwesomeIcon icon={faTable} />}
-          isDisplayed={isDisplayed}
-          isHeightAuto={isMobile}
-        >
-          {!!storedData && (
-            <TableCAD
-              period="future"
-              cadData={storedData.cadData}
-              dateAtDataFetch={storedData.timestamp}
-              isHeightAuto={isMobile}
-            />
-          )}
-        </TitledCell>
-      </div>
-    </div>
+    </>
   );
 };
