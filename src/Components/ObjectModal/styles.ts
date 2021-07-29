@@ -92,8 +92,8 @@ export const useStyles = makeStyles(
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       mainContentContainer: {
-        width: '90%',
-        height: '80%'
+        maxWidth: '90%',
+        maxHeight: '80%'
       }
     }
   }),

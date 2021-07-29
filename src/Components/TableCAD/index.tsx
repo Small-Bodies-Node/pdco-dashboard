@@ -411,11 +411,13 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           </Table>
         </TableContainer>
         <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
-        <div className={classes.legend}>
-          * - Minimum and nominal {'>'} 0.1LD apart
-          <br />
-          Yellow - Minimum distance is below geosynchronous orbit
-        </div>
+        {
+          // <div className={classes.legend}>
+          //   * - Minimum and nominal {'>'} 0.1LD apart
+          //   <br />
+          //   Yellow - Minimum distance is below geosynchronous orbit
+          // </div>
+        }
       </div>
     </>
   );
