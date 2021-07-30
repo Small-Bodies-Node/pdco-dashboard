@@ -38,6 +38,7 @@
 		"@material-ui/lab": "^4.0.0-alpha.57",
 		"moment-timezone": "^0.5.31",
 		"numeral": "^2.0.6",
+		"pdf-lib": "^1.16.0",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
 		"react-error-boundary": "^3.1.1",

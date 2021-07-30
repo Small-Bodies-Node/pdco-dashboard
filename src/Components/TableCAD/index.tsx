@@ -22,6 +22,7 @@ import {
   magToSizeKm
 } from '../../Utils/conversionFormulae';
 import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
+import { ObjectModal } from '../ObjectModal';
 
 const numeral = numeralWithDefault.default;
 
@@ -50,13 +51,21 @@ interface ICol {
   colClickHandler?: () => void;
 }
 
-interface IRawRow {
+export interface IRawRow {
   fullname: string;
   cd: Date;
-  dist: string;
+  cd_sigma: string;
   h: string;
-  size: string;
-  sigma: string;
+  nominal_size: string;
+  minimum_size: string;
+  maximum_size: string;
+
+  dist: string;
+  min_distance: string;
+  max_distance: string;
+
+  v_rel: string;
+  v_inf: string;
 }
 
 interface IDisplayRow extends Omit<IRawRow, 'cd'> {
@@ -101,6 +110,10 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useContainerDimensions(containerRef);
 
+  const [unchangedRawRows, setUnchangedRawRows] = useState<IRawRow[]>();
+  const [isObjectModalShown, setIsObjectModalShown] = useState(false);
+  const [selectedRawRow, setSelectedRawRow] = useState<IRawRow | undefined>();
+
   // Define columns for our table
   const columns = getCols(distUnit, sizeUnit);
 
@@ -130,6 +143,8 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }, []);
       if (!colDatumEntries.every(Boolean)) return false;
 
+      if (auToLd(parseFloat(datumArr[cadFieldIndices.dist] ?? '0')) > 1) return false;
+
       // Logic to filter out entries NOT in this table's 'period' defn
       const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
       if (!dateIsStringOrNull) return false;
@@ -144,13 +159,27 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         return {
           fullname: name,
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
-          dist: datumArr[cadFieldIndices.dist]!,
+          cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
-          size: datumArr[cadFieldIndices.diameter]!,
-          sigma: datumArr[cadFieldIndices.diameter_sigma]!
+          nominal_size: datumArr[cadFieldIndices.diameter]!,
+          minimum_size: (
+            parseFloat(datumArr[cadFieldIndices.diameter]!) -
+            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+          ).toString(),
+          maximum_size: (
+            parseFloat(datumArr[cadFieldIndices.diameter]!) +
+            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+          ).toString(),
+          dist: datumArr[cadFieldIndices.dist]!,
+          min_distance: datumArr[cadFieldIndices.dist_min]!,
+          max_distance: datumArr[cadFieldIndices.dist_max]!,
+          v_rel: datumArr[cadFieldIndices.v_rel]!,
+          v_inf: datumArr[cadFieldIndices.v_inf]!
         };
       }
     );
+
+    setUnchangedRawRows(newRawRows);
     setRawRows(newRawRows);
   }, [cadData]);
 
@@ -196,10 +225,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             dist_tooltip = rawRow.dist;
             break;
           case 3: // mi selected
-            /**
-             * Can be quite large, and toLocaleString preserves number
-             * w/o scientific notation while toPrecision does not
-             */
             dist = auToMi(parseFloat(rawRow.dist)).toString();
             dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
             break;
@@ -207,41 +232,34 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             throw 'Not supposed to be possible';
         }
 
-        // Calculate size and sigma from h if there is no size from API
-        if (!rawRow.size && !rawRow.sigma) {
-          rawRow.sigma = (
-            (magToSizeKm(parseFloat(rawRow.h), 0.05) - magToSizeKm(parseFloat(rawRow.h), 0.25)) /
-            2
-          ).toString();
-          rawRow.size = (
+        // Calculate size from h if there is no size from API
+        if (
+          !rawRow.nominal_size &&
+          rawRow.minimum_size === 'NaN' &&
+          rawRow.maximum_size === 'NaN'
+        ) {
+          rawRow.nominal_size = (
             (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
             2
           ).toString();
+          rawRow.minimum_size = magToSizeKm(parseFloat(rawRow.h), 0.25).toString();
+          rawRow.maximum_size = magToSizeKm(parseFloat(rawRow.h), 0.05).toString();
         }
 
         // Display size as different formats depending on unit selected
-        let size: string; // rawRow.size is in km by default
+        let minimum_size: string; // rawRow.size is in km by default
+        let maximum_size: string; // rawRow.size is in km by default
         let size_tooltip: string;
         switch (sizeUnit) {
           case 0: // m selected
-            size = (parseFloat(rawRow.size) * 1000).toFixed(2);
-            size_tooltip = `${parseFloat(rawRow.size) * 1000}`;
+            minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
+            maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
+            size_tooltip = `${rawRow.nominal_size}`;
             break;
           case 1: // ft selected
-            size = kmToFt(parseFloat(rawRow.size)).toFixed(3);
-            size_tooltip = `${kmToFt(parseFloat(rawRow.size))}`;
-            break;
-          default:
-            throw 'Not supposed to be possible';
-        }
-
-        let sigma: string; // rawRow.sigma is in km by default
-        switch (sizeUnit) {
-          case 0: // m selected
-            sigma = (parseFloat(rawRow.sigma) * 1000).toFixed(2);
-            break;
-          case 1: // ft selected
-            sigma = kmToFt(parseFloat(rawRow.sigma)).toFixed(3);
+            minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
+            maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
+            size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
             break;
           default:
             throw 'Not supposed to be possible';
@@ -251,14 +269,20 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           fullname,
           fullname_tooltip,
           cd,
+          cd_sigma: rawRow.cd_sigma,
           cd_tooltip,
           dist,
           dist_tooltip,
-          size,
+          nominal_size: rawRow.nominal_size,
+          minimum_size,
+          maximum_size,
           size_tooltip,
           h,
           h_tooltip,
-          sigma
+          min_distance: rawRow.min_distance,
+          max_distance: rawRow.max_distance,
+          v_rel: rawRow.v_rel,
+          v_inf: rawRow.v_inf
         };
       }
     );
@@ -270,6 +294,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
 
   return (
     <>
+      <ObjectModal
+        isShown={isObjectModalShown}
+        setIsShown={setIsObjectModalShown}
+        rawRow={selectedRawRow}
+      />
+
       <div className={classes.container} ref={containerRef}>
         <TableContainer className={classes.tableContainer}>
           <Table stickyHeader size="small" aria-label="sticky table">
@@ -314,7 +344,21 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
               {displayRows &&
                 displayRows.map((row, ind) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={ind}>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={ind}
+                      className={
+                        rawRows && auToKm(parseFloat(rawRows[ind]?.min_distance)) < 42164
+                          ? classes.tableRowHighlighted
+                          : undefined
+                      }
+                      onClick={() => {
+                        setIsObjectModalShown(true);
+                        unchangedRawRows && setSelectedRawRow(unchangedRawRows[ind]);
+                      }}
+                    >
                       {columns.map((column) => {
                         const value = (row as any)[column.id];
                         const tooltip = (row as any)[column.id + '_tooltip'];
@@ -345,9 +389,16 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                 }}
                               >
                                 {column.id === 'size'
-                                  ? column.formatWithSigma &&
-                                    column.formatWithSigma(value, row.sigma)
+                                  ? `${column.format(row.minimum_size)} - ${column.format(
+                                      row.maximum_size
+                                    )}`
                                   : column.format(value)}
+
+                                {column.id === 'dist' &&
+                                  auToLd(parseFloat(rawRows ? rawRows[ind].dist : '0')) -
+                                    auToLd(parseFloat(row.min_distance)) >
+                                    0.1 &&
+                                  '*'}
                               </span>
                             </Tooltip>
                           </StyledTableCell>
@@ -360,6 +411,13 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           </Table>
         </TableContainer>
         <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
+        {
+          // <div className={classes.legend}>
+          //   * - Minimum and nominal {'>'} 0.1LD apart
+          //   <br />
+          //   Yellow - Minimum distance is below geosynchronous orbit
+          // </div>
+        }
       </div>
     </>
   );
@@ -391,7 +449,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   },
   {
     id: 'dist',
-    label: `Dist (${!distUnit ? 'ld' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
+    label: `Dist (${!distUnit ? 'LD' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
     label_tooltip: 'Close Approach nominal distance',
     minWidth: 0,
     align: 'left',
@@ -399,7 +457,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
       !distUnit
         ? (Math.round(parseFloat(value) * 100) / 100).toString()
         : distUnit === 3
-        ? Math.round(parseFloat(value)).toLocaleString('en-us')
+        ? Math.round(parseFloat(value)).toLocaleString('en-US')
         : value
   },
   {
