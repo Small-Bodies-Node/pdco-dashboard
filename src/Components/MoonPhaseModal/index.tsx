@@ -9,10 +9,21 @@ import { TitledCell } from '../TitledCell';
 import { useStyles } from './styles';
 import { MoonPhase } from '../MoonPhase';
 
+enum EDaysOfWeek {
+  Sun,
+  Mon,
+  Tue,
+  Wed,
+  Thu,
+  Fri,
+  Sat
+}
+
 interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
 }
+
 export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
   const classes = useStyles();
 
@@ -51,6 +62,36 @@ export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
     const daysInMonth = getDaysInMonth(selectedDate);
 
     const moonPhasesArray: JSX.Element[] = [];
+
+    // Add empty elements to array, if needed, to match days of week
+    const firstDayOfMonth = new Date(
+      `${selectedDate.getUTCFullYear()}-${padZero(selectedDate.getUTCMonth() + 1)}-01`
+    );
+
+    // Monday, Tuesday, etc...
+    const dayOfWeek = firstDayOfMonth.getUTCDay();
+    const daysInPreviousMonth = getDaysInMonth(
+      new Date(`${selectedDate.getUTCFullYear()}-${padZero(selectedDate.getUTCMonth())}-01`)
+    );
+    for (let i = dayOfWeek; i > 0; i--) {
+      const newDate = new Date(
+        `${selectedDate.getUTCFullYear()}-${padZero(selectedDate.getUTCMonth())}-${padZero(
+          daysInPreviousMonth - i
+        )}`
+      );
+
+      moonPhasesArray.push(
+        <div className={classes.moonPhaseCell}>
+          <p className={classes.moonPhaseCellTitle}>
+            {months[newDate.getUTCMonth()]} {newDate.getUTCDate()}{' '}
+            <span style={{ fontWeight: 400 }}>({EDaysOfWeek[newDate.getUTCDay()]})</span>
+          </p>
+
+          <MoonPhase mobileWidthFull={true} moonDate={newDate} />
+        </div>
+      );
+    }
+
     for (let i = 1; i <= daysInMonth; i++) {
       const newDate = new Date(
         `${selectedDate.getUTCFullYear()}-${padZero(selectedDate.getUTCMonth() + 1)}-${padZero(i)}`
@@ -58,7 +99,10 @@ export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
 
       moonPhasesArray.push(
         <div className={classes.moonPhaseCell}>
-          <p className={classes.moonPhaseCellTitle}>{newDate.getUTCDate()}</p>
+          <p className={classes.moonPhaseCellTitle}>
+            {newDate.getUTCDate()}{' '}
+            <span style={{ fontWeight: 400 }}>({EDaysOfWeek[newDate.getUTCDay()]})</span>
+          </p>
 
           <MoonPhase mobileWidthFull={true} moonDate={newDate} />
         </div>
@@ -118,6 +162,15 @@ export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
               </div>
             </div>
 
+            <div className={classes.daysOfWeekGrid}>
+              <span>Sunday</span>
+              <span>Monday</span>
+              <span>Tuesday</span>
+              <span>Wednesday</span>
+              <span>Thursday</span>
+              <span>Friday</span>
+              <span>Saturday</span>
+            </div>
             <div className={classes.monthGrid}>{moonPhases}</div>
           </div>
         </TitledCell>
