@@ -34,29 +34,7 @@ export const useStyles = makeStyles(
       top: 0,
       bottom: 0,
       left: 0,
-      right: 0,
-
-      '& > div > div': {
-        margin: '0 60px 0 0'
-      }
-    },
-    closeButton: {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      width: '40px',
-      height: '40px',
-      border: 'solid 1px rgba(255, 255, 255, 0.1)',
-
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-
-      transition: 'background-color 0.2s ease-in-out',
-      cursor: 'pointer',
-      '&:hover': {
-        background: 'rgba(255, 255, 255, 0.3)'
-      }
+      right: 0
     },
     overlay: {
       position: 'absolute',

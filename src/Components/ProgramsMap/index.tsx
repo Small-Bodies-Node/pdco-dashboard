@@ -44,10 +44,6 @@ export const ProgramsMap = () => {
                   // icons: smallMapIcons.concat(largeMapIcons)
                 }}
               />
-
-              <div className={classes.closeButton} onClick={() => setIsDialogOpen(false)}>
-                <FontAwesomeIcon icon={faTimes} />
-              </div>
             </div>
           </div>
         </Dialog>

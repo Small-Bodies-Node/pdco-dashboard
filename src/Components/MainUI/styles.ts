@@ -20,7 +20,7 @@ const gridTemplateAreas = `
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
-  minmax(0px,70px)
+  minmax(0px,90px)
   minmax(0px,120px)
   minmax(0px,150px)
   minmax(0px,180px)
@@ -90,18 +90,20 @@ export const useStyles = makeStyles(
       backgroundColor: 'blue',
       fontSize: 20,
       fontWeight: 'bold',
+      height: '100%',
       //
       display: 'flex',
       position: 'relative',
       flexDirection: 'column',
-      '& > div': {
+      '& div': {
         paddingBottom: 2
       },
-      '& > .shortTitle': {
+      '& .shortTitle': {
         display: 'none',
-        paddingBottom: 2
+        paddingBottom: 2,
+        fontSize: 16
       },
-      '& > .date': {
+      '& .date': {
         fontSize: 12
       }
     },
@@ -150,10 +152,10 @@ export const useStyles = makeStyles(
         gridTemplateAreas: gridTemplateAreasMobile
       },
       title: {
-        '& > .shortTitle': {
+        '& .shortTitle': {
           display: 'block'
         },
-        '& > .longTitle': {
+        '& .longTitle': {
           display: 'none'
         }
       }
