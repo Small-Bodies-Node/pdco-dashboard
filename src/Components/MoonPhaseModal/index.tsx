@@ -23,7 +23,6 @@ interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
 }
-
 export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
   const classes = useStyles();
 
