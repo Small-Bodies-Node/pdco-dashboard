@@ -143,8 +143,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }, []);
       if (!colDatumEntries.every(Boolean)) return false;
 
-      if (auToLd(parseFloat(datumArr[cadFieldIndices.dist] ?? '0')) > 1) return false;
-
       // Logic to filter out entries NOT in this table's 'period' defn
       const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
       if (!dateIsStringOrNull) return false;
