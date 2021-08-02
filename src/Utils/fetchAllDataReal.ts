@@ -42,6 +42,6 @@ function getCadUrl() {
   const futureDateStr = futureDate.toISOString().split('T')[0];
 
   // Assemble final url
-  const res = `&min-dist-max=1LD&date-min=-365&date-max=${futureDateStr}`;
+  const res = `&dist-max=1LD&date-min=-365&date-max=${futureDateStr}`;
   return baseUrl + res;
 }
