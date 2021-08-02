@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 
 import { mobileWidthPxl } from '../../Utils/constants';
 
-const moonPhaseGridTemplateColumns = `repeat(6,minmax(0px,1fr))`;
+const moonPhaseGridTemplateColumns = `repeat(7,minmax(0px,1fr))`;
 const moonPhaseGridTemplateColumnsMobile = `repeat(2,minmax(0px,1fr))`;
 
 export const useStyles = makeStyles(
@@ -93,6 +93,18 @@ export const useStyles = makeStyles(
     tableContainer: {
       marginTop: '1rem'
     },
+    daysOfWeekGrid: {
+      width: '100%',
+
+      display: 'grid',
+      gridTemplateColumns: moonPhaseGridTemplateColumns,
+
+      margin: '2rem 0 0 0',
+
+      '& span': {
+        textAlign: 'center'
+      }
+    },
     monthGrid: {
       width: '100%',
 
@@ -119,6 +131,9 @@ export const useStyles = makeStyles(
       mainContentContainer: {
         maxWidth: '90%',
         maxHeight: '80%'
+      },
+      daysOfWeekGrid: {
+        visibility: 'hidden'
       },
       monthGrid: {
         gridTemplateColumns: moonPhaseGridTemplateColumnsMobile
