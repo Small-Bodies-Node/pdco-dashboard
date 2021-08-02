@@ -21,6 +21,7 @@ export const useStyles = makeStyles(
       position: 'relative',
       boxSizing: 'border-box',
       minHeight: 300,
+      //overflow: 'hidden',
       // Make height = width / 2
       '&::before': {
         display: 'block',
@@ -36,6 +37,7 @@ export const useStyles = makeStyles(
       bottom: 0,
       left: 0,
       right: 0,
+      transition: 'ease-in-out 0.2s',
 
       '& > div > div': {
         margin: '0 60px 0 60px'
