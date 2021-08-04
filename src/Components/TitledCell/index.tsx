@@ -13,12 +13,13 @@ interface IProps {
   alignment?: 'left' | 'center' | 'right';
   isDisplayed?: boolean;
   isHeightAuto?: boolean;
+  headerElement?: JSX.Element;
 }
 
 export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
   // --------------------------------------------------------------->>>
 
-  const { title, link, tooltip, isHeightAuto }: IProps = { ...props };
+  const { title, link, tooltip, isHeightAuto, headerElement }: IProps = { ...props };
   const classes = useStyles(!!isHeightAuto)();
 
   // Aux component
@@ -45,6 +46,8 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
             </span>
           )}
         </Tooltip>
+
+        {!!headerElement && headerElement}
       </div>
       <div className={classes.content}>
         <ErrorBoundary resetKeys={[props.children]} fallbackRender={() => <MyError />}>

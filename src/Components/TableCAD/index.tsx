@@ -23,6 +23,7 @@ import {
 } from '../../Utils/conversionFormulae';
 import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
 import { ObjectModal } from '../ObjectModal';
+import { IFilterSortData } from '../../Models/filterSort.model';
 
 const numeral = numeralWithDefault.default;
 
@@ -89,6 +90,7 @@ interface IProps {
   dateAtDataFetch: string;
   period: 'recent' | 'future';
   isHeightAuto?: boolean;
+  filterSortData: IFilterSortData;
 }
 
 /**
@@ -98,7 +100,13 @@ interface IProps {
  * To make it easier to index on these arrays, I have created the object
  * 'cadFieldIndices'
  */
-export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IProps) => {
+export const TableCAD = ({
+  cadData,
+  dateAtDataFetch,
+  period,
+  isHeightAuto,
+  filterSortData
+}: IProps) => {
   // -------------------------------------------------->>>
 
   // State
@@ -134,7 +142,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
     // --------->>>
 
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    const filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
+    let filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
       // Logic to remove any datumArr's with  any null entries in our displayed cols
       const colIds = columns.map((col) => col.id);
       const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
@@ -154,12 +162,22 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
     const newRawRows = filteredDataArrays.map(
       (datumArr: (string | null)[]): IRawRow => {
         const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
+
+        let diameter = datumArr[cadFieldIndices.diameter];
+        if (!diameter) {
+          diameter = (
+            (magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25) +
+              magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05)) /
+            2
+          ).toString();
+        }
+
         return {
           fullname: name,
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
-          nominal_size: datumArr[cadFieldIndices.diameter]!,
+          nominal_size: diameter,
           minimum_size: (
             parseFloat(datumArr[cadFieldIndices.diameter]!) -
             parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
@@ -177,9 +195,23 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }
     );
 
+    if (!!filterSortData.column) {
+      newRawRows.sort((a, b) => {
+        const columnIndice = filterSortData.column === 'dist' ? 'dist' : 'nominal_size';
+
+        if (parseFloat(a[columnIndice] ?? '0') < parseFloat(b[columnIndice] ?? '0')) {
+          return filterSortData.direction === 'descending' ? 1 : -1;
+        } else if (parseFloat(a[columnIndice] ?? '0') > parseFloat(b[columnIndice] ?? '0')) {
+          return filterSortData.direction === 'descending' ? -1 : 1;
+        }
+
+        return 0;
+      });
+    }
+
     setUnchangedRawRows(newRawRows);
     setRawRows(newRawRows);
-  }, [cadData]);
+  }, [cadData, filterSortData]);
 
   /**
    * Update the displayed version of the data; we make this a separate effect
@@ -231,11 +263,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
         }
 
         // Calculate size from h if there is no size from API
-        if (
-          !rawRow.nominal_size &&
-          rawRow.minimum_size === 'NaN' &&
-          rawRow.maximum_size === 'NaN'
-        ) {
+        if (rawRow.minimum_size === 'NaN' && rawRow.maximum_size === 'NaN') {
           rawRow.nominal_size = (
             (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
             2

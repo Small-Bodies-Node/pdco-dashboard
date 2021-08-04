@@ -10,11 +10,6 @@ export const useStyles = (isHeightAuto: boolean) =>
         textAlign: 'start',
         padding: '10px 0px 3px 3px'
       },
-      filterSortButton: {
-        position: 'absolute',
-        top: 0,
-        right: 0
-      },
       tableRowHighlighted: {
         '& td, tr': {
           color: 'yellow'
