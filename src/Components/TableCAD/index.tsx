@@ -159,17 +159,30 @@ export const TableCAD = ({
       return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
     });
 
-    const newRawRows = filteredDataArrays.map(
+    let newRawRows = filteredDataArrays.map(
       (datumArr: (string | null)[]): IRawRow => {
         const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
 
         let diameter = datumArr[cadFieldIndices.diameter];
+        let min_size = (
+          parseFloat(datumArr[cadFieldIndices.diameter]!) -
+          parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+        ).toString();
+        let max_size = (
+          parseFloat(datumArr[cadFieldIndices.diameter]!) +
+          parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+        ).toString();
+
+        // If API does not return a diameter value, then estimate necessary values
         if (!diameter) {
           diameter = (
             (magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25) +
               magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05)) /
             2
           ).toString();
+
+          min_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25).toString();
+          max_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05).toString();
         }
 
         return {
@@ -178,14 +191,8 @@ export const TableCAD = ({
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
           nominal_size: diameter,
-          minimum_size: (
-            parseFloat(datumArr[cadFieldIndices.diameter]!) -
-            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
-          ).toString(),
-          maximum_size: (
-            parseFloat(datumArr[cadFieldIndices.diameter]!) +
-            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
-          ).toString(),
+          minimum_size: min_size,
+          maximum_size: max_size,
           dist: datumArr[cadFieldIndices.dist]!,
           min_distance: datumArr[cadFieldIndices.dist_min]!,
           max_distance: datumArr[cadFieldIndices.dist_max]!,
@@ -195,6 +202,25 @@ export const TableCAD = ({
       }
     );
 
+    // Filter data if selected
+    if (!!filterSortData.sizeFilter) {
+      newRawRows =
+        newRawRows?.filter((data) => {
+          // Filter NEOs <140m, if needed
+          if (filterSortData.sizeFilter === '>140m' && parseFloat(data.maximum_size) < 0.14) {
+            return false;
+          }
+
+          // Filter NEOs < 1km, if needed
+          if (filterSortData.sizeFilter === '>1km' && parseFloat(data.maximum_size) < 1) {
+            return false;
+          }
+
+          return true;
+        }) ?? [];
+    }
+
+    // Sort data if selected
     if (!!filterSortData.column) {
       newRawRows.sort((a, b) => {
         const columnIndice = filterSortData.column === 'dist' ? 'dist' : 'nominal_size';
@@ -262,16 +288,6 @@ export const TableCAD = ({
             throw 'Not supposed to be possible';
         }
 
-        // Calculate size from h if there is no size from API
-        if (rawRow.minimum_size === 'NaN' && rawRow.maximum_size === 'NaN') {
-          rawRow.nominal_size = (
-            (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
-            2
-          ).toString();
-          rawRow.minimum_size = magToSizeKm(parseFloat(rawRow.h), 0.25).toString();
-          rawRow.maximum_size = magToSizeKm(parseFloat(rawRow.h), 0.05).toString();
-        }
-
         // Display size as different formats depending on unit selected
         let minimum_size: string; // rawRow.size is in km by default
         let maximum_size: string; // rawRow.size is in km by default
@@ -313,7 +329,7 @@ export const TableCAD = ({
       }
     );
     setDisplayRows(newDisplayRows);
-  }, [rawRows, distUnit, sizeUnit, width]);
+  }, [rawRows, distUnit, sizeUnit, width, filterSortData]);
 
   const cellPadding = `5px 5px 3px 3px`;
   const cellFont = ''; // "'Roboto Mono', monospace";
@@ -421,7 +437,7 @@ export const TableCAD = ({
                                   : column.format(value)}
 
                                 {column.id === 'dist' &&
-                                  auToLd(parseFloat(rawRows ? rawRows[ind].dist : '0')) -
+                                  auToLd(parseFloat(rawRows ? rawRows[ind]?.dist : '0')) -
                                     auToLd(parseFloat(row.min_distance)) >
                                     0.1 &&
                                   '*'}

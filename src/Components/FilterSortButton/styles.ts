@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import { borderColor } from '../../Utils/constants';
+import { borderColor, mobileWidthPxl } from '../../Utils/constants';
 
 /**
  * Now apply these grid settings to the actual styles generator
@@ -7,18 +7,20 @@ import { borderColor } from '../../Utils/constants';
 export const useStyles = makeStyles(
   () => ({
     filterSortButton: {
-      zIndex: 10,
-
       '& button': {
         width: 30,
         height: 30,
 
         position: 'absolute',
-        right: 5,
-        top: 5,
+        right: 3,
+        top: 3,
         zIndex: 10,
 
-        background: 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        background: '#181b2e',
         border: `3px solid ${borderColor}`,
         borderRadius: 7,
         outline: 'none',
@@ -38,6 +40,9 @@ export const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
+      zIndex: 20,
+
+      overflowY: 'auto',
 
       minWidth: 150,
       minHeight: 100,
@@ -68,7 +73,7 @@ export const useStyles = makeStyles(
         display: 'flex',
         flexDirection: 'row',
         width: '100%',
-        padding: '0.5rem',
+        padding: '0.35rem',
         margin: '0.2rem 0',
         borderRadius: 7,
         cursor: 'pointer',
@@ -89,6 +94,20 @@ export const useStyles = makeStyles(
       },
       '& > #selected': {
         background: 'rgba(255, 255, 255, 0.2)'
+      }
+    },
+    divider: {
+      margin: '0.25rem 0 0.6rem 0',
+
+      width: '100%',
+      height: '1px',
+
+      background: 'rgba(255, 255, 255, 0.1)'
+    },
+
+    [`@media (max-width: ${mobileWidthPxl}px)`]: {
+      filterSortDropdownContainer: {
+        maxHeight: '160px'
       }
     }
   }),
