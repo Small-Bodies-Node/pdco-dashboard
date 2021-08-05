@@ -57,19 +57,20 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             title: {
               position: 'relative',
-              height: 35,
+              //height: 35,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               fontSize: 14,
               fontWeight: 'bold',
-              '& *': { whiteSpace: 'nowrap' },
-              '& a, p': {
+              //'& *': { whiteSpace: 'nowrap' },
+              '& a': {
                 textDecoration: 'none',
                 color: 'white',
                 '&:hover': {
                   color: 'cyan'
-                }
+                },
+                padding: '0.5rem 2rem'
               }
             },
             content: {

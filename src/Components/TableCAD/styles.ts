@@ -2,8 +2,20 @@ import { makeStyles } from '@material-ui/core';
 
 export const useStyles = (isHeightAuto: boolean) =>
   makeStyles(
-    (theme) =>
-      !isHeightAuto
+    (theme) => ({
+      noMaxWidth: {
+        maxWidth: 'none'
+      },
+      total: {
+        textAlign: 'start',
+        padding: '10px 0px 3px 3px'
+      },
+      tableRowHighlighted: {
+        '& td, tr': {
+          color: 'yellow'
+        }
+      },
+      ...(!isHeightAuto
         ? {
             container: {
               width: '100%',
@@ -14,22 +26,6 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             tableContainer: {
               maxHeight: 190
-            },
-            total: {
-              textAlign: 'start',
-              padding: '10px 0px 3px 3px'
-            },
-            noMaxWidth: {
-              maxWidth: 'none'
-            },
-            tableRowHighlighted: {
-              '& td, tr': {
-                color: 'yellow'
-              }
-            },
-            legend: {
-              textAlign: 'start',
-              color: 'rgba(255, 255, 255, 0.7)'
             }
           }
         : {
@@ -42,23 +38,8 @@ export const useStyles = (isHeightAuto: boolean) =>
             tableContainer: {
               // Governs height of scrollable rows in mobile view
               maxHeight: 200
-            },
-            total: {
-              textAlign: 'start',
-              padding: '10px 0px 3px 3px'
-            },
-            noMaxWidth: {
-              maxWidth: 'none'
-            },
-            tableRowHighlighted: {
-              '& td, tr': {
-                color: 'yellow'
-              }
-            },
-            legend: {
-              textAlign: 'start',
-              color: 'rgba(255, 255, 255, 0.7)'
             }
-          },
+          })
+    }),
     { name: 'table-cad' }
   );
