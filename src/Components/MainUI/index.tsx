@@ -100,6 +100,8 @@ export const MainUI = () => {
 
   return (
     <>
+      <MoonPhaseModal isShown={isMoonPhaseModalShown} setIsShown={setIsMoonPhaseModalShown} />
+
       <div className={'main-ui-container ' + classes.container}>
         <div className={classes.imageLeft}>
           <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
