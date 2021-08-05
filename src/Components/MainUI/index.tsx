@@ -189,19 +189,19 @@ export const MainUI = () => {
       </div>
 
       <div className={classes.lowerContainer}>
-        <div style={{ gridArea: 'foo' }}>
+        <div className={classes.largeDistantTab}>
           <TitledCell
-            title="CLOSE APPROACHES LAST 7 DAYS"
+            title="LARGE AND DISTANT CLOSE APPROACHES NEXT 15 YEARS"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approach is defined as <1LD at smallest nominal distance"
+            tooltip="Close Approaches >1km in size passing within 15LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
           >
             {!!storedData && (
               <TableCAD
-                period="recent"
-                cadData={storedData.cadData}
+                period="future"
+                cadData={storedData.largeDistantCadData}
                 dateAtDataFetch={storedData.timestamp}
                 isHeightAuto={isMobile}
               />

@@ -19,24 +19,13 @@ const gridTemplateAreas = `
  */
 const gridTemplateRowsLower = `minmax(0px,1fr)`;
 const gridTemplateAreasLower = `
-   'foo foo     foo     foo     title     title    title      imageRight'
+   'foo foo foo foo'
  `;
-
 const gridTemplateRowsLowerMobile = `
-  minmax(100px,auto)
-  minmax(100px,auto)
-  minmax(100px,auto)
-  minmax(100px,auto)
-  minmax(100px,auto)
   minmax(100px,auto)
 `;
 const gridTemplateAreasLowerMobile = `
  'foo foo     foo     foo'
- 'clocks    clocks    clocks    clocks '
- 'sentry    sentry    programs  programs '
- 'neoCount  neoCount  neoCount  neoCount'
- 'recentTab recentTab recentTab recentTab'
- 'futureTab futureTab futureTab  futureTab'
 `;
 
 /**
@@ -85,7 +74,7 @@ export const useStyles = makeStyles(
       gridTemplateAreas,
       gridGap,
       textAlign: 'center',
-      border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
+      border: `${gridGap}px solid transparent`,
       '& > div': {
         // backgroundColor: 'transparent',
         // backgroundColor: 'rgba(50,50,50,1)',
@@ -110,7 +99,8 @@ export const useStyles = makeStyles(
       gridTemplateAreas: gridTemplateAreasLower,
       gridGap,
       textAlign: 'center',
-      border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
+      border: `${gridGap}px solid transparent`,
+      marginTop: -gridGap,
       '& > div': {
         // backgroundColor: 'transparent',
         // backgroundColor: 'rgba(50,50,50,1)',
@@ -183,6 +173,12 @@ export const useStyles = makeStyles(
       border: panelBorder,
       backgroundColor: 'yellow'
     },
+    // Lower Section
+    largeDistantTab: {
+      gridArea: 'foo',
+      border: panelBorder,
+      backgroundColor: 'yellow'
+    },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
@@ -194,10 +190,15 @@ export const useStyles = makeStyles(
       },
       lowerContainer: {
         height: 'auto', // Let height grow with content
+        minHeight: 'unset',
         gridGap: gridGapMobile,
         gridTemplateRows: gridTemplateRowsLowerMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
-        gridTemplateAreas: gridTemplateAreasLowerMobile
+        gridTemplateAreas: gridTemplateAreasLowerMobile,
+        marginTop: -gridGapMobile,
+        borderLeft: `${gridGap}px solid transparent`,
+        borderRight: `${gridGap}px solid transparent`,
+        borderTop: 'none'
       },
       title: {
         '& > .shortTitle': {
