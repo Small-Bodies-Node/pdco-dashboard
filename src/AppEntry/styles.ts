@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core';
 export const useStyles = makeStyles(
   (theme) => ({
     container: {
-      height: '100vh',
-      width: '100vw',
+      minHeight: '100vh',
+      width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center'

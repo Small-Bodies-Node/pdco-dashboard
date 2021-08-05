@@ -15,6 +15,31 @@ const gridTemplateAreas = `
 `;
 
 /**
+ * Define grid items for lower grid container
+ */
+const gridTemplateRowsLower = `minmax(0px,1fr)`;
+const gridTemplateAreasLower = `
+   'foo foo     foo     foo     title     title    title      imageRight'
+ `;
+
+const gridTemplateRowsLowerMobile = `
+  minmax(100px,auto)
+  minmax(100px,auto)
+  minmax(100px,auto)
+  minmax(100px,auto)
+  minmax(100px,auto)
+  minmax(100px,auto)
+`;
+const gridTemplateAreasLowerMobile = `
+ 'foo foo     foo     foo'
+ 'clocks    clocks    clocks    clocks '
+ 'sentry    sentry    programs  programs '
+ 'neoCount  neoCount  neoCount  neoCount'
+ 'recentTab recentTab recentTab recentTab'
+ 'futureTab futureTab futureTab  futureTab'
+`;
+
+/**
  * Define Grid Row-Column Params for Mobile View
  * Enable variable-length tables to dictate height of their panels
  */
@@ -50,7 +75,7 @@ export const useStyles = makeStyles(
   (theme) => ({
     container: {
       position: 'relative',
-      width: '100vw',
+      width: '100%',
       height: '100vh',
       minHeight: 650,
       overflowY: 'auto',
@@ -58,6 +83,31 @@ export const useStyles = makeStyles(
       gridTemplateRows,
       gridTemplateColumns,
       gridTemplateAreas,
+      gridGap,
+      textAlign: 'center',
+      border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
+      '& > div': {
+        // backgroundColor: 'transparent',
+        // backgroundColor: 'rgba(50,50,50,1)',
+        // backgroundColor: 'black',
+        backgroundColor: '#181b2e',
+        // border: `3px solid ${borderColor}`,
+        boxSizing: 'border-box',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 1
+      }
+    },
+    lowerContainer: {
+      position: 'relative',
+      width: '100%',
+      minHeight: 450,
+      overflowY: 'auto',
+      display: 'grid',
+      gridTemplateRows: gridTemplateRowsLower,
+      gridTemplateColumns,
+      gridTemplateAreas: gridTemplateAreasLower,
       gridGap,
       textAlign: 'center',
       border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
@@ -141,6 +191,13 @@ export const useStyles = makeStyles(
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
         gridTemplateAreas: gridTemplateAreasMobile
+      },
+      lowerContainer: {
+        height: 'auto', // Let height grow with content
+        gridGap: gridGapMobile,
+        gridTemplateRows: gridTemplateRowsLowerMobile,
+        gridTemplateColumns: gridTemplateColumnsMobile,
+        gridTemplateAreas: gridTemplateAreasLowerMobile
       },
       title: {
         '& > .shortTitle': {
