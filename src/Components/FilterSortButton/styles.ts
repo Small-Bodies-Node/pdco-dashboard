@@ -46,6 +46,7 @@ export const useStyles = makeStyles(
 
       minWidth: 150,
       minHeight: 100,
+      maxHeight: 300,
       padding: '0.7rem',
 
       background: '#181b2e',

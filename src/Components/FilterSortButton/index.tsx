@@ -57,15 +57,13 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
     setFilterSortData(tempFilterSortData);
   };
 
-  const setFilter = (filter: 'all' | '140' | '1km') => {
+  const setFilter = (filter: 'all' | '>50m' | '>140m' | '>1km') => {
     let tempFilterSortData = Object.assign({}, filterSortData);
 
     if (filter === 'all') {
       tempFilterSortData.sizeFilter = undefined;
-    } else if (filter === '140') {
-      tempFilterSortData.sizeFilter = '>140m';
-    } else if (filter === '1km') {
-      tempFilterSortData.sizeFilter = '>1km';
+    } else {
+      tempFilterSortData.sizeFilter = filter;
     }
 
     setFilterSortData(tempFilterSortData);
@@ -144,7 +142,19 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
             </div>
           </div>
 
-          <div onClick={() => setFilter('140')}>
+          <div onClick={() => setFilter('>50m')}>
+            <p>{'>'}50m</p>
+
+            <div>
+              <FontAwesomeIcon
+                icon={filterSortData.sizeFilter === '>50m' ? faCheckSquare : faSquare}
+                style={{ marginRight: '3px' }}
+                size="xs"
+              />
+            </div>
+          </div>
+
+          <div onClick={() => setFilter('>140m')}>
             <p>{'>'}140m</p>
 
             <div>
@@ -156,7 +166,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
             </div>
           </div>
 
-          <div onClick={() => setFilter('1km')}>
+          <div onClick={() => setFilter('>1km')}>
             <p>{'>'}1km</p>
 
             <div>

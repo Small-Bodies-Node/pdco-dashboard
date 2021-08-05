@@ -207,6 +207,11 @@ export const TableCAD = ({
       newRawRows =
         newRawRows?.filter((data) => {
           // Filter NEOs <140m, if needed
+          if (filterSortData.sizeFilter === '>50m' && parseFloat(data.maximum_size) < 0.05) {
+            return false;
+          }
+
+          // Filter NEOs <140m, if needed
           if (filterSortData.sizeFilter === '>140m' && parseFloat(data.maximum_size) < 0.14) {
             return false;
           }
