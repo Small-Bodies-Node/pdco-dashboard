@@ -9,7 +9,9 @@ import {
   faTable,
   faGlobeAmericas,
   faRedo,
-  faMoon
+  faMoon,
+  faFilter,
+  faArrowUp
 } from '@fortawesome/free-solid-svg-icons';
 
 // My constants, hooks, etc.
@@ -32,6 +34,8 @@ import { useEventListener } from '../../Hooks/useEventListener';
 import { mobileWidthPxl } from '../../Utils/constants';
 import { MoonPhase } from '../MoonPhase';
 import { MoonPhaseModal } from '../MoonPhaseModal/index';
+import { IFilterSortData } from '../../Models/filterSort.model';
+import { FilterSortButton } from '../FilterSortButton';
 
 export const MainUI = () => {
   // --------------------->>>
@@ -50,6 +54,8 @@ export const MainUI = () => {
   const [displayDate, setDisplayDate] = useState('');
 
   const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
+  const [filterSortDataLast7Days, setFilterSortDataLast7Days] = useState<IFilterSortData>({});
+  const [filterSortDataNext10Years, setFilterSortDataNext10Years] = useState<IFilterSortData>({});
 
   // Check if mock data is to be used
   const mockQueryParam = new URLSearchParams(useLocation().search);
@@ -174,6 +180,12 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
+            headerElement={
+              <FilterSortButton
+                filterSortData={filterSortDataLast7Days}
+                setFilterSortData={setFilterSortDataLast7Days}
+              />
+            }
           >
             {!!storedData && (
               <TableCAD
@@ -181,6 +193,7 @@ export const MainUI = () => {
                 cadData={storedData.cadData}
                 dateAtDataFetch={storedData.timestamp}
                 isHeightAuto={isMobile}
+                filterSortData={filterSortDataLast7Days}
               />
             )}
           </TitledCell>
@@ -193,6 +206,12 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
+            headerElement={
+              <FilterSortButton
+                filterSortData={filterSortDataNext10Years}
+                setFilterSortData={setFilterSortDataNext10Years}
+              />
+            }
           >
             {!!storedData && (
               <TableCAD
@@ -200,6 +219,7 @@ export const MainUI = () => {
                 cadData={storedData.cadData}
                 dateAtDataFetch={storedData.timestamp}
                 isHeightAuto={isMobile}
+                filterSortData={filterSortDataNext10Years}
               />
             )}
           </TitledCell>

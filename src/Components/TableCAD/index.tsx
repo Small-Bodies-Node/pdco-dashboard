@@ -23,6 +23,7 @@ import {
 } from '../../Utils/conversionFormulae';
 import { useContainerDimensions } from '../../Hooks/useContainerDimensions';
 import { ObjectModal } from '../ObjectModal';
+import { IFilterSortData } from '../../Models/filterSort.model';
 
 const numeral = numeralWithDefault.default;
 
@@ -89,6 +90,7 @@ interface IProps {
   dateAtDataFetch: string;
   period: 'recent' | 'future';
   isHeightAuto?: boolean;
+  filterSortData: IFilterSortData;
 }
 
 /**
@@ -98,7 +100,13 @@ interface IProps {
  * To make it easier to index on these arrays, I have created the object
  * 'cadFieldIndices'
  */
-export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IProps) => {
+export const TableCAD = ({
+  cadData,
+  dateAtDataFetch,
+  period,
+  isHeightAuto,
+  filterSortData
+}: IProps) => {
   // -------------------------------------------------->>>
 
   // State
@@ -134,7 +142,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
     // --------->>>
 
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    const filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
+    let filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
       // Logic to remove any datumArr's with  any null entries in our displayed cols
       const colIds = columns.map((col) => col.id);
       const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
@@ -151,23 +159,40 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
     });
 
-    const newRawRows = filteredDataArrays.map(
+    let newRawRows = filteredDataArrays.map(
       (datumArr: (string | null)[]): IRawRow => {
         const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
+
+        let diameter = datumArr[cadFieldIndices.diameter];
+        let min_size = (
+          parseFloat(datumArr[cadFieldIndices.diameter]!) -
+          parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+        ).toString();
+        let max_size = (
+          parseFloat(datumArr[cadFieldIndices.diameter]!) +
+          parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
+        ).toString();
+
+        // If API does not return a diameter value, then estimate necessary values
+        if (!diameter) {
+          diameter = (
+            (magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25) +
+              magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05)) /
+            2
+          ).toString();
+
+          min_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25).toString();
+          max_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05).toString();
+        }
+
         return {
           fullname: name,
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
-          nominal_size: datumArr[cadFieldIndices.diameter]!,
-          minimum_size: (
-            parseFloat(datumArr[cadFieldIndices.diameter]!) -
-            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
-          ).toString(),
-          maximum_size: (
-            parseFloat(datumArr[cadFieldIndices.diameter]!) +
-            parseFloat(datumArr[cadFieldIndices.diameter_sigma]!)
-          ).toString(),
+          nominal_size: diameter,
+          minimum_size: min_size,
+          maximum_size: max_size,
           dist: datumArr[cadFieldIndices.dist]!,
           min_distance: datumArr[cadFieldIndices.dist_min]!,
           max_distance: datumArr[cadFieldIndices.dist_max]!,
@@ -177,9 +202,47 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }
     );
 
+    // Filter data if selected
+    if (!!filterSortData.sizeFilter) {
+      newRawRows =
+        newRawRows?.filter((data) => {
+          // Filter NEOs <140m, if needed
+          if (filterSortData.sizeFilter === '>50m' && parseFloat(data.maximum_size) < 0.05) {
+            return false;
+          }
+
+          // Filter NEOs <140m, if needed
+          if (filterSortData.sizeFilter === '>140m' && parseFloat(data.maximum_size) < 0.14) {
+            return false;
+          }
+
+          // Filter NEOs < 1km, if needed
+          if (filterSortData.sizeFilter === '>1km' && parseFloat(data.maximum_size) < 1) {
+            return false;
+          }
+
+          return true;
+        }) ?? [];
+    }
+
+    // Sort data if selected
+    if (!!filterSortData.column) {
+      newRawRows.sort((a, b) => {
+        const columnIndice = filterSortData.column === 'dist' ? 'dist' : 'nominal_size';
+
+        if (parseFloat(a[columnIndice] ?? '0') < parseFloat(b[columnIndice] ?? '0')) {
+          return filterSortData.direction === 'descending' ? 1 : -1;
+        } else if (parseFloat(a[columnIndice] ?? '0') > parseFloat(b[columnIndice] ?? '0')) {
+          return filterSortData.direction === 'descending' ? -1 : 1;
+        }
+
+        return 0;
+      });
+    }
+
     setUnchangedRawRows(newRawRows);
     setRawRows(newRawRows);
-  }, [cadData]);
+  }, [cadData, filterSortData]);
 
   /**
    * Update the displayed version of the data; we make this a separate effect
@@ -230,20 +293,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
             throw 'Not supposed to be possible';
         }
 
-        // Calculate size from h if there is no size from API
-        if (
-          !rawRow.nominal_size &&
-          rawRow.minimum_size === 'NaN' &&
-          rawRow.maximum_size === 'NaN'
-        ) {
-          rawRow.nominal_size = (
-            (magToSizeKm(parseFloat(rawRow.h), 0.25) + magToSizeKm(parseFloat(rawRow.h), 0.05)) /
-            2
-          ).toString();
-          rawRow.minimum_size = magToSizeKm(parseFloat(rawRow.h), 0.25).toString();
-          rawRow.maximum_size = magToSizeKm(parseFloat(rawRow.h), 0.05).toString();
-        }
-
         // Display size as different formats depending on unit selected
         let minimum_size: string; // rawRow.size is in km by default
         let maximum_size: string; // rawRow.size is in km by default
@@ -285,7 +334,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       }
     );
     setDisplayRows(newDisplayRows);
-  }, [rawRows, distUnit, sizeUnit, width]);
+  }, [rawRows, distUnit, sizeUnit, width, filterSortData]);
 
   const cellPadding = `5px 5px 3px 3px`;
   const cellFont = ''; // "'Roboto Mono', monospace";
@@ -393,7 +442,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
                                   : column.format(value)}
 
                                 {column.id === 'dist' &&
-                                  auToLd(parseFloat(rawRows ? rawRows[ind].dist : '0')) -
+                                  auToLd(parseFloat(rawRows ? rawRows[ind]?.dist : '0')) -
                                     auToLd(parseFloat(row.min_distance)) >
                                     0.1 &&
                                   '*'}
@@ -409,13 +458,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           </Table>
         </TableContainer>
         <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
-        {
-          // <div className={classes.legend}>
-          //   * - Minimum and nominal {'>'} 0.1LD apart
-          //   <br />
-          //   Yellow - Minimum distance is below geosynchronous orbit
-          // </div>
-        }
       </div>
     </>
   );

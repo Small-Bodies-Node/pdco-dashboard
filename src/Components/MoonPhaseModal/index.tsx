@@ -97,7 +97,7 @@ export const MoonPhaseModal = ({ isShown, setIsShown }: IProps) => {
       );
 
       moonPhasesArray.push(
-        <div className={classes.moonPhaseCell}>
+        <div className={classes.moonPhaseCell} key={i}>
           <p className={classes.moonPhaseCellTitle}>
             {newDate.getUTCDate()}{' '}
             <span style={{ fontWeight: 400 }}>({EDaysOfWeek[newDate.getUTCDay()]})</span>
