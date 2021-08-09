@@ -62,7 +62,6 @@ export const useStyles = (isHeightAuto: boolean) =>
               alignItems: 'center',
               fontSize: 14,
               fontWeight: 'bold',
-              '& *': { whiteSpace: 'nowrap' },
               '& a': {
                 textDecoration: 'none',
                 color: 'white',

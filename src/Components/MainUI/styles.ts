@@ -6,26 +6,12 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  */
 const gridGap = 20;
 const gridTemplateRows = `minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
-const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
+const gridTemplateColumns = `repeat(24,minmax(0px,1fr))`;
 const gridTemplateAreas = `
-  'imageLeft title     title     title     title     title    title      imageRight'
-  'imageLeft clocks    clocks    clocks    clocks    clocks   clocks     imageRight'
-  'neoCount  neoCount  neoCount  neoCount  sentry    sentry   programs   programs'
-  'recentTab recentTab recentTab recentTab futureTab futureTab futureTab futureTab'
-`;
-
-/**
- * Define grid items for lower grid container
- */
-const gridTemplateRowsLower = `minmax(0px,1fr)`;
-const gridTemplateAreasLower = `
-   'foo foo foo foo'
- `;
-const gridTemplateRowsLowerMobile = `
-  minmax(100px,auto)
-`;
-const gridTemplateAreasLowerMobile = `
- 'foo foo     foo     foo'
+  'imageLeft     imageLeft     imageLeft     title         title         title         title         title         title         title         title         title         title         title         title         title         title               title               title               title               title               imageRight          imageRight          imageRight'     
+  'imageLeft     imageLeft     imageLeft     clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks              clocks              clocks              clocks              clocks              imageRight          imageRight          imageRight'     
+  'neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      sentry        sentry        sentry        sentry        sentry              sentry              programs            programs            programs            programs            programs            programs'
+  'recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab'
 `;
 
 /**
@@ -45,11 +31,12 @@ const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
 const gridTemplateAreasMobile = `
   'imageLeft title     title     imageRight'
-  'clocks    clocks    clocks    clocks '
-  'sentry    sentry    programs  programs '
+  'clocks    clocks    clocks    clocks'
+  'sentry    sentry    programs  programs'
   'neoCount  neoCount  neoCount  neoCount'
   'recentTab recentTab recentTab recentTab'
   'futureTab futureTab futureTab  futureTab'
+  'largeDistantTab largeDistantTab largeDistantTab largeDistantTab'
 `;
 
 /**
@@ -75,32 +62,6 @@ export const useStyles = makeStyles(
       gridGap,
       textAlign: 'center',
       border: `${gridGap}px solid transparent`,
-      '& > div': {
-        // backgroundColor: 'transparent',
-        // backgroundColor: 'rgba(50,50,50,1)',
-        // backgroundColor: 'black',
-        backgroundColor: '#181b2e',
-        // border: `3px solid ${borderColor}`,
-        boxSizing: 'border-box',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 1
-      }
-    },
-    lowerContainer: {
-      position: 'relative',
-      width: '100%',
-      minHeight: 450,
-      overflowY: 'auto',
-      display: 'grid',
-      gridTemplateRows: gridTemplateRowsLower,
-      gridTemplateColumns,
-      gridTemplateAreas: gridTemplateAreasLower,
-      gridGap,
-      textAlign: 'center',
-      border: `${gridGap}px solid transparent`,
-      marginTop: -gridGap,
       '& > div': {
         // backgroundColor: 'transparent',
         // backgroundColor: 'rgba(50,50,50,1)',
@@ -175,7 +136,7 @@ export const useStyles = makeStyles(
     },
     // Lower Section
     largeDistantTab: {
-      gridArea: 'foo',
+      gridArea: 'largeDistantTab',
       border: panelBorder,
       backgroundColor: 'yellow'
     },
@@ -187,18 +148,6 @@ export const useStyles = makeStyles(
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
         gridTemplateAreas: gridTemplateAreasMobile
-      },
-      lowerContainer: {
-        height: 'auto', // Let height grow with content
-        minHeight: 'unset',
-        gridGap: gridGapMobile,
-        gridTemplateRows: gridTemplateRowsLowerMobile,
-        gridTemplateColumns: gridTemplateColumnsMobile,
-        gridTemplateAreas: gridTemplateAreasLowerMobile,
-        marginTop: -gridGapMobile,
-        borderLeft: `${gridGap}px solid transparent`,
-        borderRight: `${gridGap}px solid transparent`,
-        borderTop: 'none'
       },
       title: {
         '& > .shortTitle': {

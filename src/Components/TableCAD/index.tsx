@@ -134,7 +134,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
     // --------->>>
 
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    const filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
+    const filteredDataArrays = cadData?.data.filter((datumArr: (string | null)[]) => {
       // Logic to remove any datumArr's with  any null entries in our displayed cols
       const colIds = columns.map((col) => col.id);
       const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
@@ -409,13 +409,6 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
           </Table>
         </TableContainer>
         <div className={classes.total}>Total: {displayRows ? displayRows.length : -1}</div>
-        {
-          // <div className={classes.legend}>
-          //   * - Minimum and nominal {'>'} 0.1LD apart
-          //   <br />
-          //   Yellow - Minimum distance is below geosynchronous orbit
-          // </div>
-        }
       </div>
     </>
   );

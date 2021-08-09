@@ -186,14 +186,11 @@ export const MainUI = () => {
             )}
           </TitledCell>
         </div>
-      </div>
-
-      <div className={classes.lowerContainer}>
         <div className={classes.largeDistantTab}>
           <TitledCell
-            title="LARGE AND DISTANT CLOSE APPROACHES NEXT 15 YEARS"
+            title="LARGE/FAR APPROACHES NEXT YEAR"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approaches >1km in size passing within 15LD"
+            tooltip="Close Approaches with h <24.5 in size passing within 19LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}

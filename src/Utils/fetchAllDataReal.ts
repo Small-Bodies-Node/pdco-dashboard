@@ -12,28 +12,51 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
   const cadUrl = getCadUrl();
   const largeDistantCadUrl = getDistantLargeCadUrl();
 
-  // Fetch data from apis
-  const [sentryData, cadData, largeDistantCadData]:
-    | [ISentryData, ICadData, ICadData]
-    | [null, null] = await Promise.all([
-    fetch(sentryUrl).then((res) => res.json()),
-    fetch(cadUrl).then((res) => res.json()),
-    fetch(largeDistantCadUrl).then((res) => res.json())
-  ]).catch((err) => {
-    console.log('An error occurred', JSON.stringify(err));
-    return [null, null];
-  });
+  // // Fetch data from apis
+  // const [sentryData, cadData]:
+  //   | [ISentryData, ICadData]
+  //   | [null, null] = await Promise.all([
+  //   fetch(sentryUrl).then((res) => res.json()),
+  //   fetch(cadUrl).then((res) => res.json()),
+  //   //fetch(largeDistantCadUrl).then((res) => res.json())
+  // ])
+  // .catch((err) => {
+  //   console.log('An error occurred', JSON.stringify(err));
+  //   return [null, null];
+  // });
 
-  // Return null if error occurred
-  if (!sentryData || !cadData || !largeDistantCadData) return null;
+  // Structured with promise chain to avoid rate limit
+  let [sentryData, cadData, largeDistantCadData]: [ISentryData?, ICadData?, ICadData?] = [
+    undefined,
+    undefined,
+    undefined
+  ];
+  return fetch(sentryUrl)
+    .then(async (res) => {
+      sentryData = (await res.json()) as ISentryData;
+    })
+    .then(async () => {
+      return fetch(cadUrl).then(async (res) => {
+        cadData = (await res.json()) as ICadData;
+      });
+    })
+    .then(async () => {
+      return fetch(largeDistantCadUrl).then(async (res) => {
+        largeDistantCadData = (await res.json()) as ICadData;
+      });
+    })
+    .then(() => {
+      // Return null if error occurred
+      if (!sentryData || !cadData || !largeDistantCadData) return null;
 
-  // Return data otherwise
-  return {
-    sentryData,
-    cadData,
-    largeDistantCadData,
-    timestamp: new Date().toUTCString()
-  };
+      // Return data otherwise
+      return {
+        sentryData,
+        cadData,
+        largeDistantCadData,
+        timestamp: new Date().toUTCString()
+      };
+    });
 }
 
 function getCadUrl() {
@@ -57,11 +80,11 @@ function getDistantLargeCadUrl() {
 
   // Build string for future date
   const d = new Date();
-  const futureDaysFromNow = 365 * 15; // 15 Years requested from KF
+  const futureDaysFromNow = 365; // 15 Years requested from KF
   const futureDate = new Date(d.setUTCSeconds(d.getUTCSeconds() + futureDaysFromNow * secsInDay));
   const futureDateStr = futureDate.toISOString().split('T')[0];
 
   // Assemble final url
-  const res = `&dist-max=15LD&h-max=18&date-min=-365&date-max=${futureDateStr}`;
+  const res = `&dist-max=19LD&h-max=24.5&date-min=-365&date-max=${futureDateStr}`;
   return baseUrl + res;
 }
