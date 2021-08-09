@@ -6,12 +6,12 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  */
 const gridGap = 20;
 const gridTemplateRows = `minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
-const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
+const gridTemplateColumns = `repeat(24,minmax(0px,1fr))`;
 const gridTemplateAreas = `
-  'imageLeft title     title     title     title     title     title     imageRight'
-  'imageLeft clocks    clocks    clocks    clocks    clocks    clocks    imageRight'
-  'neoCount  neoCount  neoCount  neoCount  sentry    moonPhase programs  programs'
-  'recentTab recentTab recentTab recentTab futureTab futureTab futureTab futureTab'
+  'imageLeft     imageLeft     imageLeft     title         title         title         title         title         title         title         title         title         title         title         title         title         title               title               title               title               title               imageRight          imageRight          imageRight'     
+  'imageLeft     imageLeft     imageLeft     clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks              clocks              clocks              clocks              clocks              imageRight          imageRight          imageRight'     
+  'neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      sentry        sentry        sentry        moonPhase     moonPhase           moonPhase           programs            programs            programs            programs            programs            programs'
+  'recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab'
 `;
 
 /**
@@ -32,12 +32,12 @@ const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
 const gridTemplateAreasMobile = `
   'imageLeft title     title     imageRight'
-  'clocks    clocks    clocks    clocks '
-  'sentry    sentry    programs  programs '
+  'clocks    clocks    clocks    clocks'
+  'sentry    sentry    programs  programs'
   'neoCount  neoCount  neoCount  neoCount'
   'recentTab recentTab recentTab recentTab'
-  'futureTab futureTab futureTab futureTab'
-  'moonPhase moonPhase moonPhase moonPhase'
+  'futureTab futureTab futureTab  futureTab'
+  'largeDistantTab largeDistantTab largeDistantTab largeDistantTab'
 `;
 
 /**
@@ -52,7 +52,7 @@ export const useStyles = makeStyles(
   (theme) => ({
     container: {
       position: 'relative',
-      width: '100vw',
+      width: '100%',
       height: '100vh',
       minHeight: 650,
       overflowY: 'auto',
@@ -62,7 +62,7 @@ export const useStyles = makeStyles(
       gridTemplateAreas,
       gridGap,
       textAlign: 'center',
-      border: `${gridGap}px solid ${true ? 'transparent' : borderColor}`,
+      border: `${gridGap}px solid transparent`,
       '& > div': {
         // backgroundColor: 'transparent',
         // backgroundColor: 'rgba(50,50,50,1)',
@@ -139,6 +139,12 @@ export const useStyles = makeStyles(
     },
     futureTab: {
       gridArea: 'futureTab',
+      border: panelBorder,
+      backgroundColor: 'yellow'
+    },
+    // Lower Section
+    largeDistantTab: {
+      gridArea: 'largeDistantTab',
       border: panelBorder,
       backgroundColor: 'yellow'
     },

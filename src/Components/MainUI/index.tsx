@@ -56,6 +56,9 @@ export const MainUI = () => {
   const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
   const [filterSortDataLast7Days, setFilterSortDataLast7Days] = useState<IFilterSortData>({});
   const [filterSortDataNext10Years, setFilterSortDataNext10Years] = useState<IFilterSortData>({});
+  const [filterSortDataLargeFarNextYear, setFilterSortDataLargeFarNextYear] = useState<
+    IFilterSortData
+  >({});
 
   // Check if mock data is to be used
   const mockQueryParam = new URLSearchParams(useLocation().search);
@@ -220,6 +223,32 @@ export const MainUI = () => {
                 dateAtDataFetch={storedData.timestamp}
                 isHeightAuto={isMobile}
                 filterSortData={filterSortDataNext10Years}
+              />
+            )}
+          </TitledCell>
+        </div>
+        <div className={classes.largeDistantTab}>
+          <TitledCell
+            title="LARGE/FAR APPROACHES NEXT YEAR"
+            link="https://cneos.jpl.nasa.gov/ca/"
+            tooltip="Close Approaches with h <24.5 in size passing within 19LD"
+            icon={() => <FontAwesomeIcon icon={faTable} />}
+            isDisplayed={isDisplayed}
+            isHeightAuto={isMobile}
+            headerElement={
+              <FilterSortButton
+                filterSortData={filterSortDataLargeFarNextYear}
+                setFilterSortData={setFilterSortDataLargeFarNextYear}
+              />
+            }
+          >
+            {!!storedData && (
+              <TableCAD
+                period="future"
+                cadData={storedData.largeDistantCadData}
+                dateAtDataFetch={storedData.timestamp}
+                isHeightAuto={isMobile}
+                filterSortData={filterSortDataLargeFarNextYear}
               />
             )}
           </TitledCell>

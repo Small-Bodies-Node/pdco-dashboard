@@ -142,7 +142,7 @@ export const TableCAD = ({
     // --------->>>
 
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    let filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
+    const filteredDataArrays = cadData?.data.filter((datumArr: (string | null)[]) => {
       // Logic to remove any datumArr's with  any null entries in our displayed cols
       const colIds = columns.map((col) => col.id);
       const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
