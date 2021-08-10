@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { WorldDaylightMap } from 'world-daylight-map';
 import { useStyles } from './styles';
 import { smallMapIcons, largeMapIcons } from './icons';
@@ -12,35 +12,6 @@ export const ProgramsMap = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const mapRef = useRef<HTMLDivElement>(null);
-  const [zoomScale, setZoomScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-  // useEffect(() => {
-  //   const scrollHandler = (event: Event) => {
-  //     event.preventDefault();
-
-  //     const e = event as WheelEvent;
-  //     const deltaY = -e.deltaY;
-
-  //     const zoom = Math.max(1, zoomScale + (deltaY / 100));
-
-  //     const clientWidth = mapRef.current?.clientWidth ?? 0;
-  //     const offsetX = (clientWidth - (clientWidth / zoom)) * 0.5;
-
-  //     const newOffset = {
-  //       x: offsetX,
-  //       y: 0
-  //     }
-
-  //     setZoomScale(zoom);
-  //     setOffset(newOffset);
-  //   }
-
-  //   window.addEventListener('mousewheel', scrollHandler, { passive: false });
-  //   return () => {
-  //     window.removeEventListener('mousewheel', scrollHandler);
-  //   }
-  // }, [zoomScale]);
 
   return (
     <>
@@ -92,10 +63,7 @@ export const ProgramsMap = () => {
               ))}
             </div>
 
-            <div
-              className={classes.dialogMapWrapper}
-              style={{ transform: `scale(${zoomScale}) translate(${offset.x}px, ${offset.y}px)` }}
-            >
+            <div className={classes.dialogMapWrapper}>
               <WorldDaylightMap
                 options={{
                   controlsPosition: 'outer-top',
