@@ -159,7 +159,7 @@ export const TableCAD = ({
       return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
     });
 
-    let newRawRows = filteredDataArrays.map(
+    let newRawRows = filteredDataArrays?.map(
       (datumArr: (string | null)[]): IRawRow => {
         const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
 
