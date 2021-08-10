@@ -7,6 +7,7 @@ export const useStyles = (isHeightAuto: boolean) =>
         maxWidth: 'none'
       },
       total: {
+        minHeight: 45,
         textAlign: 'start',
         padding: '10px 0px 3px 3px'
       },
@@ -22,10 +23,12 @@ export const useStyles = (isHeightAuto: boolean) =>
               height: '100%',
               minHeight: 200,
               padding: `0px 10px 0px 10px`,
-              overflow: 'hidden'
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
             },
             tableContainer: {
-              maxHeight: 190
+              maxHeight: 'unset'
             }
           }
         : {
