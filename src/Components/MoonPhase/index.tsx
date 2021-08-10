@@ -105,12 +105,13 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
 
   return (
     <div className={classes.container}>
-      <img
-        className={classes.moonImage}
-        src={getMoonImageURL()}
-        alt="Moon phase"
-        style={mobileWidthFull ? { width: '100%', height: 'unset' } : undefined}
-      />
+      <div className={classes.moonImage}>
+        <img
+          src={getMoonImageURL()}
+          alt="Moon phase"
+          style={mobileWidthFull ? { width: '100%', height: 'unset' } : undefined}
+        />
+      </div>
 
       <p className={classes.moonPhaseText}>{moonPhase}</p>
 

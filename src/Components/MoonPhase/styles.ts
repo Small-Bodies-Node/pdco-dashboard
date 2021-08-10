@@ -11,9 +11,14 @@ export const useStyles = makeStyles((theme) => ({
     height: '100%'
   },
   moonImage: {
-    width: '60%',
-    borderRadius: '50%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
+    maxHeight: '60%',
+
+    '& > img': {
+      maxWidth: '100%',
+      height: '100%',
+      borderRadius: '50%'
+    }
   },
   moonPhaseText: {
     fontSize: 18,
