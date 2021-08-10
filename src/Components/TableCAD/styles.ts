@@ -15,11 +15,10 @@ export const useStyles = (isHeightAuto: boolean) =>
               flexDirection: 'column'
             },
             tableContainer: {
-              flex: 1,
               maxHeight: 'unset'
             },
             total: {
-              minHeight: 40,
+              minHeight: 45,
               textAlign: 'start',
               padding: '10px 0px 3px 3px'
             },
