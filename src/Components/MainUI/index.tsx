@@ -188,7 +188,7 @@ export const MainUI = () => {
         </div>
         <div className={classes.largeDistantTab}>
           <TitledCell
-            title="LARGE/FAR APPROACHES NEXT YEAR"
+            title="LARGE APPROACHES <19LD NEXT YEAR"
             link="https://cneos.jpl.nasa.gov/ca/"
             tooltip="Close Approaches with h <24.5 in size passing within 19LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
