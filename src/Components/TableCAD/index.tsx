@@ -203,21 +203,22 @@ export const TableCAD = ({
     );
 
     // Filter data if selected
-    if (!!filterSortData.sizeFilter) {
+    if (!!filterSortData.sizeFilterMeters) {
       newRawRows =
         newRawRows?.filter((data) => {
-          // Filter NEOs <140m, if needed
-          if (filterSortData.sizeFilter === '>50m' && parseFloat(data.maximum_size) < 0.05) {
+          if (parseFloat(data.maximum_size) < (filterSortData.sizeFilterMeters ?? 0) / 1000) {
             return false;
           }
 
-          // Filter NEOs <140m, if needed
-          if (filterSortData.sizeFilter === '>140m' && parseFloat(data.maximum_size) < 0.14) {
-            return false;
-          }
+          return true;
+        }) ?? [];
+    }
 
-          // Filter NEOs < 1km, if needed
-          if (filterSortData.sizeFilter === '>1km' && parseFloat(data.maximum_size) < 1) {
+    // Filter data based on h value
+    if (!!filterSortData.hFilter) {
+      newRawRows =
+        newRawRows?.filter((data) => {
+          if (parseFloat(data.h) > (filterSortData.hFilter ?? 30)) {
             return false;
           }
 
