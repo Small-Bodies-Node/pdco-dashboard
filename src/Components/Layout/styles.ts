@@ -5,9 +5,8 @@ export const useStyles = makeStyles(
     return {
       container: {
         width: '100%',
-        backgroundColor: theme.palette.background.default,
-        display: 'flex',
-        flexDirection: 'column'
+        height: '100%',
+        backgroundColor: theme.palette.background.default
       }
     };
   },
