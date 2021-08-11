@@ -5,10 +5,9 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  * Define Grid Row-Column Params for Main (non-Mobile) 'Desktop' View
  */
 const gridGap = 20;
-const gridTemplateRows = `minmax(0px, 35px) minmax(50px,.8fr) minmax(0px,.5fr) minmax(0px, 5fr)`;
+const gridTemplateRows = `minmax(50px,.8fr) minmax(0px,.5fr) minmax(0px, 5fr)`;
 const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
 const gridTemplateAreas = `
-  'imageLeft header    header    header    header    header    header    imageRight'
   'imageLeft title     title     title     title     title     title     imageRight'
   'imageLeft content   content   content   content   content   content   imageRight'
   'blank1    content   content   content   content   content   content   blank2'
@@ -20,13 +19,12 @@ const gridTemplateAreas = `
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
-  minmax(0px,auto)
   minmax(0px,70px)
+  minmax(0px,auto)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
 const gridTemplateAreasMobile = `
-  'header    header    header    header'
   'imageLeft title     title     imageRight'
   'content   content   content   content'
 `;
@@ -96,28 +94,6 @@ export const useStyles = makeStyles(
         fontSize: 12
       }
     },
-    header: {
-      gridArea: 'header',
-      border: panelBorder,
-
-      display: 'flex',
-      flexDirection: 'row',
-      padding: '0.5rem',
-
-      '& a': {
-        color: 'rgba(255, 255, 255, 0.6)',
-        textDecoration: 'none',
-        transition: 'ease-in-out 0.2s',
-        margin: '0 1rem 0 0',
-
-        '&:hover': {
-          color: 'white'
-        }
-      },
-      '& a:last-child': {
-        margin: '0 auto 0 0'
-      }
-    },
     mainContentContainer: {
       gridArea: 'content',
       border: panelBorder,
@@ -131,7 +107,8 @@ export const useStyles = makeStyles(
 
       '& > h2': {
         padding: '1rem 0 0 1rem',
-        margin: 0
+        margin: 0,
+        textAlign: 'left'
       },
       '& > h2:not(:first-child)': {
         margin: '1rem 0 0 0'
@@ -149,7 +126,8 @@ export const useStyles = makeStyles(
         gridGap: gridGapMobile,
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
-        gridTemplateAreas: gridTemplateAreasMobile
+        gridTemplateAreas: gridTemplateAreasMobile,
+        margin: '1.5rem 0 0 0'
       },
       title: {
         '& > .shortTitle': {

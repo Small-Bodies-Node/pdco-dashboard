@@ -9,12 +9,6 @@ export const PageAbout = () => {
   const classes = useStyles();
   return (
     <div className={'main-ui-container ' + classes.container}>
-      <div className={classes.header}>
-        <Link to="/">Dashboard</Link>
-
-        <Link to="/about">About</Link>
-      </div>
-
       <div className={classes.imageLeft}>
         <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
       </div>

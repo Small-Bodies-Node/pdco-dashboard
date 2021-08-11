@@ -184,11 +184,11 @@ export const MainUI = () => {
         </TitledCell>
       </div>
 
-      <div className={classes.header}>
+      {/* <div className={classes.header}>
         <Link to="/">Dashboard</Link>
 
         <Link to="/about">About</Link>
-      </div>
+      </div> */}
     </div>
   );
 };

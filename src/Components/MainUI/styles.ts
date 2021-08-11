@@ -5,10 +5,9 @@ import { mobileWidthPxl, borderColor } from '../../Utils/constants';
  * Define Grid Row-Column Params for Main (non-Mobile) 'Desktop' View
  */
 const gridGap = 20;
-const gridTemplateRows = `minmax(0px, 35px) minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
+const gridTemplateRows = `minmax(0px,.8fr) minmax(0px,.5fr) minmax(0px,2.0fr) minmax(0px,3fr)`; // This pattern ensures the grid cells don't shrink/expand depending on content
 const gridTemplateColumns = `repeat(8,minmax(0px,1fr))`;
 const gridTemplateAreas = `
-  'imageLeft header    header    header    header    header    header     imageRight'
   'imageLeft title     title     title     title     title     title      imageRight'
   'imageLeft clocks    clocks    clocks    clocks    clocks    clocks     imageRight'
   'neoCount  neoCount  neoCount  neoCount  sentry    sentry    programs   programs'
@@ -21,7 +20,6 @@ const gridTemplateAreas = `
  */
 const gridGapMobile = 10;
 const gridTemplateRowsMobile = `
-  minmax(0px,auto)
   minmax(0px,70px)
   minmax(0px,120px)
   minmax(0px,150px)
@@ -31,7 +29,6 @@ const gridTemplateRowsMobile = `
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
 const gridTemplateAreasMobile = `
-  'header    header    header    header'
   'imageLeft title     title     imageRight'
   'clocks    clocks    clocks    clocks '
   'sentry    sentry    programs  programs '
@@ -135,28 +132,6 @@ export const useStyles = makeStyles(
       border: panelBorder,
       backgroundColor: 'yellow'
     },
-    header: {
-      gridArea: 'header',
-      border: panelBorder,
-
-      display: 'flex',
-      flexDirection: 'row',
-      padding: '0.5rem',
-
-      '& a': {
-        color: 'rgba(255, 255, 255, 0.6)',
-        textDecoration: 'none',
-        transition: 'ease-in-out 0.2s',
-        margin: '0 1rem 0 0',
-
-        '&:hover': {
-          color: 'white'
-        }
-      },
-      '& a:last-child': {
-        margin: '0 auto 0 0'
-      }
-    },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
@@ -164,7 +139,8 @@ export const useStyles = makeStyles(
         gridGap: gridGapMobile,
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
-        gridTemplateAreas: gridTemplateAreasMobile
+        gridTemplateAreas: gridTemplateAreasMobile,
+        margin: '1.5rem 0 0 0'
       },
       title: {
         '& > .shortTitle': {
