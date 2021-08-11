@@ -3,13 +3,10 @@ import React, { useEffect, useState } from 'react';
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 
 // My constants, hooks, etc.
 import { IFilterSortData } from '../../Models/filterSort.model';
 import { useStyles } from './styles';
-
-import debounce from 'lodash.debounce';
 
 interface IProps {
   filterSortData: IFilterSortData;
