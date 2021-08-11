@@ -27,6 +27,7 @@ const gridTemplateRowsMobile = `
   minmax(100px,auto)
   minmax(100px,auto)
   minmax(175px,auto)
+  minmax(175px,auto)
 `;
 const gridTemplateColumnsMobile = `
   minmax(0px,1fr) minmax(0px,2fr) minmax(0px,2fr) minmax(0px,1fr)`;
@@ -38,6 +39,7 @@ const gridTemplateAreasMobile = `
   'recentTab recentTab recentTab recentTab'
   'futureTab futureTab futureTab  futureTab'
   'largeDistantTab largeDistantTab largeDistantTab largeDistantTab'
+  'moonPhase moonPhase moonPhase moonPhase'
 `;
 
 /**
