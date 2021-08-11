@@ -56,13 +56,12 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             title: {
               position: 'relative',
-              height: 35,
+              padding: '0.35rem',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               fontSize: 14,
               fontWeight: 'bold',
-              '& *': { whiteSpace: 'nowrap' },
               '& a': {
                 textDecoration: 'none',
                 color: 'white',

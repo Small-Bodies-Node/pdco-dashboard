@@ -112,7 +112,7 @@ export const MainUI = () => {
       </div>
       <div className={classes.neoCount}>
         <TitledCell
-          title="RECENT CLOSE APPROACHES"
+          title="RECENT CLOSE APPROACHES <1LD"
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at closest approach"
           icon={() => <FontAwesomeIcon icon={faMeteor} />}
@@ -147,7 +147,7 @@ export const MainUI = () => {
       </div>
       <div className={classes.recentTab}>
         <TitledCell
-          title="CLOSE APPROACHES LAST 7 DAYS"
+          title="CLOSE APPROACHES <1LD LAST 7 DAYS"
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at smallest nominal distance"
           icon={() => <FontAwesomeIcon icon={faTable} />}
@@ -166,7 +166,7 @@ export const MainUI = () => {
       </div>
       <div className={classes.futureTab}>
         <TitledCell
-          title="CLOSE APPROACHES NEXT 10 YEARS"
+          title="CLOSE APPROACHES <1LD NEXT 10 YEARS"
           link="https://cneos.jpl.nasa.gov/ca/"
           tooltip="Close Approach is defined as <1LD at closest approach"
           icon={() => <FontAwesomeIcon icon={faTable} />}
