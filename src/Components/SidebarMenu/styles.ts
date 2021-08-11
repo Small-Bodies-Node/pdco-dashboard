@@ -5,13 +5,14 @@ import { mobileWidthPxl } from '../../Utils/constants';
 export const useStyles = makeStyles((theme) => ({
   container: {
     position: 'absolute',
-    left: 10,
-    top: 10
+    top: 0,
+    left: 0
   },
   menuButton: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    padding: 10,
+
+    zIndex: 10,
 
     fontSize: '1rem',
 
@@ -46,7 +47,7 @@ export const useStyles = makeStyles((theme) => ({
     height: '100%',
 
     background: '#181b2e',
-    zIndex: 10,
+    zIndex: 11,
 
     transition: 'ease-in-out 0.12s'
   },

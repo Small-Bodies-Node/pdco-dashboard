@@ -15,8 +15,8 @@ export const SidebarMenu = () => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.menuButton}>
-        <FontAwesomeIcon icon={faBars} onClick={() => setIsMenuOpen(true)} />
+      <div className={classes.menuButton} onClick={() => setIsMenuOpen(true)}>
+        <FontAwesomeIcon icon={faBars} />
       </div>
 
       <div
@@ -25,32 +25,33 @@ export const SidebarMenu = () => {
           background: `${isMenuOpen ? 'rgba(0, 0, 0, 0.5)' : 'transparent'}`,
           pointerEvents: isMenuOpen ? 'auto' : 'none'
         }}
+        onClick={() => setIsMenuOpen(false)}
+      />
+
+      <div
+        className={classes.menuContainer}
+        style={{
+          left: `${isMenuOpen ? 0 : -300}px`
+        }}
       >
-        <div
-          className={classes.menuContainer}
-          style={{
-            left: `${isMenuOpen ? 0 : -300}px`
-          }}
-        >
-          <div className={classes.menuHeader}>
-            <p>Menu</p>
+        <div className={classes.menuHeader}>
+          <p>Menu</p>
 
-            <div className={classes.closeButton} onClick={() => setIsMenuOpen(false)}>
-              <FontAwesomeIcon icon={faTimes} />
-            </div>
+          <div className={classes.closeButton} onClick={() => setIsMenuOpen(false)}>
+            <FontAwesomeIcon icon={faTimes} />
           </div>
+        </div>
 
-          <div className={classes.menuRow}>
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>
-              Dashboard
-            </Link>
-          </div>
+        <div className={classes.menuRow}>
+          <Link to="/" onClick={() => setIsMenuOpen(false)}>
+            Dashboard
+          </Link>
+        </div>
 
-          <div className={classes.menuRow}>
-            <Link to="/about" onClick={() => setIsMenuOpen(false)}>
-              About
-            </Link>
-          </div>
+        <div className={classes.menuRow}>
+          <Link to="/about" onClick={() => setIsMenuOpen(false)}>
+            About
+          </Link>
         </div>
       </div>
     </div>
