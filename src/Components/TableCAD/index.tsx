@@ -48,7 +48,6 @@ interface ICol {
   maxWidth?: number;
   align: 'left';
   format: (value: string) => string;
-  formatWithSigma?: (value: string, sigma: string) => string;
   colClickHandler?: () => void;
 }
 
@@ -297,14 +296,17 @@ export const TableCAD = ({
         // Display size as different formats depending on unit selected
         let minimum_size: string; // rawRow.size is in km by default
         let maximum_size: string; // rawRow.size is in km by default
+        let nominal_size: string;
         let size_tooltip: string;
         switch (sizeUnit) {
           case 0: // m selected
+            nominal_size = (parseFloat(rawRow.nominal_size) * 1000).toFixed(0);
             minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
             maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
             size_tooltip = `${rawRow.nominal_size}`;
             break;
           case 1: // ft selected
+            nominal_size = kmToFt(parseFloat(rawRow.nominal_size)).toFixed(0);
             minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
             maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
             size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
@@ -321,7 +323,7 @@ export const TableCAD = ({
           cd_tooltip,
           dist,
           dist_tooltip,
-          nominal_size: rawRow.nominal_size,
+          nominal_size,
           minimum_size,
           maximum_size,
           size_tooltip,
@@ -436,10 +438,14 @@ export const TableCAD = ({
                                   overflow: 'hidden'
                                 }}
                               >
-                                {column.id === 'size'
+                                {column.id === 'size' &&
+                                !isNaN(parseFloat(row.minimum_size)) &&
+                                !isNaN(parseFloat(row.maximum_size))
                                   ? `${column.format(row.minimum_size)} - ${column.format(
                                       row.maximum_size
                                     )}`
+                                  : column.id === 'size'
+                                  ? column.format(row.nominal_size)
                                   : column.format(value)}
 
                                 {column.id === 'dist' &&
@@ -507,11 +513,7 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
     label_tooltip: 'Diameter from API, or average value using H of 0.25 and 0.05',
     minWidth: 0,
     align: 'left',
-    format: (value: string) => value,
-    formatWithSigma: (value: string, sigma: string) =>
-      `${Math.round(parseFloat(value) - parseFloat(sigma))} -  ${Math.round(
-        parseFloat(value) + parseFloat(sigma)
-      )}`
+    format: (value: string) => value
   },
   {
     id: 'h',
