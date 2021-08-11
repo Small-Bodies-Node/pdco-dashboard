@@ -155,7 +155,8 @@ export const useStyles = makeStyles(
         gridGap: gridGapMobile,
         gridTemplateRows: gridTemplateRowsMobile,
         gridTemplateColumns: gridTemplateColumnsMobile,
-        gridTemplateAreas: gridTemplateAreasMobile
+        gridTemplateAreas: gridTemplateAreasMobile,
+        margin: '1.5rem 0 0 0'
       },
       title: {
         '& .shortTitle': {

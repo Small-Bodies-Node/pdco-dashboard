@@ -29,7 +29,7 @@ import { formattedTimestamp } from '../../Utils/formattedTime';
 import { fetchAllData } from '../../Utils/fetchAllData';
 import { IFetchedData } from '../../Models/apiData.model';
 import { useInterval } from '../../Hooks/useInterval';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEventListener } from '../../Hooks/useEventListener';
 import { mobileWidthPxl } from '../../Utils/constants';
 import { MoonPhase } from '../MoonPhase';
