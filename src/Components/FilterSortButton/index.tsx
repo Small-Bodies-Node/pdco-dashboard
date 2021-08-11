@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 
 // My constants, hooks, etc.
 import { IFilterSortData } from '../../Models/filterSort.model';
@@ -19,6 +18,9 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
   // State
   const classes = useStyles();
   const [isDropdownShown, setIsDropdownShown] = useState(false);
+
+  const [internalSizeFilter, setInternalSizeFilter] = useState<number | undefined>();
+  const [internalHFilter, setInternalHFilter] = useState<number | undefined>();
 
   useEffect(() => {
     const clickListener = (e: Event) => {
@@ -57,16 +59,36 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
     setFilterSortData(tempFilterSortData);
   };
 
-  const setFilter = (filter: 'all' | '>50m' | '>140m' | '>1km') => {
-    let tempFilterSortData = Object.assign({}, filterSortData);
+  const setSizeFilter = (filter?: number, final = false) => {
+    setInternalSizeFilter(!filter ? undefined : filter);
 
-    if (filter === 'all') {
-      tempFilterSortData.sizeFilter = undefined;
-    } else {
-      tempFilterSortData.sizeFilter = filter;
+    if (final === true) {
+      let tempFilterSortData = Object.assign({}, filterSortData);
+
+      if (!filter) {
+        tempFilterSortData.sizeFilterMeters = undefined;
+      } else {
+        tempFilterSortData.sizeFilterMeters = filter;
+      }
+
+      setFilterSortData(tempFilterSortData);
     }
+  };
 
-    setFilterSortData(tempFilterSortData);
+  const setHFilter = (filter?: number, final = false) => {
+    setInternalHFilter(!filter ? undefined : filter);
+
+    if (final === true) {
+      let tempFilterSortData = Object.assign({}, filterSortData);
+
+      if (!filter) {
+        tempFilterSortData.hFilter = undefined;
+      } else {
+        tempFilterSortData.hFilter = filter;
+      }
+
+      setFilterSortData(tempFilterSortData);
+    }
   };
 
   return (
@@ -82,100 +104,110 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
           pointerEvents: `${isDropdownShown ? 'all' : 'none'}` as 'all' | 'none'
         }}
       >
-        <p className={classes.filterSortDropdownHeader}>Sort by</p>
+        <div>
+          <p className={classes.filterSortDropdownHeader}>Sort by</p>
 
-        <div className={classes.filterSortDropdownOptionsContainer}>
-          <div
-            id={filterSortData.column === undefined ? 'selected' : undefined}
-            onClick={() => setColumn()}
-          >
-            <p>Default</p>
+          <div className={classes.filterSortDropdownOptionsContainer}>
+            <div
+              id={filterSortData.column === undefined ? 'selected' : undefined}
+              onClick={() => setColumn()}
+            >
+              <p>Default</p>
+            </div>
+
+            <div
+              id={filterSortData.column === 'dist' ? 'selected' : undefined}
+              onClick={() => setColumn('dist')}
+            >
+              <p>Distance</p>
+
+              {filterSortData.column === 'dist' && (
+                <div>
+                  <FontAwesomeIcon
+                    icon={filterSortData.direction === 'descending' ? faArrowDown : faArrowUp}
+                    size="xs"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div
+              id={filterSortData.column === 'size' ? 'selected' : undefined}
+              onClick={() => setColumn('size')}
+            >
+              <p>Size</p>
+
+              {filterSortData.column === 'size' && (
+                <div>
+                  <FontAwesomeIcon
+                    icon={filterSortData.direction === 'descending' ? faArrowDown : faArrowUp}
+                    size="xs"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-          <div
-            id={filterSortData.column === 'dist' ? 'selected' : undefined}
-            onClick={() => setColumn('dist')}
-          >
-            <p>Distance</p>
+          <div className={classes.divider} />
 
-            {filterSortData.column === 'dist' && (
-              <div>
-                <FontAwesomeIcon
-                  icon={filterSortData.direction === 'descending' ? faArrowDown : faArrowUp}
-                  size="xs"
-                />
-              </div>
-            )}
+          <p className={classes.filterSortDropdownHeader}>Size Filter</p>
+
+          <div className={classes.sliderContainer}>
+            <p>{(internalSizeFilter && '>' + internalSizeFilter + 'm') ?? 'All'}</p>
+
+            <input
+              value={internalSizeFilter ?? 0}
+              onChange={(e) => setSizeFilter(parseInt(e.target.value))}
+              onMouseUp={() =>
+                setSizeFilter((internalSizeFilter ?? 0) > 0 ? internalSizeFilter : undefined, true)
+              }
+              onTouchEnd={() =>
+                setSizeFilter((internalSizeFilter ?? 0) > 0 ? internalSizeFilter : undefined, true)
+              }
+              type="range"
+              min="0"
+              max="1000"
+              step="10"
+            />
           </div>
 
-          <div
-            id={filterSortData.column === 'size' ? 'selected' : undefined}
-            onClick={() => setColumn('size')}
-          >
-            <p>Size</p>
+          <div className={classes.filterSortDropdownOptionsContainer}>
+            <div onClick={() => setSizeFilter(undefined, true)}>
+              <p>All</p>
+            </div>
 
-            {filterSortData.column === 'size' && (
-              <div>
-                <FontAwesomeIcon
-                  icon={filterSortData.direction === 'descending' ? faArrowDown : faArrowUp}
-                  size="xs"
-                />
-              </div>
-            )}
+            <div onClick={() => setSizeFilter(50, true)}>
+              <p>{'>'}50m</p>
+            </div>
+          </div>
+
+          <div className={classes.divider} />
+
+          <p className={classes.filterSortDropdownHeader}>H Filter</p>
+
+          <div className={classes.sliderContainer}>
+            <p>{internalHFilter && internalHFilter > 14 ? '<' + internalHFilter + '' : 'All'}</p>
+
+            <input
+              value={internalHFilter ?? 0}
+              onChange={(e) => setHFilter(parseFloat(e.target.value))}
+              onMouseUp={() =>
+                setHFilter((internalHFilter ?? 0) > 14 ? internalHFilter : undefined, true)
+              }
+              onTouchEnd={() =>
+                setHFilter((internalHFilter ?? 0) > 14 ? internalHFilter : undefined, true)
+              }
+              type="range"
+              min="14.0"
+              max="34.0"
+              step="0.5"
+            />
           </div>
         </div>
 
-        <div className={classes.divider} />
-
-        <p className={classes.filterSortDropdownHeader}>Filter</p>
-
         <div className={classes.filterSortDropdownOptionsContainer}>
-          <div onClick={() => setFilter('all')}>
+          <div onClick={() => setHFilter(undefined, true)}>
             <p>All</p>
-
-            <div>
-              <FontAwesomeIcon
-                icon={!filterSortData.sizeFilter ? faCheckSquare : faSquare}
-                style={{ marginRight: '3px' }}
-                size="xs"
-              />
-            </div>
-          </div>
-
-          <div onClick={() => setFilter('>50m')}>
-            <p>{'>'}50m</p>
-
-            <div>
-              <FontAwesomeIcon
-                icon={filterSortData.sizeFilter === '>50m' ? faCheckSquare : faSquare}
-                style={{ marginRight: '3px' }}
-                size="xs"
-              />
-            </div>
-          </div>
-
-          <div onClick={() => setFilter('>140m')}>
-            <p>{'>'}140m</p>
-
-            <div>
-              <FontAwesomeIcon
-                icon={filterSortData.sizeFilter === '>140m' ? faCheckSquare : faSquare}
-                style={{ marginRight: '3px' }}
-                size="xs"
-              />
-            </div>
-          </div>
-
-          <div onClick={() => setFilter('>1km')}>
-            <p>{'>'}1km</p>
-
-            <div>
-              <FontAwesomeIcon
-                icon={filterSortData.sizeFilter === '>1km' ? faCheckSquare : faSquare}
-                style={{ marginRight: '3px' }}
-                size="xs"
-              />
-            </div>
           </div>
         </div>
       </div>

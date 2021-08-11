@@ -55,7 +55,13 @@ export const useStyles = makeStyles(
       boxShadow: 'rgba(255, 255, 255, 0.1) 0px 3px 8px',
 
       transition: 'ease-in-out 0.12s',
-      transformOrigin: 'top'
+      transformOrigin: 'top',
+
+      '& > div': {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start'
+      }
     },
     filterSortDropdownHeader: {
       color: 'white',
@@ -104,6 +110,16 @@ export const useStyles = makeStyles(
       height: '1px',
 
       background: 'rgba(255, 255, 255, 0.1)'
+    },
+    sliderContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      textAlign: 'left',
+
+      '& p': {
+        margin: '0.5rem 0 0 0'
+      }
     },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
