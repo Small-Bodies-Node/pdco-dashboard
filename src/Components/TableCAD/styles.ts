@@ -22,7 +22,9 @@ export const useStyles = (isHeightAuto: boolean) =>
               height: '100%',
               minHeight: 200,
               padding: `0px 10px 0px 10px`,
-              overflow: 'hidden'
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
             },
             tableContainer: {
               maxHeight: 190
