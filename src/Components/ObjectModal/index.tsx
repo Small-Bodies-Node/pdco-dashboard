@@ -89,7 +89,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     const form = doc.getForm();
 
     // Fill in form fields
-    form.getTextField('Name').setText(`Close Approach Fact Sheet - ${rawRow?.fullname}`);
+    form.getTextField('Name').setText(`${rawRow?.fullname}`);
     form.getTextField('Date').setText(`Will pass by Earth on: ${rawRow?.cd.toUTCString()}`);
     rawRow?.min_distance &&
       form
