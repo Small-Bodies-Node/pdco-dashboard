@@ -13,7 +13,7 @@ export const useStyles = makeStyles(
       height: '100vh',
       left: '0',
       top: '0',
-      background: 'rgba(0, 0, 0, 0.5)',
+      background: 'rgba(0, 0, 0, 0.5) !important',
       zIndex: 100,
       display: 'flex',
       alignItems: 'center',
