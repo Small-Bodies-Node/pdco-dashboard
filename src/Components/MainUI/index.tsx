@@ -231,7 +231,7 @@ export const MainUI = () => {
           <TitledCell
             title="LARGE APPROACHES <19LD NEXT YEAR"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approaches with h <24.5 in size passing within 19LD"
+            tooltip="Close Approaches with H <24 in size passing within 19LD"
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}

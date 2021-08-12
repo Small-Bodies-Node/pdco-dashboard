@@ -54,7 +54,7 @@ export const useStyles = makeStyles(
   (theme) => ({
     container: {
       position: 'relative',
-      width: '100%',
+      width: '100vw',
       height: '100vh',
       minHeight: 650,
       overflowY: 'auto',

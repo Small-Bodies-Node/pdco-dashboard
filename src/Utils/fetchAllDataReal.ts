@@ -85,6 +85,6 @@ function getDistantLargeCadUrl() {
   const futureDateStr = futureDate.toISOString().split('T')[0];
 
   // Assemble final url
-  const res = `&dist-max=19LD&h-max=24.5&date-min=-365&date-max=${futureDateStr}`;
+  const res = `&dist-max=19LD&h-max=24&date-min=-365&date-max=${futureDateStr}`;
   return baseUrl + res;
 }
