@@ -112,7 +112,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
               id={filterSortData.column === undefined ? 'selected' : undefined}
               onClick={() => setColumn()}
             >
-              <p>Default</p>
+              <p>Date (default)</p>
             </div>
 
             <div
