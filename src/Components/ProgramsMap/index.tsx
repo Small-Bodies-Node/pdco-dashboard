@@ -4,7 +4,7 @@ import { useStyles } from './styles';
 import { smallMapIcons, largeMapIcons } from './icons';
 import { Dialog, DialogProps } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCross, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faAlignJustify, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export const ProgramsMap = () => {
   const classes = useStyles();
