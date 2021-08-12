@@ -56,6 +56,10 @@ export interface IRawRow {
   cd: Date;
   cd_sigma: string;
   h: string;
+
+  diameter?: string;
+  diameter_sigma?: string;
+
   nominal_size: string;
   minimum_size: string;
   maximum_size: string;
@@ -189,6 +193,8 @@ export const TableCAD = ({
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
+          diameter: datumArr[cadFieldIndices.diameter]!,
+          diameter_sigma: datumArr[cadFieldIndices.diameter_sigma]!,
           nominal_size: diameter,
           minimum_size: min_size,
           maximum_size: max_size,
@@ -298,17 +304,36 @@ export const TableCAD = ({
         let maximum_size: string; // rawRow.size is in km by default
         let nominal_size: string;
         let size_tooltip: string;
+
+        let diameter: string | undefined;
+        let diameter_sigma: string | undefined;
         switch (sizeUnit) {
           case 0: // m selected
             nominal_size = (parseFloat(rawRow.nominal_size) * 1000).toFixed(0);
             minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
             maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
+
+            diameter = !rawRow.diameter
+              ? undefined
+              : (parseFloat(rawRow.diameter) * 1000).toFixed(0);
+            diameter_sigma = !rawRow.diameter_sigma
+              ? undefined
+              : (parseFloat(rawRow.diameter_sigma) * 1000).toFixed(0);
+
             size_tooltip = `${rawRow.nominal_size}`;
             break;
           case 1: // ft selected
             nominal_size = kmToFt(parseFloat(rawRow.nominal_size)).toFixed(0);
             minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
             maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
+
+            diameter = !rawRow.diameter
+              ? undefined
+              : kmToFt(parseFloat(rawRow.diameter)).toFixed(0);
+            diameter_sigma = !rawRow.diameter_sigma
+              ? undefined
+              : kmToFt(parseFloat(rawRow.diameter_sigma)).toFixed(0);
+
             size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
             break;
           default:
@@ -323,6 +348,8 @@ export const TableCAD = ({
           cd_tooltip,
           dist,
           dist_tooltip,
+          diameter,
+          diameter_sigma,
           nominal_size,
           minimum_size,
           maximum_size,
@@ -438,9 +465,11 @@ export const TableCAD = ({
                                   overflow: 'hidden'
                                 }}
                               >
-                                {column.id === 'size' &&
-                                !isNaN(parseFloat(row.minimum_size)) &&
-                                !isNaN(parseFloat(row.maximum_size))
+                                {column.id === 'size' && !!row.diameter && !!row.diameter_sigma
+                                  ? `${row.diameter} ± ${row.diameter_sigma}`
+                                  : column.id === 'size' &&
+                                    !isNaN(parseFloat(row.minimum_size)) &&
+                                    !isNaN(parseFloat(row.maximum_size))
                                   ? `${column.format(row.minimum_size)} - ${column.format(
                                       row.maximum_size
                                     )}`
