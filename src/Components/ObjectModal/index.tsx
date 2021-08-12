@@ -40,6 +40,10 @@ const rawRowKeyNames: IRawRowKeyNames = {
   cd_sigma: 'Close Approach Date/Time Uncertainty',
   dist: 'Nominal Distance',
   h: 'H (mag)',
+
+  diameter: 'Diameter',
+  diameter_sigma: 'Diameter Sigma',
+
   nominal_size: 'Nominal Size',
   minimum_size: 'Minimum Size',
   maximum_size: 'Maximum Size',
