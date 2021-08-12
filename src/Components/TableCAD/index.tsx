@@ -132,8 +132,12 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
   useEffect(() => {
     // --------->>>
 
+    if (!cadData) {
+      return;
+    }
+
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    const filteredDataArrays = cadData?.data.filter((datumArr: (string | null)[]) => {
+    let filteredDataArrays = cadData.data.filter((datumArr: (string | null)[]) => {
       // Logic to remove any datumArr's with  any null entries in our displayed cols
       const colIds = columns.map((col) => col.id);
       const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
@@ -150,7 +154,7 @@ export const TableCAD = ({ cadData, dateAtDataFetch, period, isHeightAuto }: IPr
       return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
     });
 
-    let newRawRows = filteredDataArrays?.map(
+    let newRawRows = filteredDataArrays.map(
       (datumArr: (string | null)[]): IRawRow => {
         const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
         return {
