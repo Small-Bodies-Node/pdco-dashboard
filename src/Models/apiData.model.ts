@@ -2,6 +2,7 @@
 export interface IFetchedData {
   sentryData: ISentryData;
   cadData: ICadData;
+  largeDistantCadData: ICadData;
   timestamp: string;
 }
 

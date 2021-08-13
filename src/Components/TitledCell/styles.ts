@@ -23,9 +23,10 @@ export const useStyles = (isHeightAuto: boolean) =>
               fontSize: 16,
               fontWeight: 'bold',
               '& *': { whiteSpace: 'nowrap' },
-              '& a': {
+              '& a, p': {
                 textDecoration: 'none',
                 color: 'white',
+                cursor: 'pointer',
                 '&:hover': {
                   color: 'cyan'
                 }
@@ -56,19 +57,19 @@ export const useStyles = (isHeightAuto: boolean) =>
             },
             title: {
               position: 'relative',
-              height: 35,
+              padding: '0.35rem',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               fontSize: 14,
               fontWeight: 'bold',
-              '& *': { whiteSpace: 'nowrap' },
               '& a': {
                 textDecoration: 'none',
                 color: 'white',
                 '&:hover': {
                   color: 'cyan'
-                }
+                },
+                padding: '0.5rem 2rem'
               }
             },
             content: {
