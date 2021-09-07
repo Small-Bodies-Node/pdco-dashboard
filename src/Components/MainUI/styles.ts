@@ -26,7 +26,7 @@ const gridTemplateRowsMobile = `
   minmax(0px,180px)
   minmax(100px,auto)
   minmax(100px,auto)
-  minmax(175px,auto)
+  minmax(100px,auto)
   minmax(175px,auto)
 `;
 const gridTemplateColumnsMobile = `

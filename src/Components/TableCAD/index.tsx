@@ -231,6 +231,19 @@ export const TableCAD = ({
         }) ?? [];
     }
 
+    // Filter data if selected for uncertain NEOs
+    // Filters to only show NEOs where distance (nominal, not minimum) is <1LD
+    if (!filterSortData.showCloseApproachesWithMinLessThan1LD) {
+      newRawRows =
+        newRawRows?.filter((data) => {
+          if (auToLd(parseFloat(data.dist)) < 1) {
+            return true;
+          }
+
+          return false;
+        }) ?? [];
+    }
+
     // Sort data if selected
     if (!!filterSortData.column) {
       newRawRows.sort((a, b) => {

@@ -91,6 +91,13 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
     }
   };
 
+  const setFilterUncertainNEOs = (show: boolean) => {
+    let tempFilterSortData = Object.assign({}, filterSortData);
+    tempFilterSortData.showCloseApproachesWithMinLessThan1LD = show;
+
+    setFilterSortData(tempFilterSortData);
+  };
+
   return (
     <div className={classes.filterSortButton}>
       <button onClick={() => setIsDropdownShown(!isDropdownShown)}>
@@ -105,9 +112,9 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
         }}
       >
         <div>
-          <p className={classes.filterSortDropdownHeader}>Sort by</p>
+          <p className={classes.header}>Sort by</p>
 
-          <div className={classes.filterSortDropdownOptionsContainer}>
+          <div className={classes.optionsContainer}>
             <div
               id={filterSortData.column === undefined ? 'selected' : undefined}
               onClick={() => setColumn()}
@@ -150,7 +157,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
 
           <div className={classes.divider} />
 
-          <p className={classes.filterSortDropdownHeader}>Size Filter</p>
+          <p className={classes.header}>Size Filter</p>
 
           <div className={classes.sliderContainer}>
             <p>{(internalSizeFilter && '>' + internalSizeFilter + 'm') ?? 'All'}</p>
@@ -171,7 +178,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
             />
           </div>
 
-          <div className={classes.filterSortDropdownOptionsContainer}>
+          <div className={classes.optionsContainer}>
             <div onClick={() => setSizeFilter(undefined, true)}>
               <p>All</p>
             </div>
@@ -183,7 +190,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
 
           <div className={classes.divider} />
 
-          <p className={classes.filterSortDropdownHeader}>H Filter</p>
+          <p className={classes.header}>H Filter</p>
 
           <div className={classes.sliderContainer}>
             <p>{internalHFilter && internalHFilter > 14 ? '<' + internalHFilter + '' : 'All'}</p>
@@ -205,10 +212,27 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
           </div>
         </div>
 
-        <div className={classes.filterSortDropdownOptionsContainer}>
+        <div className={classes.optionsContainer}>
           <div onClick={() => setHFilter(undefined, true)}>
             <p>All</p>
           </div>
+        </div>
+
+        <div className={classes.divider} />
+
+        <p className={classes.header}>Uncertain NEOs</p>
+        <div className={classes.uncertainNEOsContainer}>
+          <label htmlFor="showCloseApproachesWithMinLessThan1LD">
+            Show NEOs with min distances {'<'}1LD
+          </label>
+
+          <input
+            type="checkbox"
+            id="showCloseApproachesWithMinLessThan1LD"
+            name="showCloseApproachesWithMinLessThan1LD"
+            onChange={(e) => setFilterUncertainNEOs(e.target.checked)}
+            checked={filterSortData.showCloseApproachesWithMinLessThan1LD}
+          />
         </div>
       </div>
     </div>

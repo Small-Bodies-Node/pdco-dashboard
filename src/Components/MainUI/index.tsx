@@ -86,6 +86,13 @@ export const MainUI = () => {
   };
   useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
 
+  useEffect(() => {
+    let tempFilterSortDataLargeFarNextYear = Object.assign({}, filterSortDataLargeFarNextYear);
+    tempFilterSortDataLargeFarNextYear.showCloseApproachesWithMinLessThan1LD = true;
+
+    setFilterSortDataLargeFarNextYear(tempFilterSortDataLargeFarNextYear);
+  }, []);
+
   // Re-fetch data on pertinent changes
   useEffect(() => {
     if (!storedData || isSearching || isMock) {

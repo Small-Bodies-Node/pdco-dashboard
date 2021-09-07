@@ -58,18 +58,17 @@ export const useStyles = makeStyles(
       transformOrigin: 'top',
 
       '& > div': {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start'
+        width: '100%'
       }
     },
-    filterSortDropdownHeader: {
+    header: {
       color: 'white',
       fontSize: '1.1rem',
       fontWeight: 600,
-      margin: 0
+      margin: 0,
+      textAlign: 'left'
     },
-    filterSortDropdownOptionsContainer: {
+    optionsContainer: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
@@ -119,6 +118,28 @@ export const useStyles = makeStyles(
 
       '& p': {
         margin: '0.5rem 0 0 0'
+      },
+
+      '& > input': {
+        width: '100%'
+      }
+    },
+    uncertainNEOsContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+
+      '& > label': {
+        whiteSpace: 'normal',
+        maxWidth: '140px',
+        marginRight: '0.5rem',
+        textAlign: 'left',
+
+        fontWeight: '500',
+        fontSize: '0.9rem'
+      },
+
+      '& input': {
+        margin: 'auto 0.5rem auto 0'
       }
     },
 
