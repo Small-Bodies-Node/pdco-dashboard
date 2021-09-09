@@ -46,7 +46,7 @@ export const useStyles = makeStyles(
 
       minWidth: 150,
       minHeight: 100,
-      maxHeight: 300,
+      maxHeight: 235,
       padding: '0.7rem',
 
       background: '#181b2e',
@@ -145,7 +145,7 @@ export const useStyles = makeStyles(
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       filterSortDropdownContainer: {
-        maxHeight: '220px'
+        maxHeight: '160px'
       }
     }
   }),

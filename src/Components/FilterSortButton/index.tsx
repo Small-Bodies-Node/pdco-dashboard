@@ -220,7 +220,7 @@ export const FilterSortButton = ({ filterSortData, setFilterSortData }: IProps) 
 
         <div className={classes.divider} />
 
-        <p className={classes.header}>Uncertain NEOs</p>
+        <p className={classes.header}>Uncertain Orbits</p>
         <div className={classes.uncertainNEOsContainer}>
           <label htmlFor="showCloseApproachesWithMinLessThan1LD">
             Show NEOs with min distances {'<'}1LD
