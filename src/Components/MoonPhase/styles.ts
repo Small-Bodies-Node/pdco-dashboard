@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > img': {
       maxWidth: '100%',
-      height: '100%',
+      maxHeight: '100%',
       borderRadius: '50%'
     }
   },
@@ -33,8 +33,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   [`@media (max-width: ${mobileWidthPxl}px)`]: {
     moonImage: {
-      width: 'auto',
-      height: '50%',
+      width: 100,
+      height: 100,
       marginBottom: '0.5rem'
     },
     moonPhaseText: {
