@@ -8,7 +8,8 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
+    cursor: 'pointer'
   },
   triangleSvg: {
     width: '100%',
