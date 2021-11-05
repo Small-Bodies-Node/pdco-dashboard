@@ -226,7 +226,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
-    const baseUrl = 'https://ssd.jpl.nasa.gov/sbdb.cgi?sstr=';
+    const baseUrl = 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=';
     const nameParts = fullName.split(' ');
 
     if (nameParts.length >= 3 && !isNaN(+nameParts[0])) {
@@ -319,7 +319,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             {/** LINK TO SBDB SITE WITH ORBIT DIAGRAM */}
             <div className={classes.linkContainer}>
               <a
-                href={getSSDUrlFromFullName(rawRow.fullname) + ';orb=1;cov=0;log=0;cad=0#orb'}
+                href={getSSDUrlFromFullName(rawRow.fullname) + '&view=VOP'}
                 className={classes.mpcLink}
                 target="_blank"
                 rel="noopener noreferrer"
