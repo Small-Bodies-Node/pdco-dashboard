@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faTable, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faTable } from '@fortawesome/free-solid-svg-icons';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,12 +13,9 @@ import TableRow from '@material-ui/core/TableRow';
 import { TitledCell } from '../TitledCell';
 
 import { useStyles } from './styles';
-import { IRawRow } from '../TableCAD/index';
 import { Theme, withStyles } from '@material-ui/core';
-import { auToKm, auToLd, auToMi, kmToAu, kmToFt } from '../../Utils/conversionFormulae';
-import { earthMeanRadiusKm } from '../../Utils/constants';
+import { kmToFt } from '../../Utils/conversionFormulae';
 
-import { PDFDocument } from 'pdf-lib';
 import { ISentryData } from '../../Models/apiData.model';
 
 // See: https://material-ui.com/components/tables/#CustomizedTables.tsx
@@ -34,47 +31,17 @@ const StyledTableCell = withStyles((theme: Theme) => ({
   }
 }))(TableCell);
 
-type IRawRowKeyNames = Omit<IRawRow, 'cd'> & { cd: string };
-const rawRowKeyNames: IRawRowKeyNames = {
-  fullname: 'Name',
-  cd: 'Close Approach Date/Time',
-  cd_sigma: 'Close Approach Date/Time Uncertainty',
-  dist: 'Nominal Distance',
-  h: 'H (mag)',
-
-  diameter: 'Diameter',
-  diameter_sigma: 'Diameter Sigma',
-
-  nominal_size: 'Nominal Size',
-  minimum_size: 'Minimum Size',
-  maximum_size: 'Maximum Size',
-
-  min_distance: 'Minimum Distance',
-  max_distance: 'Maximum Distance',
-
-  v_rel: 'V-Relative (km/s)',
-  v_inf: 'V-Infinity (km/s)'
-};
-
-// Types for distance (values will count up from 0)
-enum DistanceUnits {
-  LD,
-  km,
-  au,
-  mi,
-  __LENGTH
-}
-
 enum SizeUnits {
   m,
   ft,
   __LENGTH
 }
 
-enum SurfaceDistanceUnits {
-  km,
-  mi,
-  __LENGTH
+interface ISentryDetailsData {
+  energy: string;
+  pdate: string;
+  ts_max: string;
+  ps_cum: string;
 }
 
 interface IProps {
@@ -87,39 +54,24 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
   const classes = useStyles();
 
   // State
-  const [distanceUnit, setDistanceUnit] = useState<number>(DistanceUnits.LD);
   const [sizeUnit, setSizeUnit] = useState<number>(SizeUnits.m);
-  const [surfaceDistance, setSurfaceDistance] = useState<number>(SurfaceDistanceUnits.km);
+  const [detailsData, setDetailsData] = useState<ISentryDetailsData>();
+
+  useEffect(() => {
+    if (!rawData) {
+      return;
+    }
+
+    fetch(`https://ssd-api.jpl.nasa.gov/sentry.api?des=${rawData.des.replaceAll(' ', '%20')}`).then(
+      async (res) => {
+        setDetailsData((await res.json())['summary'] as ISentryDetailsData);
+      }
+    );
+  }, [rawData]);
 
   if (!isShown || !rawData) {
     return null;
   }
-
-  const convertAuTo = (value: string, digits?: number): string => {
-    // Display dist as different formats depending on unit selected
-    let dist: string; // rawRow.dist is in au by default
-
-    switch (distanceUnit) {
-      case DistanceUnits.LD: // ld selected
-        dist = auToLd(parseFloat(value)).toLocaleString('en-US', {
-          maximumFractionDigits: digits ?? 5
-        });
-        break;
-      case DistanceUnits.km: // km selected
-        dist = auToKm(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 0 });
-        break;
-      case DistanceUnits.au: // au selected
-        dist = parseFloat(value).toLocaleString('en-US', { maximumFractionDigits: digits ?? 5 });
-        break;
-      case DistanceUnits.mi: // mi selected
-        dist = auToMi(parseFloat(value)).toLocaleString('en-US', { maximumFractionDigits: 0 });
-        break;
-      default:
-        throw 'Not supposed to be possible';
-    }
-
-    return dist;
-  };
 
   const convertKmTo = (value: string, digits?: number): string => {
     let size: string;
@@ -142,37 +94,8 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
     return size;
   };
 
-  const convertSurfaceDistanceAu = (value: string): string => {
-    let dist: string;
-
-    switch (surfaceDistance) {
-      case SurfaceDistanceUnits.km:
-        dist = (auToKm(parseFloat(value)) - earthMeanRadiusKm).toLocaleString('en-US', {
-          maximumFractionDigits: 0
-        });
-        break;
-      case SurfaceDistanceUnits.mi:
-        dist = auToMi(parseFloat(value) - kmToAu(earthMeanRadiusKm)).toLocaleString('en-US', {
-          maximumFractionDigits: 0
-        });
-        break;
-      default:
-        throw 'Not supposed to be possible';
-    }
-
-    return dist;
-  };
-
-  const incrementDistanceUnit = () => {
-    setDistanceUnit((distanceUnit + 1) % DistanceUnits.__LENGTH);
-  };
-
   const incrementSizeUnit = () => {
     setSizeUnit((sizeUnit + 1) % SizeUnits.__LENGTH);
-  };
-
-  const incrementSurfaceDistUnit = () => {
-    setSurfaceDistance((surfaceDistance + 1) % SurfaceDistanceUnits.__LENGTH);
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
@@ -300,63 +223,6 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
             </div>
           </div>
 
-          {/** DISTANCE & SIZE TABLE */}
-          <TableContainer className={classes.tableContainer}>
-            <Table
-              stickyHeader
-              size="small"
-              aria-label="sticky table"
-              style={{ tableLayout: 'auto' }}
-            >
-              <colgroup>
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '25%' }} />
-              </colgroup>
-
-              <TableHead>
-                <TableRowWithCells
-                  title="Data Point"
-                  cellOneData="Nominal"
-                  cellTwoData="Minimum"
-                  cellThreeData="Maximum"
-                />
-              </TableHead>
-
-              <TableBody>
-                {/* <TableRowWithCells
-                  title={`Distance (${DistanceUnits[distanceUnit]})`}
-                  cellOneData={convertAuTo(rawRow.dist)}
-                  cellTwoData={convertAuTo(rawRow.min_distance)}
-                  cellThreeData={convertAuTo(rawRow.max_distance)}
-                  onClick={incrementDistanceUnit}
-                /> */}
-
-                <TableRowWithCells
-                  title={`Size (${SizeUnits[sizeUnit]})`}
-                  // Shows sizes from API (nominal, min, and max sizes)
-                  cellOneData={convertKmTo(rawData.diameter)}
-                  onClick={incrementSizeUnit}
-                />
-
-                {/* <TableRowWithCells
-                  title={
-                    <span>
-                      Distance - R<sub>E</sub> ({SurfaceDistanceUnits[surfaceDistance]})
-                    </span>
-                  }
-                  // Shows size from API (nominal size) or just size (which is calculated)
-                  // With Earth radius subtracted
-                  cellOneData={convertSurfaceDistanceAu(rawRow.dist)}
-                  cellTwoData={convertSurfaceDistanceAu(rawRow.min_distance)}
-                  cellThreeData={convertSurfaceDistanceAu(rawRow.max_distance)}
-                  onClick={incrementSurfaceDistUnit}
-                /> */}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
           {/** OTHER VALUES TABLE */}
           <TableContainer className={classes.tableContainer}>
             <Table
@@ -375,12 +241,26 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
               </TableHead>
 
               <TableBody>
-                {/* <TableRowWithCells
-                  title="Close Approach Date"
-                  cellOneData={`${rawData.pdate}`}
-                /> */}
+                <TableRowWithCells
+                  title={`Size (${SizeUnits[sizeUnit]})`}
+                  cellOneData={convertKmTo(rawData.diameter)}
+                  onClick={incrementSizeUnit}
+                />
+                {!!detailsData && (
+                  <TableRowWithCells title="Date" cellOneData={detailsData.pdate} />
+                )}
 
+                <TableRowWithCells title="ip" cellOneData={rawData.ip} />
+                <TableRowWithCells title="n_imp" cellOneData={rawData.n_imp} />
                 <TableRowWithCells title="H (mag)" cellOneData={rawData.h} />
+
+                {!!detailsData && (
+                  <>
+                    <TableRowWithCells title="Energy" cellOneData={detailsData.energy} />
+                    <TableRowWithCells title="ts_max" cellOneData={detailsData.ts_max} />
+                    <TableRowWithCells title="ps_cum" cellOneData={detailsData.ps_cum} />
+                  </>
+                )}
 
                 {/* <TableRowWithCells
                   title="V-rel (km/s)"
