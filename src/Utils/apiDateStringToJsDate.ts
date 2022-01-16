@@ -17,6 +17,8 @@ export function apiDateStringToJsDate(dateStr: string) {
     .replace('Sep', '09')
     .replace('Oct', '10')
     .replace('Nov', '11')
-    .replace('Dec', '12');
-  return new Date(adjustedDateStr);
+    .replace('Dec', '12')
+    .replace(' ', 'T');
+  // Add +00:00 to signifiy this date/time is GMT
+  return new Date(adjustedDateStr + '+00:00');
 }
