@@ -279,8 +279,8 @@ export const TableCAD = ({
         const fullname_tooltip = rawRow.fullname;
 
         // Show date without time in cell, with time in tooltip
-        const cd = rawRow.cd.toLocaleDateString();
-        const cd_tooltip = rawRow.cd.toString();
+        const cd = `${rawRow.cd.getMonth() + 1}/${rawRow.cd.getDate()}/${rawRow.cd.getFullYear()}`;
+        const cd_tooltip = rawRow.cd.toUTCString();
 
         // Show h as is in both cell and tooltip
         const h = numeral(parseFloat(rawRow.h)).format('0.0');
