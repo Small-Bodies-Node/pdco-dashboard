@@ -12,8 +12,8 @@ export const useStyles = makeStyles(
       display: 'grid',
       gridGap: 5,
       gridTemplateRows: `repeat(1,minmax(0px,1fr))`,
-      gridTemplateColumns: `repeat(7,minmax(0px,1fr))`,
-      gridTemplateAreas: `'clock1 clock2 clock3 clock4 clock5 clock6 clock7'`,
+      gridTemplateColumns: `repeat(8,minmax(0px,1fr))`,
+      gridTemplateAreas: `'clock1 clock2 clock3 clock4 clock5 clock6 clock7 clock8'`,
       '& > div': {
         // border: 'solid 1px red',
         display: 'flex',
@@ -50,6 +50,10 @@ export const useStyles = makeStyles(
       gridArea: 'clock7'
       // backgroundColor: 'green'
     },
+    clock8: {
+      gridArea: 'clock8'
+      // backgroundColor: 'green'
+    },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {
       container: {
@@ -62,8 +66,8 @@ export const useStyles = makeStyles(
         //   'clock4 clock6 clock7'
         // `
         gridTemplateAreas: `
-          'clock1 clock1 clock1 clock1 clock2 clock2 clock2 clock2 clock3 clock3 clock3 clock3'
-          'clock4 clock4 clock4 clock5 clock5 clock5 clock6 clock6 clock6 clock7 clock7 clock7'
+          'clock1 clock1 clock1 clock2 clock2 clock2 clock3 clock3 clock3 clock4 clock4 clock4'
+          'clock5 clock5 clock5 clock6 clock6 clock6 clock7 clock7 clock7 clock8 clock8 clock8'
         `
       }
     }
