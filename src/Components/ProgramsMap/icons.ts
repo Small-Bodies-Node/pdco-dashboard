@@ -202,13 +202,13 @@ export const largeMapIcons: IIcon[] = [
     iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
   },
   //
-  // {
-  //   iconLabel: 'Cerro Tololo Interational Observatory (ARI Follow-Up)',
-  //   iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
-  //   iconCoord: { lat: -31.392403639071922, lng: -67.91893496407594 },
-  //   iconLink: 'http://www.ctio.noao.edu/noao/',
-  //   iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
-  // },
+  {
+    iconLabel: 'Cerro Tololo Interational Observatory (ARI Follow-Up)',
+    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+    iconCoord: { lat: -31.392403639071922, lng: -67.91893496407594 },
+    iconLink: 'http://www.ctio.noao.edu/noao/',
+    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  },
   //
   {
     iconLabel: 'Space Surveillance Telescope',
