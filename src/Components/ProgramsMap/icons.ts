@@ -218,7 +218,6 @@ export const largeMapIcons: IIcon[] = [
       'https://www.ll.mit.edu/news/space-surveillance-telescope-western-australia-captures-its-first-image',
     iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
   },
-  // FIX ICON
   {
     iconLabel: 'ESA NEOCC',
     iconUrl: '/images/esa-logo.png',
