@@ -11,6 +11,7 @@ import { SimpleMenu } from '../Components/SimpleMenu';
 import { Layout } from '../Components/Layout';
 import { MyError } from '../Components/MyError';
 import { ErrorBoundary } from 'react-error-boundary';
+import { SidebarMenu } from '../Components/SidebarMenu';
 
 const rootErrorMessage = `A an error occurred near the start/root of this web app -- please contact site admin!`;
 
@@ -34,6 +35,7 @@ export const AppEntry = () => {
                 </Route>
               </Switch>
               {/* <SimpleMenu /> */}
+              <SidebarMenu />
             </Router>
           </Layout>
         </ErrorBoundary>

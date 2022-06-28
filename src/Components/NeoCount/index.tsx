@@ -9,6 +9,7 @@ import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
 
 import { ICadData } from '../../Models/apiData.model';
 import { NeoCountRows } from './NeoCountRows';
+import { auToLd } from '../../Utils/conversionFormulae';
 
 interface IProps {
   cadData: ICadData;
@@ -66,18 +67,22 @@ export const NeoCount = ({ cadData, dateAtDataFetch }: IProps) => {
       return size > 1 / 20; // is size (km) smaller than 50m?
     };
 
+    const filterDistance = () => (datumArr: (string | null)[]) => {
+      return auToLd(parseFloat(datumArr[cadFieldIndices.dist] ?? '0')) < 1;
+    };
+
     // Numbers calc
-    const cadDataWeekAll = cadData.data.filter(filterDates(7));
+    const cadDataWeekAll = cadData.data.filter(filterDates(7)).filter(filterDistance());
     const _caWeekGEO = cadDataWeekAll.filter(filterGEOs()).length;
     const _caWeek50m = cadDataWeekAll.filter(filter50ms()).length;
     const _caWeekAll = cadDataWeekAll.length;
 
-    const cadDataMonthAll = cadData.data.filter(filterDates(30));
+    const cadDataMonthAll = cadData.data.filter(filterDates(30)).filter(filterDistance());
     const _caMonthGEO = cadDataMonthAll.filter(filterGEOs()).length;
     const _caMonth50m = cadDataMonthAll.filter(filter50ms()).length;
     const _caMonthAll = cadDataMonthAll.length;
 
-    const cadDataYearAll = cadData.data.filter(filterDates(365));
+    const cadDataYearAll = cadData.data.filter(filterDates(365)).filter(filterDistance());
     const _caYearGEO = cadDataYearAll.filter(filterGEOs()).length;
     const _caYear50m = cadDataYearAll.filter(filter50ms()).length;
     const _caYearAll = cadDataYearAll.length;

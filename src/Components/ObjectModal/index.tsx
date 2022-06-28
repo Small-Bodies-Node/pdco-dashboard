@@ -40,6 +40,10 @@ const rawRowKeyNames: IRawRowKeyNames = {
   cd_sigma: 'Close Approach Date/Time Uncertainty',
   dist: 'Nominal Distance',
   h: 'H (mag)',
+
+  diameter: 'Diameter',
+  diameter_sigma: 'Diameter Sigma',
+
   nominal_size: 'Nominal Size',
   minimum_size: 'Minimum Size',
   maximum_size: 'Maximum Size',
@@ -89,7 +93,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     const form = doc.getForm();
 
     // Fill in form fields
-    form.getTextField('Name').setText(`Close Approach Fact Sheet - ${rawRow?.fullname}`);
+    form.getTextField('Name').setText(`${rawRow?.fullname}`);
     form.getTextField('Date').setText(`Will pass by Earth on: ${rawRow?.cd.toUTCString()}`);
     rawRow?.min_distance &&
       form
@@ -97,7 +101,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
         .setText(
           `At a minimum distance of: ${auToLd(
             parseFloat(rawRow.min_distance)
-          ).toLocaleString('en-US', { maximumFractionDigits: 4 })} ld (${auToKm(
+          ).toLocaleString('en-US', { maximumFractionDigits: 4 })} LD (${auToKm(
             parseFloat(rawRow.min_distance)
           ).toLocaleString('en-US', { maximumFractionDigits: 1 })} km)`
         );
@@ -222,7 +226,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
   };
 
   const getSSDUrlFromFullName = (fullName: string): string => {
-    const baseUrl = 'https://ssd.jpl.nasa.gov/sbdb.cgi?sstr=';
+    const baseUrl = 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=';
     const nameParts = fullName.split(' ');
 
     if (nameParts.length >= 3 && !isNaN(+nameParts[0])) {
@@ -315,7 +319,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
             {/** LINK TO SBDB SITE WITH ORBIT DIAGRAM */}
             <div className={classes.linkContainer}>
               <a
-                href={getSSDUrlFromFullName(rawRow.fullname) + ';orb=1;cov=0;log=0;cad=0#orb'}
+                href={getSSDUrlFromFullName(rawRow.fullname) + '&view=VOP'}
                 className={classes.mpcLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -355,12 +359,12 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
               <p style={{ marginLeft: '9px' }}>CSV</p>
             </div>
 
-            {/** BUTTON TO DOWNLOAD AS PDF
+            {/** BUTTON TO DOWNLOAD AS PDF */}
             <div className={classes.linkContainer} onClick={downloadPdfFactSheet}>
               <FontAwesomeIcon icon={faDownload} size="sm" />
 
               <p style={{ marginLeft: '9px' }}>PDF (Fact Sheet)</p>
-            </div>*/}
+            </div>
           </div>
 
           {/** DISTANCE & SIZE TABLE */}

@@ -2,34 +2,33 @@ import { makeStyles } from '@material-ui/core';
 
 export const useStyles = (isHeightAuto: boolean) =>
   makeStyles(
-    (theme) =>
-      !isHeightAuto
+    (theme) => ({
+      noMaxWidth: {
+        maxWidth: 'none'
+      },
+      total: {
+        minHeight: 45,
+        textAlign: 'start',
+        padding: '10px 0px 3px 3px'
+      },
+      tableRowHighlighted: {
+        '& td, tr': {
+          color: 'yellow'
+        }
+      },
+      ...(!isHeightAuto
         ? {
             container: {
               width: '100%',
               height: '100%',
               minHeight: 200,
               padding: `0px 10px 0px 10px`,
-              overflow: 'hidden'
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
             },
             tableContainer: {
-              maxHeight: 190
-            },
-            total: {
-              textAlign: 'start',
-              padding: '10px 0px 3px 3px'
-            },
-            noMaxWidth: {
-              maxWidth: 'none'
-            },
-            tableRowHighlighted: {
-              '& td, tr': {
-                color: 'yellow'
-              }
-            },
-            legend: {
-              textAlign: 'start',
-              color: 'rgba(255, 255, 255, 0.7)'
+              maxHeight: 'unset'
             }
           }
         : {
@@ -42,23 +41,8 @@ export const useStyles = (isHeightAuto: boolean) =>
             tableContainer: {
               // Governs height of scrollable rows in mobile view
               maxHeight: 200
-            },
-            total: {
-              textAlign: 'start',
-              padding: '10px 0px 3px 3px'
-            },
-            noMaxWidth: {
-              maxWidth: 'none'
-            },
-            tableRowHighlighted: {
-              '& td, tr': {
-                color: 'yellow'
-              }
-            },
-            legend: {
-              textAlign: 'start',
-              color: 'rgba(255, 255, 255, 0.7)'
             }
-          },
+          })
+    }),
     { name: 'table-cad' }
   );
