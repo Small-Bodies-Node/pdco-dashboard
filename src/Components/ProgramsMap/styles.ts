@@ -74,6 +74,9 @@ export const useStyles = makeStyles(
         margin: '1rem'
       }
     },
+    sort: {
+      margin: '0 1rem 1rem 1rem'
+    },
     menuRow: {
       display: 'flex',
       flexDirection: 'column',

@@ -155,14 +155,6 @@ export const largeMapIcons: IIcon[] = [
   },
   //
   {
-    iconLabel: 'McDonald Observatory',
-    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
-    iconCoord: { lat: 31.659061792858385, lng: -105.26261335770677 },
-    iconLink: 'https://mcdonaldobservatory.org/',
-    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
-  },
-  //
-  {
     iconLabel: 'Astronomical Research Institute (H21)',
     iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
     iconCoord: { lat: 38.99806187893965, lng: -88.88436667636063 },
@@ -210,19 +202,60 @@ export const largeMapIcons: IIcon[] = [
     iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
   },
   //
+  // {
+  //   iconLabel: 'Cerro Tololo Interational Observatory (ARI Follow-Up)',
+  //   iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+  //   iconCoord: { lat: -31.392403639071922, lng: -67.91893496407594 },
+  //   iconLink: 'http://www.ctio.noao.edu/noao/',
+  //   iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  // },
+  //
   {
-    iconLabel: 'Arecibo Radar Observation of NEAs',
-    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-dish.png',
-    iconCoord: { lat: 17.324925063153678, lng: -68.56719674818383 },
-    iconLink: 'http://www.naic.edu/~pradar/',
+    iconLabel: 'Space Surveillance Telescope',
+    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+    iconCoord: { lat: -21.8957, lng: 114.0899 },
+    iconLink:
+      'https://www.ll.mit.edu/news/space-surveillance-telescope-western-australia-captures-its-first-image',
+    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  },
+  // FIX ICON
+  {
+    iconLabel: 'ESA NEOCC',
+    iconUrl: '/images/esa-logo.png',
+    iconCoord: { lat: 41.8252, lng: 12.6709 },
+    iconLink: 'https://neo.ssa.esa.int',
     iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
   },
   //
   {
-    iconLabel: 'Cerro Tololo Interational Observatory (ARI Follow-Up)',
+    iconLabel: 'ATLAS-HKO',
     iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
-    iconCoord: { lat: -31.392403639071922, lng: -67.91893496407594 },
-    iconLink: 'http://www.ctio.noao.edu/noao/',
+    iconCoord: { lat: 20.71, lng: -156.26 },
+    iconLink: 'http://dashboard.fallingstar.com/dash/hko.html',
+    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  },
+  //
+  {
+    iconLabel: 'ATLAS-MLO',
+    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+    iconCoord: { lat: 19.54, lng: -155.58 },
+    iconLink: 'http://dashboard.fallingstar.com/dash/mlo.html',
+    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  },
+  //
+  {
+    iconLabel: 'ATLAS-CHL',
+    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+    iconCoord: { lat: -30.47, lng: -70.76 },
+    iconLink: 'http://dashboard.fallingstar.com/dash/chl.html',
+    iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
+  },
+  //
+  {
+    iconLabel: 'ATLAS-STH',
+    iconUrl: 'https://d-w-d.github.io/world-daylight-map/images/icon-telescope.png',
+    iconCoord: { lat: -32.38, lng: 20.81 },
+    iconLink: 'http://dashboard.fallingstar.com/dash/sth.html',
     iconToSvgWidthRatio: iconToSvgWidthRatioLargeMap
   }
   //
