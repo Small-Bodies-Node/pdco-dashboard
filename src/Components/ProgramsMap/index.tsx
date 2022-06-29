@@ -6,12 +6,15 @@ import { Dialog, DialogProps } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { IIcon } from 'world-daylight-map/dist/models';
+import moment from 'moment-timezone';
 
 export const ProgramsMap = () => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [sortedLargeMapIcons, setSortedLargeMapIcons] = useState<IIcon[]>([]);
+  const [sortedLargeMapIcons, setSortedLargeMapIcons] = useState<(IIcon & { timeZone?: string })[]>(
+    []
+  );
   const [sort, setSort] = useState<'longitude' | 'alphabetical'>('longitude');
 
   const mapRef = useRef<HTMLDivElement>(null);
@@ -99,6 +102,8 @@ export const ProgramsMap = () => {
                   <a href={item.iconLink} target="_blank" rel="noopener noreferrer">
                     {item.iconLink}
                   </a>
+
+                  {item.timeZone && <p>{moment.tz(item.timeZone).format('HH:mm')}</p>}
                 </div>
               ))}
             </div>
