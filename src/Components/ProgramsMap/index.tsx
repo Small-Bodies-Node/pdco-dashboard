@@ -103,7 +103,9 @@ export const ProgramsMap = () => {
                     {item.iconLink}
                   </a>
 
-                  {item.timeZone && <p>{moment.tz(item.timeZone).format('HH:mm')}</p>}
+                  {item.timeZone && (
+                    <p>{moment.tz(item.timeZone).format('MMM D, Y HH:mm (z, [UTC]Z)')}</p>
+                  )}
                 </div>
               ))}
             </div>
