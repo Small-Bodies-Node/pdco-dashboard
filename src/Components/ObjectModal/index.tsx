@@ -247,6 +247,22 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     }
   };
 
+  const getCNEOSOrbitViewerURLFromFullNameAndDate = (fullName: string, date: Date): string => {
+    let designation = '';
+    const nameParts = fullName.split(' ');
+
+    if (nameParts.length >= 3 && !isNaN(+nameParts[0])) {
+      designation = nameParts[0];
+    } else {
+      designation = fullName.replaceAll(' ', '%20');
+    }
+
+    const time = date.getTime();
+    const jd = time / 86400000 + 2440587.5;
+    const url = `https://cneos.jpl.nasa.gov/ca/ov/#load=&orientation=0,0,0,1&lookat=Earth&interval=2&eclipticgrid=false&eclipticaxis=false&distance=29919.57414&pitch=0&roll=0&yaw=0&scale=0.5&rotateX=-30.20870289631195&rotateY=38.134339235185024&desig=${designation}&cajd=${jd}&largeFont=true&`;
+    return url;
+  };
+
   const downloadDataAsCSV = (): void => {
     const rows: string[][] = [];
     for (const [key, value] of Object.entries(rawRow)) {
@@ -312,7 +328,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View SBDB Data
+                SBDB Data
               </a>
             </div>
 
@@ -324,7 +340,19 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View Orbit Diagram
+                SSD Orbit
+              </a>
+            </div>
+
+            {/** LINK TO CNEOS CA PAGE */}
+            <div className={classes.linkContainer}>
+              <a
+                href={getCNEOSOrbitViewerURLFromFullNameAndDate(rawRow.fullname, rawRow.cd)}
+                className={classes.mpcLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                CNEOS Orbit
               </a>
             </div>
 
@@ -336,7 +364,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View on MPC
+                MPC Data
               </a>
             </div>
 
@@ -348,7 +376,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View CNEOS CA
+                CNEOS CA List
               </a>
             </div>
 
