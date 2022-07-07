@@ -340,7 +340,7 @@ export const ObjectModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                SSD Orbit
+                SBDB Orbit
               </a>
             </div>
 
