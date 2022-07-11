@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-import { mobileWidthPxl } from '../../Utils/constants';
+import { borderColor, mobileWidthPxl } from '../../Utils/constants';
 
 export const useStyles = makeStyles(
   (theme) => ({
@@ -54,7 +54,23 @@ export const useStyles = makeStyles(
         'all       data1     data4'
         'geo       data2     data5'
         'm         data3     data6'
-      `
+      `,
+
+      '& span': {
+        fontWeight: 'normal'
+      }
+    },
+
+    cneosButton: {
+      border: `solid 2px ${borderColor}`,
+      background: 'rgb(36, 39, 57)',
+      color: 'white',
+      fontSize: '0.8rem',
+      fontWeight: 600,
+      cursor: 'pointer',
+      margin: '0 auto',
+      padding: '2px 6px',
+      textDecoration: 'none'
     },
 
     [`@media (max-width: ${mobileWidthPxl}px)`]: {

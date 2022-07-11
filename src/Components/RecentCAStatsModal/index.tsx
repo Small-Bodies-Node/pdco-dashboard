@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,9 +6,10 @@ import { faMeteor, faTable, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { useStyles } from './styles';
 import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
-import { cadFieldIndices, geoDistanceAu } from '../../Utils/constants';
+import { cadFieldIndices, geoDistanceAu, mobileWidthPxl } from '../../Utils/constants';
 import { magToSizeKm } from '../../Utils/conversionFormulae';
 import { TitledCell } from '../TitledCell';
+import { useEventListener } from '../../Hooks/useEventListener';
 
 interface IProps {
   isShown: boolean;
@@ -31,6 +32,14 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
 
   const [fiscalYearSelectElements, setFiscalYearSelectElements] = useState<JSX.Element[]>([]);
   const [calendarYearSelectElements, setCalendarYearSelectElements] = useState<JSX.Element[]>([]);
+
+  // Check for changes in window size
+  const [isMobile, setIsMobile] = useState(false);
+  const windowResizeHandler = useCallback(() => {
+    setIsMobile(window.innerWidth < mobileWidthPxl);
+  }, [setIsMobile]);
+  useEventListener('resize', windowResizeHandler);
+  useEffect(windowResizeHandler, []);
 
   // Initial data fetching
   useEffect(() => {
@@ -289,6 +298,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
         <TitledCell
           title="Close Approaches <1LD"
           icon={() => <FontAwesomeIcon icon={faMeteor} />}
+          link="https://cneos.jpl.nasa.gov/ca/"
           isDisplayed={true}
           isHeightAuto={true}
         >
@@ -296,19 +306,19 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
             <div style={{ gridArea: 'blank' }} />
 
             <div style={{ gridArea: 'time1' }}>
-              Fiscal Year (
+              Fiscal Year {isMobile ? <br /> : '('}
               <select value={fiscalYear} onChange={(e) => onFiscalYearChange(e)}>
                 {fiscalYearSelectElements}
               </select>
-              )
+              {!isMobile && ')'}
             </div>
 
             <div style={{ gridArea: 'time2' }}>
-              Calendar Year (
+              Calendar Year {isMobile ? <br /> : '('}
               <select value={calendarYear} onChange={(e) => onCalendarYearChange(e)}>
                 {calendarYearSelectElements}
               </select>
-              )
+              {!isMobile && ')'}
             </div>
 
             <div style={{ gridArea: 'all' }}>All</div>
@@ -330,6 +340,15 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
             <span style={{ gridArea: 'data6' }}>{calendar50m}</span>
           </div>
         </TitledCell>
+
+        <a
+          href="https://cneos.jpl.nasa.gov/ca/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.cneosButton}
+        >
+          Go to CNEOS CA List
+        </a>
       </div>
     </div>
   );

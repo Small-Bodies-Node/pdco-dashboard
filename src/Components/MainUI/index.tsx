@@ -147,7 +147,6 @@ export const MainUI = () => {
           <TitledCell
             title="RECENT CLOSE APPROACHES <1LD"
             onClick={() => setIsRecentCAStatsModalShown(true)}
-            tooltip="Close Approach is defined as <1LD at closest approach"
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={isDisplayed}
           >
