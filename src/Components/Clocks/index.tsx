@@ -20,20 +20,28 @@ export const Clocks = () => {
       <div className={classes.clock2}>
         <Clock
           isGMT={isGMT}
-          location="Arizona"
-          timezone="America/Phoenix"
-          flagUrl="images/arizona-flag.png"
+          location="California"
+          timezone="America/Los_Angeles"
+          flagUrl="images/california-flag.png"
         />
       </div>
       <div className={classes.clock3}>
         <Clock
           isGMT={isGMT}
-          location="DC"
-          timezone="America/New_York"
-          flagUrl="images/dc-flag.svg"
+          location="Arizona"
+          timezone="America/Phoenix"
+          flagUrl="images/arizona-flag.png"
         />
       </div>
       <div className={classes.clock4}>
+        <Clock
+          isGMT={isGMT}
+          location="DC"
+          timezone="America/New_York"
+          flagUrl="images/dc-flag.png"
+        />
+      </div>
+      <div className={classes.clock5}>
         <Clock
           isGMT={isGMT}
           location="Santiago"
@@ -41,10 +49,10 @@ export const Clocks = () => {
           flagUrl="images/chile-flag.png"
         />
       </div>
-      <div className={classes.clock5}>
+      <div className={classes.clock6}>
         <Clock isGMT={isGMT} location="UTC" timezone="UTC" flagUrl="images/utc-flag.png" />
       </div>
-      <div className={classes.clock6}>
+      <div className={classes.clock7}>
         <Clock
           isGMT={isGMT}
           location="RSA"
@@ -52,7 +60,7 @@ export const Clocks = () => {
           flagUrl="images/rsa-flag.png"
         />
       </div>
-      <div className={classes.clock7}>
+      <div className={classes.clock8}>
         <Clock
           isGMT={isGMT}
           location="Perth"

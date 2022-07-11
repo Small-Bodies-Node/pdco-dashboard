@@ -11,6 +11,12 @@ export const smallMapIcons: IIcon[] = [
     iconToSvgWidthRatio: iconToSvgWidthRatioSmallMap
   },
   {
+    iconLabel: 'Los Angeles, California',
+    iconCoord: { lat: 34.05, lng: -118.24 },
+    iconUrl: 'images/california-flag.png',
+    iconToSvgWidthRatio: iconToSvgWidthRatioSmallMap
+  },
+  {
     iconLabel: 'Phoenix, Arizona',
     iconCoord: { lat: 33.45, lng: -112.066667 },
     iconUrl: 'images/arizona-flag.png',
@@ -19,7 +25,7 @@ export const smallMapIcons: IIcon[] = [
   {
     iconLabel: 'Washington, DC',
     iconCoord: { lat: 38.904722, lng: -77.016389 },
-    iconUrl: 'images/dc-flag.svg',
+    iconUrl: 'images/dc-flag.png',
     iconToSvgWidthRatio: iconToSvgWidthRatioSmallMap
   },
   {
