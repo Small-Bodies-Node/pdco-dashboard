@@ -1,17 +1,50 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { WorldDaylightMap } from 'world-daylight-map';
 import { useStyles } from './styles';
 import { smallMapIcons, largeMapIcons } from './icons';
 import { Dialog, DialogProps } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignJustify, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { IIcon } from 'world-daylight-map/dist/models';
+import moment from 'moment-timezone';
 
 export const ProgramsMap = () => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [sortedLargeMapIcons, setSortedLargeMapIcons] = useState<(IIcon & { timeZone?: string })[]>(
+    []
+  );
+  const [sort, setSort] = useState<'longitude' | 'alphabetical'>('longitude');
 
   const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Sort by longitude
+    if (sort === 'longitude') {
+      const sortedIcons = [...largeMapIcons].sort((a, b) => {
+        if (a.iconCoord.lng > b.iconCoord.lng) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      setSortedLargeMapIcons(sortedIcons);
+    }
+    // Sort alphabetically
+    else {
+      const sortedIcons = [...largeMapIcons].sort((a, b) => {
+        if (a.iconLabel > b.iconLabel) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      setSortedLargeMapIcons(sortedIcons);
+    }
+  }, [sort]);
 
   return (
     <>
@@ -52,13 +85,29 @@ export const ProgramsMap = () => {
                 </div>
               </div>
 
-              {largeMapIcons.map((item, index) => (
+              <span className={classes.sortTitle}>Sort</span>
+
+              <select
+                className={classes.sort}
+                value={sort}
+                onChange={(e) => setSort(e.target.value as 'alphabetical' | 'longitude')}
+              >
+                <option value="longitude">Longitude</option>
+
+                <option value="alphabetical">Alphabetical (a-z)</option>
+              </select>
+
+              {sortedLargeMapIcons.map((item, index) => (
                 <div className={classes.menuRow} key={index}>
                   <p>{item.iconLabel}</p>
 
                   <a href={item.iconLink} target="_blank" rel="noopener noreferrer">
                     {item.iconLink}
                   </a>
+
+                  {item.timeZone && (
+                    <p>{moment.tz(item.timeZone).format('MMM D, Y HH:mm (z, [UTC]Z)')}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -76,7 +125,7 @@ export const ProgramsMap = () => {
             </div>
 
             <div className={classes.menuButton} onClick={() => setIsMenuOpen(true)}>
-              <FontAwesomeIcon icon={faAlignJustify} />
+              <FontAwesomeIcon icon={faBars} />
             </div>
 
             <div className={classes.closeButton} onClick={() => setIsDialogOpen(false)}>
