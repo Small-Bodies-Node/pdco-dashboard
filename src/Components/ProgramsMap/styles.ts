@@ -74,6 +74,11 @@ export const useStyles = makeStyles(
         margin: '1rem'
       }
     },
+    sortTitle: {
+      margin: '0 1rem',
+      fontSize: '1rem',
+      fontWeight: 600
+    },
     sort: {
       margin: '0 1rem 1rem 1rem'
     },

@@ -85,6 +85,8 @@ export const ProgramsMap = () => {
                 </div>
               </div>
 
+              <span className={classes.sortTitle}>Sort</span>
+
               <select
                 className={classes.sort}
                 value={sort}
