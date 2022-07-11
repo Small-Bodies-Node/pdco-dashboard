@@ -1,0 +1,355 @@
+import React, { useCallback, useEffect, useState } from 'react';
+
+// Icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMeteor, faTable, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+import { useStyles } from './styles';
+import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
+import { cadFieldIndices, geoDistanceAu, mobileWidthPxl } from '../../Utils/constants';
+import { magToSizeKm } from '../../Utils/conversionFormulae';
+import { TitledCell } from '../TitledCell';
+import { useEventListener } from '../../Hooks/useEventListener';
+
+interface IProps {
+  isShown: boolean;
+  setIsShown: (arg0: boolean) => void;
+}
+export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
+  const classes = useStyles();
+
+  // State
+  const [fiscalYear, setFiscalYear] = useState(0);
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+
+  const [fyAll, setFyAll] = useState<number | string>('-');
+  const [fyGeo, setFyGeo] = useState<number | string>('-');
+  const [fy50m, setFy50m] = useState<number | string>('-');
+
+  const [calendarAll, setCalendarAll] = useState<number | string>('-');
+  const [calendarGeo, setCalendarGeo] = useState<number | string>('-');
+  const [calendar50m, setCalendar50m] = useState<number | string>('-');
+
+  const [fiscalYearSelectElements, setFiscalYearSelectElements] = useState<JSX.Element[]>([]);
+  const [calendarYearSelectElements, setCalendarYearSelectElements] = useState<JSX.Element[]>([]);
+
+  // Check for changes in window size
+  const [isMobile, setIsMobile] = useState(false);
+  const windowResizeHandler = useCallback(() => {
+    setIsMobile(window.innerWidth < mobileWidthPxl);
+  }, [setIsMobile]);
+  useEventListener('resize', windowResizeHandler);
+  useEffect(windowResizeHandler, []);
+
+  // Initial data fetching
+  useEffect(() => {
+    const dateToday = new Date();
+
+    // Generate fiscal year elements
+    let fyElementsArray = [];
+    for (let i = dateToday.getFullYear(); i >= 2010; i--) {
+      fyElementsArray.push(
+        <option key={i} value={i}>
+          {i === dateToday.getFullYear() && dateToday.getMonth() + 1 < 10
+            ? `FY${i} (Partial)`
+            : `FY${i}`}
+        </option>
+      );
+    }
+    setFiscalYearSelectElements(fyElementsArray);
+
+    // Generate calendar year elements
+    let calendarElementsArray = [];
+    for (let i = dateToday.getFullYear(); i >= 1950; i--) {
+      calendarElementsArray.push(
+        <option key={i} value={i}>
+          {i === dateToday.getFullYear() ? `${i} (Partial)` : `${i}`}
+        </option>
+      );
+    }
+    setCalendarYearSelectElements(calendarElementsArray);
+
+    let startDateString = `${dateToday.getFullYear() - 1}-01-01`;
+
+    // Have not reached this year's fiscal year yet
+    if (dateToday.getMonth() + 1 < 10) {
+      startDateString = `${dateToday.getFullYear() - 2}-01-01`;
+
+      setFiscalYear(dateToday.getFullYear() - 1);
+    } else {
+      setFiscalYear(dateToday.getFullYear());
+    }
+
+    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${dateToday.getFullYear()}-${`${
+      dateToday.getMonth() + 1
+    }`.padStart(2, '0')}-${`${dateToday.getDate() + 1}`.padStart(2, '0')}&dist-max=1LD`;
+
+    fetch(cadUrl)
+      .then((res) => res.json())
+      .then((result) => {
+        /**
+         * Data processing
+         */
+
+        let fyAllCount = 0;
+        let fyGeoCount = 0;
+        let fy50mCount = 0;
+        let calendarAllCount = 0;
+        let calendarGeoCount = 0;
+        let calendar50mCount = 0;
+
+        // ---------
+        // FY
+        // ---------
+        {
+          let startDate = new Date(`${dateToday.getFullYear() - 1}-10-01T00:00+00:00`);
+          let endDate = new Date(`${dateToday.getFullYear()}-09-30T23:59+00:00`);
+          // Have not reached this year's fiscal year yet
+          if (dateToday.getMonth() + 1 < 10) {
+            startDate = new Date(`${dateToday.getFullYear() - 2}-10-01T00:00+00:00`);
+            endDate = new Date(`${dateToday.getFullYear() - 1}-09-30T23:59+00:00`);
+          }
+
+          result.data.forEach((element: string[]) => {
+            let date = apiDateStringToJsDate(element[cadFieldIndices.cd]);
+
+            // Date is within the range
+            if (startDate <= date && endDate >= date) {
+              fyAllCount++;
+
+              // Within geodistance
+              if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+                fyGeoCount++;
+              }
+              // > 50m
+              if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+                fy50mCount++;
+              }
+            }
+          });
+        }
+
+        // ---------
+        // Calendar
+        // ---------
+        {
+          const startDate = new Date(`${dateToday.getFullYear()}-01-01T00:00+00:00`);
+          const endDate = new Date(
+            `${dateToday.getFullYear()}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
+              dateToday.getDate() + 1
+            }`.padStart(2, '0')}T23:59+00:00`
+          );
+
+          result.data.forEach((element: string[]) => {
+            let date = apiDateStringToJsDate(element[cadFieldIndices.cd]);
+
+            // Date is within the range
+            if (startDate <= date && endDate >= date) {
+              calendarAllCount++;
+
+              // Within geodistance
+              if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+                calendarGeoCount++;
+              }
+              // > 50m
+              if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+                calendar50mCount++;
+              }
+            }
+          });
+        }
+
+        // Store values in state
+        setFyAll(fyAllCount);
+        setFyGeo(fyGeoCount);
+        setFy50m(fy50mCount);
+        setCalendarAll(calendarAllCount);
+        setCalendarGeo(calendarGeoCount);
+        setCalendar50m(calendar50mCount);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  // Handle changes to the fiscal year
+  const onFiscalYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFyAll('-');
+    setFyGeo('-');
+    setFy50m('-');
+
+    const selectedYear = parseInt(e.target.value);
+    setFiscalYear(selectedYear);
+
+    // Process change
+    const dateToday = new Date();
+
+    let startDateString = `${selectedYear - 1}-10-01`;
+    let endDateString = `${selectedYear}-09-30`;
+
+    // Selected this year, and have not reached this year's fiscal year yet
+    if (selectedYear === dateToday.getFullYear() && dateToday.getMonth() + 1 < 10) {
+      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
+        dateToday.getDate() + 1
+      }`.padStart(2, '0')}`;
+    }
+
+    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+
+    let fyAllCount = 0;
+    let fyGeoCount = 0;
+    let fy50mCount = 0;
+    fetch(cadUrl)
+      .then((res) => res.json())
+      .then((result) => {
+        result.data.forEach((element: string[]) => {
+          fyAllCount++;
+
+          // Within geodistance
+          if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+            fyGeoCount++;
+          }
+          // > 50m
+          if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+            fy50mCount++;
+          }
+        });
+      })
+      .then(() => {
+        setFyAll(fyAllCount);
+        setFyGeo(fyGeoCount);
+        setFy50m(fy50mCount);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  // Handle changes to the calendar year
+  const onCalendarYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCalendarAll('-');
+    setCalendarGeo('-');
+    setCalendar50m('-');
+
+    const selectedYear = parseInt(e.target.value);
+    setCalendarYear(selectedYear);
+
+    // Process change
+    const dateToday = new Date();
+
+    let startDateString = `${selectedYear}-01-01`;
+    let endDateString = `${selectedYear}-12-31`;
+
+    // Selected this year
+    if (selectedYear === dateToday.getFullYear()) {
+      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
+        dateToday.getDate() + 1
+      }`.padStart(2, '0')}`;
+    }
+
+    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+
+    let calendarAllCount = 0;
+    let calendarGeoCount = 0;
+    let calendar50mCount = 0;
+    fetch(cadUrl)
+      .then((res) => res.json())
+      .then((result) => {
+        result.data.forEach((element: string[]) => {
+          calendarAllCount++;
+
+          // Within geodistance
+          if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+            calendarGeoCount++;
+          }
+          // > 50m
+          if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+            calendar50mCount++;
+          }
+        });
+      })
+      .then(() => {
+        setCalendarAll(calendarAllCount);
+        setCalendarGeo(calendarGeoCount);
+        setCalendar50m(calendar50mCount);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  if (!isShown) {
+    return null;
+  }
+
+  return (
+    <div className={classes.backgroundContainer} onClick={() => setIsShown(false)}>
+      <div className={classes.mainContentContainer} onClick={(e) => e.stopPropagation()}>
+        <div className={classes.closeButtonContainer}>
+          <FontAwesomeIcon
+            className={classes.closeButton}
+            onClick={() => setIsShown(false)}
+            style={{ fontSize: 18 }}
+            flip="horizontal"
+            icon={faTimes}
+          />
+        </div>
+
+        <TitledCell
+          title="Close Approaches <1LD"
+          icon={() => <FontAwesomeIcon icon={faMeteor} />}
+          link="https://cneos.jpl.nasa.gov/ca/"
+          isDisplayed={true}
+          isHeightAuto={true}
+        >
+          <div className={classes.statsContainer}>
+            <div style={{ gridArea: 'blank' }} />
+
+            <div style={{ gridArea: 'time1' }}>
+              Fiscal Year {isMobile ? <br /> : '('}
+              <select value={fiscalYear} onChange={(e) => onFiscalYearChange(e)}>
+                {fiscalYearSelectElements}
+              </select>
+              {!isMobile && ')'}
+            </div>
+
+            <div style={{ gridArea: 'time2' }}>
+              Calendar Year {isMobile ? <br /> : '('}
+              <select value={calendarYear} onChange={(e) => onCalendarYearChange(e)}>
+                {calendarYearSelectElements}
+              </select>
+              {!isMobile && ')'}
+            </div>
+
+            <div style={{ gridArea: 'all' }}>All</div>
+
+            <div style={{ gridArea: 'geo' }}>{'<'}GEO</div>
+
+            <div style={{ gridArea: 'm' }}>{'>'}50m</div>
+
+            <span style={{ gridArea: 'data1' }}>{fyAll}</span>
+
+            <span style={{ gridArea: 'data2' }}>{fyGeo}</span>
+
+            <span style={{ gridArea: 'data3' }}>{fy50m}</span>
+
+            <span style={{ gridArea: 'data4' }}>{calendarAll}</span>
+
+            <span style={{ gridArea: 'data5' }}>{calendarGeo}</span>
+
+            <span style={{ gridArea: 'data6' }}>{calendar50m}</span>
+          </div>
+        </TitledCell>
+
+        <a
+          href="https://cneos.jpl.nasa.gov/ca/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.cneosButton}
+        >
+          Go to CNEOS CA List
+        </a>
+      </div>
+    </div>
+  );
+};
