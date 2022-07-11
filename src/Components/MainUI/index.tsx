@@ -36,6 +36,7 @@ import { MoonPhase } from '../MoonPhase';
 import { MoonPhaseModal } from '../MoonPhaseModal/index';
 import { IFilterSortData } from '../../Models/filterSort.model';
 import { FilterSortButton } from '../FilterSortButton';
+import { RecentCAStatsModal } from '../RecentCAStatsModal';
 
 export const MainUI = () => {
   // --------------------->>>
@@ -59,6 +60,8 @@ export const MainUI = () => {
   const [filterSortDataLargeFarNextYear, setFilterSortDataLargeFarNextYear] = useState<
     IFilterSortData
   >({});
+
+  const [isRecentCAStatsModalShown, setIsRecentCAStatsModalShown] = useState(false);
 
   // Check if mock data is to be used
   const mockQueryParam = new URLSearchParams(useLocation().search);
@@ -111,6 +114,10 @@ export const MainUI = () => {
   return (
     <>
       <MoonPhaseModal isShown={isMoonPhaseModalShown} setIsShown={setIsMoonPhaseModalShown} />
+      <RecentCAStatsModal
+        isShown={isRecentCAStatsModalShown}
+        setIsShown={setIsRecentCAStatsModalShown}
+      />
 
       <div className={'main-ui-container ' + classes.container}>
         <div className={classes.imageLeft}>
@@ -139,7 +146,7 @@ export const MainUI = () => {
         <div className={classes.neoCount}>
           <TitledCell
             title="RECENT CLOSE APPROACHES <1LD"
-            link="https://cneos.jpl.nasa.gov/ca/"
+            onClick={() => setIsRecentCAStatsModalShown(true)}
             tooltip="Close Approach is defined as <1LD at closest approach"
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={isDisplayed}
