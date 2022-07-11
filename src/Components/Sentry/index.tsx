@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useStyles } from './styles';
 import { ISentryData } from '../../Models/apiData.model';
 import { useLocation } from 'react-router';
+import { SentryModal } from '../SentryModal';
 
 const triStrokePxl = 10;
 const svgBorder = 20;
@@ -30,6 +31,8 @@ export const Sentry = ({ sentryData }: IProps) => {
   const [score, setScore] = useState<number>(0);
   const [triColor, setTriColor] = useState<'grey' | 'green' | 'yellow' | 'orange' | 'red'>('grey');
 
+  const [isPopupShown, setIsPopupShown] = useState(false);
+
   useEffect(() => {
     // Filter out those objects that contain ts_max values that aren't a string
     // TODO: figure out a more robust test of the fitness of such objects
@@ -56,23 +59,27 @@ export const Sentry = ({ sentryData }: IProps) => {
   }, [score]);
 
   return (
-    <div className={classes.container}>
-      <svg
-        className={classes.triangleSvg}
-        height="100"
-        width="100px"
-        viewBox={`${-svgBorder} ${-svgBorder} ${100 + 2 * svgBorder} ${100 + 2 * svgBorder}`}
-      >
-        <g>
-          <path
-            d="M 50,0 L 0,100 L 100,100 Z"
-            fill="white"
-            stroke={triColor}
-            strokeWidth={triStrokePxl}
-          />
-        </g>
-      </svg>
-      <div className={classes.score}>{score}</div>
-    </div>
+    <>
+      <SentryModal isShown={isPopupShown} setIsShown={setIsPopupShown} sentryData={sentryData} />
+
+      <div className={classes.container} onClick={() => setIsPopupShown(true)}>
+        <svg
+          className={classes.triangleSvg}
+          height="100"
+          width="100px"
+          viewBox={`${-svgBorder} ${-svgBorder} ${100 + 2 * svgBorder} ${100 + 2 * svgBorder}`}
+        >
+          <g>
+            <path
+              d="M 50,0 L 0,100 L 100,100 Z"
+              fill="white"
+              stroke={triColor}
+              strokeWidth={triStrokePxl}
+            />
+          </g>
+        </svg>
+        <div className={classes.score}>{score}</div>
+      </div>
+    </>
   );
 };

@@ -5,4 +5,6 @@ export interface IFilterSortData {
 
   sizeFilterMeters?: number;
   hFilter?: number;
+
+  showCloseApproachesWithMinLessThan1LD?: boolean;
 }
