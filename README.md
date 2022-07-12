@@ -1,40 +1,34 @@
-# README
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## What's This?
+## Getting Started
 
-Code for PDCO Dashboard.
+First, run the development server:
 
-## Dev Notes
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-- Ran into ref-forwarding warning for using functional components within Tooltip. See [here](https://next.material-ui.com/guides/composition/#caveat-with-refs). Upgrading to v5 will remove this need, as I understand things; see [here](https://next.material-ui.com/guides/migration-v4/) for guide to upgrading.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Quick Start
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-1. Install `node` using one of these methods:
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-   1. Easiest: Go [here](https://nodejs.org/en/download/), download, etc.
-   2. Better: use your system's package manager (e.g. `brew install node`, `sudo apt install node`)
-   3. Recommended: install `nvm` first via instructions [here](https://github.com/nvm-sh/nvm/blob/master/README.md), then `nvm install 10; nvm use 10`.
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-2. Download code, install packages:
+## Learn More
 
-   1. `git clone https://github.com/Small-Bodies-Node/pdco-dashboard.git`
-   2. `cd pdco-dashboard`
-   3. `npm install`
+To learn more about Next.js, take a look at the following resources:
 
-3. Run development server and follow instructions: `npm run start`
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### Building & Deploying
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-This repo comes with bash scripts for building/deploying on unix-like systems. All such scripts begin `_`. These scripts wrap around the `create-react-app` script launched with `npm run build` and then deploy using `rsync`, etc.
+## Deploy on Vercel
 
-### Styling & MaterialUI
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Global SCSS is available. However, on a per-component basis we're using MaterialUI both for its ready theming and for its encapsulate-able scss-like css-in-js stylings.
-
-For layout, we're heavily using css grid. If you haven't used css-grid before then see the talk ["CSS Grid Changes Everything"](https://www.youtube.com/watch?v=txZq7Laz7_4).
-
-### Code Tools
-
-- Typescript: if you aren't using typescript, then behold my works and despair!
-- Code formatting: VSCode settings, as well as more generic `.editorconfig` settings are provided to encourage consistent code formatting. Husky/Lint-Staged are integrated with the git/package.json setup to force `.prettierrc` code-formatting rules at commit time.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
