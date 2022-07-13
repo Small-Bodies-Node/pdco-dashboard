@@ -1,55 +1,58 @@
-import React, { useState } from 'react';
-import { useStyles } from './styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import styles from "./styles.module.scss";
 
 /**
- * This is a simple menu to demo how to work a react router
+ * ...
  */
 export const SidebarMenu = () => {
-  const classes = useStyles();
+  // --->>
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.menuButton} onClick={() => setIsMenuOpen(true)}>
+    <div className={styles.container}>
+      <div className={styles.menuButton} onClick={() => setIsMenuOpen(true)}>
         <FontAwesomeIcon icon={faBars} />
       </div>
 
       <div
-        className={classes.menuOuterContainer}
+        className={styles.menuOuterContainer}
         style={{
-          background: `${isMenuOpen ? 'rgba(0, 0, 0, 0.5)' : 'transparent'}`,
-          pointerEvents: isMenuOpen ? 'auto' : 'none'
+          background: `${isMenuOpen ? "rgba(0, 0, 0, 0.5)" : "transparent"}`,
+          pointerEvents: isMenuOpen ? "auto" : "none",
         }}
         onClick={() => setIsMenuOpen(false)}
       />
 
       <div
-        className={classes.menuContainer}
+        className={styles.menuContainer}
         style={{
-          left: `${isMenuOpen ? 0 : -300}px`
+          left: `${isMenuOpen ? 0 : -300}px`,
         }}
       >
-        <div className={classes.menuHeader}>
+        <div className={styles.menuHeader}>
           <p>Menu</p>
 
-          <div className={classes.closeButton} onClick={() => setIsMenuOpen(false)}>
+          <div
+            className={styles.closeButton}
+            onClick={() => setIsMenuOpen(false)}
+          >
             <FontAwesomeIcon icon={faTimes} />
           </div>
         </div>
 
-        <div className={classes.menuRow}>
-          <Link to="/" onClick={() => setIsMenuOpen(false)}>
+        <div className={styles.menuRow}>
+          <Link href="/" onClick={() => setIsMenuOpen(false)}>
             Dashboard
           </Link>
         </div>
 
-        <div className={classes.menuRow}>
-          <Link to="/about" onClick={() => setIsMenuOpen(false)}>
+        <div className={styles.menuRow}>
+          <Link href="/about" onClick={() => setIsMenuOpen(false)}>
             About
           </Link>
         </div>

@@ -1,14 +1,11 @@
-import React from 'react';
-
-import { useStyles } from './styles';
+import styles from "./styles.module.scss";
 
 export const Template = () => {
-  const classes = useStyles();
   return (
     <>
-      <div className={classes.container}>
+      <div className={styles.container}>
         <h1>Template Page</h1>
-        <p className={classes.example}>This is a template component!</p>
+        <p className={styles.example}>This is a template component!</p>
       </div>
     </>
   );

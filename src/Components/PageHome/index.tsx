@@ -1,10 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { MainUI } from '../MainUI';
-import { useStyles } from './styles';
+import { MainUI } from "../MainUI";
 
 export const PageHome = () => {
-  const classes = useStyles();
   return (
     <>
       <MainUI />

@@ -1,5 +1,6 @@
-import React from 'react';
-import { useStyles } from './styles';
+import React from "react";
+
+import styles from "./styles.module.scss";
 
 interface IProps {
   imageUrl: string;
@@ -7,14 +8,13 @@ interface IProps {
 }
 
 export const ImageCell = (props: IProps) => {
-  const classes = useStyles();
   return (
-    <div className={classes.container}>
-      <a target="_blank" href={props.link}>
+    <div className={styles.container}>
+      <a target="_blank" rel="noreferrer" href={props.link}>
         <div
-          className={classes.image}
+          className={styles.image}
           style={{
-            backgroundImage: `url(${props.imageUrl})`
+            backgroundImage: `url(${props.imageUrl})`,
           }}
         ></div>
       </a>

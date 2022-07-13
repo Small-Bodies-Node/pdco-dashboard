@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import { useStyles } from './styles';
+import styles from "./styles.module.scss";
 
 enum EMoonPhaseTypes {
-  New = 'New',
-  WaningCrescent = 'Waning Crescent',
-  ThirdQuarter = 'Third Quarter',
-  WaningGibbous = 'Waning Gibbous',
-  Full = 'Full',
-  WaxingGibbous = 'Waxing Gibbous',
-  FirstQuarter = 'First Quarter',
-  WaxingCrescent = 'Waxing Crescent'
+  New = "New",
+  WaningCrescent = "Waning Crescent",
+  ThirdQuarter = "Third Quarter",
+  WaningGibbous = "Waning Gibbous",
+  Full = "Full",
+  WaxingGibbous = "Waxing Gibbous",
+  FirstQuarter = "First Quarter",
+  WaxingCrescent = "Waxing Crescent",
 }
 
 interface IProps {
@@ -19,16 +19,20 @@ interface IProps {
 }
 
 export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
-  const classes = useStyles();
+  // --->>
 
   const [moonCyclePercent, setMoonCyclePercent] = useState(0);
-  const [moonPhase, setMoonPhase] = useState('');
+  const [moonPhase, setMoonPhase] = useState("");
 
   // Use calculations from https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
   // Moon cycle length from http://www.agopax.it/Libri_astronomia/pdf/Astronomical%20Algorithms.pdf
   const getMoonPhase = (
     date: Date
-  ): { illuminationFraction: number; cycleProgress: number; moonPhase: string } => {
+  ): {
+    illuminationFraction: number;
+    cycleProgress: number;
+    moonPhase: string;
+  } => {
     const moonCycleLength = 29.530588861;
 
     // Define date components variables
@@ -85,7 +89,7 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
     return {
       illuminationFraction,
       cycleProgress: currentMoonCycleFraction,
-      moonPhase
+      moonPhase,
     };
   };
 
@@ -99,23 +103,27 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
 
   // Generated image path from current moon phase text
   const getMoonImageURL = (): string => {
-    const baseImageURL = 'images/moons/';
-    return baseImageURL + moonPhase.replaceAll(' ', '') + '.jpg';
+    const baseImageURL = "images/moons/";
+    return baseImageURL + moonPhase.replaceAll(" ", "") + ".jpg";
   };
 
   return (
-    <div className={classes.container}>
-      <div className={classes.moonImage}>
+    <div className={styles.container}>
+      <div className={styles.moonImage}>
         <img
           src={getMoonImageURL()}
           alt="Moon phase"
-          style={mobileWidthFull ? { width: '100%', height: 'unset' } : undefined}
+          style={
+            mobileWidthFull ? { width: "100%", height: "unset" } : undefined
+          }
         />
       </div>
 
-      <p className={classes.moonPhaseText}>{moonPhase}</p>
+      <p className={styles.moonPhaseText}>{moonPhase}</p>
 
-      <p className={classes.moonCycleText}>{`${(moonCyclePercent * 100).toFixed(0)}%`}</p>
+      <p className={styles.moonCycleText}>{`${(moonCyclePercent * 100).toFixed(
+        0
+      )}%`}</p>
     </div>
   );
 };

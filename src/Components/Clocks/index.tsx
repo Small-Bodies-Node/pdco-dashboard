@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { useStyles } from './styles';
+import { useState } from "react";
+import styles from "./styles.module.scss";
 
-import { Clock } from './Clock';
+import { Clock } from "../Clock";
 
 export const Clocks = () => {
-  const classes = useStyles();
   const [isGMT, setIsGMT] = useState(false);
 
   return (
-    <div className={classes.container} onClick={() => setIsGMT((prev) => !prev)}>
-      <div className={classes.clock1}>
+    <div className={styles.container} onClick={() => setIsGMT((prev) => !prev)}>
+      <div className={styles.clock1}>
         <Clock
           isGMT={isGMT}
           location="Hawaii"
@@ -17,7 +16,7 @@ export const Clocks = () => {
           flagUrl="images/hawaii-flag.png"
         />
       </div>
-      <div className={classes.clock2}>
+      <div className={styles.clock2}>
         <Clock
           isGMT={isGMT}
           location="California"
@@ -25,7 +24,7 @@ export const Clocks = () => {
           flagUrl="images/california-flag.png"
         />
       </div>
-      <div className={classes.clock3}>
+      <div className={styles.clock3}>
         <Clock
           isGMT={isGMT}
           location="Arizona"
@@ -33,7 +32,7 @@ export const Clocks = () => {
           flagUrl="images/arizona-flag.png"
         />
       </div>
-      <div className={classes.clock4}>
+      <div className={styles.clock4}>
         <Clock
           isGMT={isGMT}
           location="DC"
@@ -41,7 +40,7 @@ export const Clocks = () => {
           flagUrl="images/dc-flag.png"
         />
       </div>
-      <div className={classes.clock5}>
+      <div className={styles.clock5}>
         <Clock
           isGMT={isGMT}
           location="Santiago"
@@ -49,10 +48,15 @@ export const Clocks = () => {
           flagUrl="images/chile-flag.png"
         />
       </div>
-      <div className={classes.clock6}>
-        <Clock isGMT={isGMT} location="UTC" timezone="UTC" flagUrl="images/utc-flag.png" />
+      <div className={styles.clock6}>
+        <Clock
+          isGMT={isGMT}
+          location="UTC"
+          timezone="UTC"
+          flagUrl="images/utc-flag.png"
+        />
       </div>
-      <div className={classes.clock7}>
+      <div className={styles.clock7}>
         <Clock
           isGMT={isGMT}
           location="RSA"
@@ -60,7 +64,7 @@ export const Clocks = () => {
           flagUrl="images/rsa-flag.png"
         />
       </div>
-      <div className={classes.clock8}>
+      <div className={styles.clock8}>
         <Clock
           isGMT={isGMT}
           location="Perth"

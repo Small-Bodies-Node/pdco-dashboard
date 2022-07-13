@@ -1,0 +1,159 @@
+@import "../../styles/variables";
+
+.background-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mainContentContainer {
+  background-color: #181b2e;
+  min-width: 50%;
+  max-width: 70%;
+  min-height: 50%;
+  max-height: 70%;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.innerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.headerContainer {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+
+  & button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    border: solid 1px white;
+    border-radius: 0.4rem;
+
+    outline: none;
+
+    padding: 0.35rem;
+    margin: 0 0.35rem 0.75rem 0.35rem;
+
+    transition: ease-in-out 0.12s;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+    background: transparent;
+    color: white;
+
+    &:hover {
+      background-color: #333a61;
+    }
+  }
+}
+
+.header {
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.previousMonthButton {
+  margin: 0 auto 0 0;
+}
+
+.nextMonthButton {
+  margin: 0 0 0 auto;
+}
+
+.closeButtonContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.closeButton {
+  cursor: pointer;
+  transition: ease-in-out 0.12s;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.tableContainer {
+  margin-top: 1rem;
+}
+
+.daysOfWeekGrid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0px, 1fr));
+  margin: 2rem 0 0 0;
+
+  & span {
+    text-align: center;
+  }
+}
+
+.monthGrid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0px, 1fr));
+}
+
+.moonPhaseCell {
+  padding: 1.5rem;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.moonPhaseCellTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0px 0px 0.5rem 0px;
+  text-align: center;
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .mainContentContainer {
+    max-width: 90%;
+    max-height: 80%;
+  }
+
+  .daysOfWeekGrid {
+    visibility: hidden;
+  }
+
+  .monthGrid {
+    grid-template-columns: repeat(2, minmax(0px, 1fr));
+  }
+
+  .headerContainer {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+
+  .previousMonthButton {
+    margin: 0px auto;
+  }
+
+  .nextMonthButton {
+    margin: 0px auto;
+  }
+}

@@ -1,0 +1,74 @@
+@import "../../styles/variables.scss";
+
+.container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+.title {
+  position: absolute;
+  top: 0px;
+  height: 35px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  & * {
+    white-space: nowrap;
+  }
+  & a,
+  p {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    &:hover {
+      color: cyan;
+    }
+  }
+}
+.content {
+  position: absolute;
+  top: 35px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .container {
+    position: relative;
+    height: auto;
+    width: 100%;
+  }
+  .title {
+    position: relative;
+    padding: 0.35rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    & a {
+      text-decoration: none;
+      color: white;
+      &:hover {
+        color: cyan;
+      }
+      padding: 0.5rem 2rem;
+    }
+  }
+  .content {
+    position: relative;
+    height: auto;
+    width: 100%;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}

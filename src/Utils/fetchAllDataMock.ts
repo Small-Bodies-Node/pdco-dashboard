@@ -1,5 +1,5 @@
-import { IFetchedData } from '../Models/apiData.model';
-import { getMockData } from './getMockData';
+import { IFetchedData } from "../models/IFetchedData";
+import { getMockData } from "./getMockData";
 
 /**
  * Function to simulate getting data from an API

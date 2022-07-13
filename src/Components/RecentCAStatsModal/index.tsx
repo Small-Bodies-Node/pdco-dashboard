@@ -1,44 +1,50 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMeteor, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-// Icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMeteor, faTable, faTimes } from '@fortawesome/free-solid-svg-icons';
-
-import { useStyles } from './styles';
-import { apiDateStringToJsDate } from '../../Utils/apiDateStringToJsDate';
-import { cadFieldIndices, geoDistanceAu, mobileWidthPxl } from '../../Utils/constants';
-import { magToSizeKm } from '../../Utils/conversionFormulae';
-import { TitledCell } from '../TitledCell';
-import { useEventListener } from '../../Hooks/useEventListener';
+import { apiDateStringToJsDate } from "../../utils/apiDateStringToJsDate";
+import { useEventListener } from "../../hooks/useEventListener";
+import { magToSizeKm } from "../../utils/conversionFormulae";
+import { TitledCell } from "../TitledCell";
+import {
+  cadFieldIndices,
+  geoDistanceAu,
+  mobileWidthPxl,
+} from "../../utils/constants";
+import styles from "./styles.module.scss";
 
 interface IProps {
   isShown: boolean;
   setIsShown: (arg0: boolean) => void;
 }
 export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
-  const classes = useStyles();
+  // --->>
 
   // State
   const [fiscalYear, setFiscalYear] = useState(0);
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
-  const [fyAll, setFyAll] = useState<number | string>('-');
-  const [fyGeo, setFyGeo] = useState<number | string>('-');
-  const [fy50m, setFy50m] = useState<number | string>('-');
+  const [fyAll, setFyAll] = useState<number | string>("-");
+  const [fyGeo, setFyGeo] = useState<number | string>("-");
+  const [fy50m, setFy50m] = useState<number | string>("-");
 
-  const [calendarAll, setCalendarAll] = useState<number | string>('-');
-  const [calendarGeo, setCalendarGeo] = useState<number | string>('-');
-  const [calendar50m, setCalendar50m] = useState<number | string>('-');
+  const [calendarAll, setCalendarAll] = useState<number | string>("-");
+  const [calendarGeo, setCalendarGeo] = useState<number | string>("-");
+  const [calendar50m, setCalendar50m] = useState<number | string>("-");
 
-  const [fiscalYearSelectElements, setFiscalYearSelectElements] = useState<JSX.Element[]>([]);
-  const [calendarYearSelectElements, setCalendarYearSelectElements] = useState<JSX.Element[]>([]);
+  const [fiscalYearSelectElements, setFiscalYearSelectElements] = useState<
+    JSX.Element[]
+  >([]);
+  const [calendarYearSelectElements, setCalendarYearSelectElements] = useState<
+    JSX.Element[]
+  >([]);
 
   // Check for changes in window size
   const [isMobile, setIsMobile] = useState(false);
   const windowResizeHandler = useCallback(() => {
     setIsMobile(window.innerWidth < mobileWidthPxl);
   }, [setIsMobile]);
-  useEventListener('resize', windowResizeHandler);
+  useEventListener("resize", windowResizeHandler);
   useEffect(windowResizeHandler, []);
 
   // Initial data fetching
@@ -82,7 +88,10 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
 
     const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${dateToday.getFullYear()}-${`${
       dateToday.getMonth() + 1
-    }`.padStart(2, '0')}-${`${dateToday.getDate() + 1}`.padStart(2, '0')}&dist-max=1LD`;
+    }`.padStart(2, "0")}-${`${dateToday.getDate() + 1}`.padStart(
+      2,
+      "0"
+    )}&dist-max=1LD`;
 
     fetch(cadUrl)
       .then((res) => res.json())
@@ -102,12 +111,20 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
         // FY
         // ---------
         {
-          let startDate = new Date(`${dateToday.getFullYear() - 1}-10-01T00:00+00:00`);
-          let endDate = new Date(`${dateToday.getFullYear()}-09-30T23:59+00:00`);
+          let startDate = new Date(
+            `${dateToday.getFullYear() - 1}-10-01T00:00+00:00`
+          );
+          let endDate = new Date(
+            `${dateToday.getFullYear()}-09-30T23:59+00:00`
+          );
           // Have not reached this year's fiscal year yet
           if (dateToday.getMonth() + 1 < 10) {
-            startDate = new Date(`${dateToday.getFullYear() - 2}-10-01T00:00+00:00`);
-            endDate = new Date(`${dateToday.getFullYear() - 1}-09-30T23:59+00:00`);
+            startDate = new Date(
+              `${dateToday.getFullYear() - 2}-10-01T00:00+00:00`
+            );
+            endDate = new Date(
+              `${dateToday.getFullYear() - 1}-09-30T23:59+00:00`
+            );
           }
 
           result.data.forEach((element: string[]) => {
@@ -118,7 +135,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
               fyAllCount++;
 
               // Within geodistance
-              if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+              if (
+                parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
+              ) {
                 fyGeoCount++;
               }
               // > 50m
@@ -133,11 +152,16 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
         // Calendar
         // ---------
         {
-          const startDate = new Date(`${dateToday.getFullYear()}-01-01T00:00+00:00`);
+          const startDate = new Date(
+            `${dateToday.getFullYear()}-01-01T00:00+00:00`
+          );
           const endDate = new Date(
-            `${dateToday.getFullYear()}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
-              dateToday.getDate() + 1
-            }`.padStart(2, '0')}T23:59+00:00`
+            `${dateToday.getFullYear()}-${`${
+              dateToday.getMonth() + 1
+            }`.padStart(2, "0")}-${`${dateToday.getDate() + 1}`.padStart(
+              2,
+              "0"
+            )}T23:59+00:00`
           );
 
           result.data.forEach((element: string[]) => {
@@ -148,7 +172,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
               calendarAllCount++;
 
               // Within geodistance
-              if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+              if (
+                parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
+              ) {
                 calendarGeoCount++;
               }
               // > 50m
@@ -174,9 +200,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
 
   // Handle changes to the fiscal year
   const onFiscalYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFyAll('-');
-    setFyGeo('-');
-    setFy50m('-');
+    setFyAll("-");
+    setFyGeo("-");
+    setFy50m("-");
 
     const selectedYear = parseInt(e.target.value);
     setFiscalYear(selectedYear);
@@ -188,10 +214,14 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     let endDateString = `${selectedYear}-09-30`;
 
     // Selected this year, and have not reached this year's fiscal year yet
-    if (selectedYear === dateToday.getFullYear() && dateToday.getMonth() + 1 < 10) {
-      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
-        dateToday.getDate() + 1
-      }`.padStart(2, '0')}`;
+    if (
+      selectedYear === dateToday.getFullYear() &&
+      dateToday.getMonth() + 1 < 10
+    ) {
+      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(
+        2,
+        "0"
+      )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
     const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
@@ -206,7 +236,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           fyAllCount++;
 
           // Within geodistance
-          if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+          if (
+            parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
+          ) {
             fyGeoCount++;
           }
           // > 50m
@@ -227,9 +259,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
 
   // Handle changes to the calendar year
   const onCalendarYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCalendarAll('-');
-    setCalendarGeo('-');
-    setCalendar50m('-');
+    setCalendarAll("-");
+    setCalendarGeo("-");
+    setCalendar50m("-");
 
     const selectedYear = parseInt(e.target.value);
     setCalendarYear(selectedYear);
@@ -242,9 +274,10 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
 
     // Selected this year
     if (selectedYear === dateToday.getFullYear()) {
-      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(2, '0')}-${`${
-        dateToday.getDate() + 1
-      }`.padStart(2, '0')}`;
+      endDateString = `${selectedYear}-${`${dateToday.getMonth() + 1}`.padStart(
+        2,
+        "0"
+      )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
     const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
@@ -259,7 +292,9 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           calendarAllCount++;
 
           // Within geodistance
-          if (parseFloat(element[cadFieldIndices.dist] ?? '1') < geoDistanceAu) {
+          if (
+            parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
+          ) {
             calendarGeoCount++;
           }
           // > 50m
@@ -283,11 +318,17 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
   }
 
   return (
-    <div className={classes.backgroundContainer} onClick={() => setIsShown(false)}>
-      <div className={classes.mainContentContainer} onClick={(e) => e.stopPropagation()}>
-        <div className={classes.closeButtonContainer}>
+    <div
+      className={styles.backgroundContainer}
+      onClick={() => setIsShown(false)}
+    >
+      <div
+        className={styles.mainContentContainer}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles.closeButtonContainer}>
           <FontAwesomeIcon
-            className={classes.closeButton}
+            className={styles.closeButton}
             onClick={() => setIsShown(false)}
             style={{ fontSize: 18 }}
             flip="horizontal"
@@ -302,42 +343,48 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           isDisplayed={true}
           isHeightAuto={true}
         >
-          <div className={classes.statsContainer}>
-            <div style={{ gridArea: 'blank' }} />
+          <div className={styles.statsContainer}>
+            <div style={{ gridArea: "blank" }} />
 
-            <div style={{ gridArea: 'time1' }}>
-              Fiscal Year {isMobile ? <br /> : '('}
-              <select value={fiscalYear} onChange={(e) => onFiscalYearChange(e)}>
+            <div style={{ gridArea: "time1" }}>
+              Fiscal Year {isMobile ? <br /> : "("}
+              <select
+                value={fiscalYear}
+                onChange={(e) => onFiscalYearChange(e)}
+              >
                 {fiscalYearSelectElements}
               </select>
-              {!isMobile && ')'}
+              {!isMobile && ")"}
             </div>
 
-            <div style={{ gridArea: 'time2' }}>
-              Calendar Year {isMobile ? <br /> : '('}
-              <select value={calendarYear} onChange={(e) => onCalendarYearChange(e)}>
+            <div style={{ gridArea: "time2" }}>
+              Calendar Year {isMobile ? <br /> : "("}
+              <select
+                value={calendarYear}
+                onChange={(e) => onCalendarYearChange(e)}
+              >
                 {calendarYearSelectElements}
               </select>
-              {!isMobile && ')'}
+              {!isMobile && ")"}
             </div>
 
-            <div style={{ gridArea: 'all' }}>All</div>
+            <div style={{ gridArea: "all" }}>All</div>
 
-            <div style={{ gridArea: 'geo' }}>{'<'}GEO</div>
+            <div style={{ gridArea: "geo" }}>{"<"}GEO</div>
 
-            <div style={{ gridArea: 'm' }}>{'>'}50m</div>
+            <div style={{ gridArea: "m" }}>{">"}50m</div>
 
-            <span style={{ gridArea: 'data1' }}>{fyAll}</span>
+            <span style={{ gridArea: "data1" }}>{fyAll}</span>
 
-            <span style={{ gridArea: 'data2' }}>{fyGeo}</span>
+            <span style={{ gridArea: "data2" }}>{fyGeo}</span>
 
-            <span style={{ gridArea: 'data3' }}>{fy50m}</span>
+            <span style={{ gridArea: "data3" }}>{fy50m}</span>
 
-            <span style={{ gridArea: 'data4' }}>{calendarAll}</span>
+            <span style={{ gridArea: "data4" }}>{calendarAll}</span>
 
-            <span style={{ gridArea: 'data5' }}>{calendarGeo}</span>
+            <span style={{ gridArea: "data5" }}>{calendarGeo}</span>
 
-            <span style={{ gridArea: 'data6' }}>{calendar50m}</span>
+            <span style={{ gridArea: "data6" }}>{calendar50m}</span>
           </div>
         </TitledCell>
 
@@ -345,7 +392,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           href="https://cneos.jpl.nasa.gov/ca/"
           target="_blank"
           rel="noopener noreferrer"
-          className={classes.cneosButton}
+          className={styles.cneosButton}
         >
           Go to CNEOS CA List
         </a>

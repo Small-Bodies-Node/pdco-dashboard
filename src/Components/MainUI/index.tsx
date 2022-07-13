@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { useCallback, useEffect, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 // Icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMeteor,
   faShieldAlt,
@@ -10,62 +10,69 @@ import {
   faGlobeAmericas,
   faRedo,
   faMoon,
-  faFilter,
-  faArrowUp
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 // My constants, hooks, etc.
-import { ImageCell } from '../ImageCell';
-import { MyError } from '../MyError';
-import { useStyles } from './styles';
-import { Clocks } from '../Clocks';
-import { Sentry } from '../Sentry';
-import { ProgramsMap } from '../ProgramsMap';
-import { NeoCount } from '../NeoCount';
-import { TitledCell } from '../TitledCell';
-import { TableCAD } from '../TableCAD';
-import { ELocalStorageOptions, useLocalStorage } from '../../Hooks/useLocalStorage';
-import { formattedTimestamp } from '../../Utils/formattedTime';
-import { fetchAllData } from '../../Utils/fetchAllData';
-import { IFetchedData } from '../../Models/apiData.model';
-import { useInterval } from '../../Hooks/useInterval';
-import { Link, useLocation } from 'react-router-dom';
-import { useEventListener } from '../../Hooks/useEventListener';
-import { mobileWidthPxl } from '../../Utils/constants';
-import { MoonPhase } from '../MoonPhase';
-import { MoonPhaseModal } from '../MoonPhaseModal/index';
-import { IFilterSortData } from '../../Models/filterSort.model';
-import { FilterSortButton } from '../FilterSortButton';
-import { RecentCAStatsModal } from '../RecentCAStatsModal';
+import { ImageCell } from "../ImageCell";
+import { MyError } from "../MyError";
+import { Clocks } from "../Clocks";
+import { Sentry } from "../Sentry";
+import { ProgramsMap } from "../ProgramsMap";
+import { NeoCount } from "../NeoCount";
+import { TitledCell } from "../TitledCell";
+import { TableCAD } from "../TableCAD";
+import {
+  TLocalStorageKeys,
+  useLocalStorage,
+} from "../../hooks/useLocalStorage";
+import { formattedTimestamp } from "../../utils/formattedTime";
+import { fetchAllData } from "../../utils/fetchAllData";
+import { useInterval } from "../../hooks/useInterval";
+import { useEventListener } from "../../hooks/useEventListener";
+import { MoonPhase } from "../MoonPhase";
+import { MoonPhaseModal } from "../MoonPhaseModal/index";
+import { IFilterSortData } from "../../models/IFilterSortData";
+import { FilterSortButton } from "../FilterSortButton";
+import { RecentCAStatsModal } from "../RecentCAStatsModal";
+import { IFetchedData } from "../../models/IFetchedData";
+import { mobileWidthPxl } from "../../utils/constants";
 
+import styles from "./styles.module.scss";
+
+/**
+ *
+ */
 export const MainUI = () => {
-  // --------------------->>>
+  // --->>
 
   // State
-  const classes = useStyles();
   const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>(
-    ELocalStorageOptions.API_DATA,
+    "API_DATA",
     null
   );
-  const [storedIntervalToRefreshDataSecs, setIntervalToRefreshDataSecs] = useLocalStorage<number>(
-    ELocalStorageOptions.CHECK_FOR_DATA_REFRESH_INTERVAL,
+  const [storedIntervalToRefreshDataSecs] = useLocalStorage<number>(
+    "CHECK_FOR_DATA_REFRESH_INTERVAL",
     12 * 60 * 60
   );
   const [isSearching, setIsSearching] = useState(!true);
-  const [displayDate, setDisplayDate] = useState('');
+  const [displayDate, setDisplayDate] = useState("");
 
   const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
-  const [filterSortDataLast7Days, setFilterSortDataLast7Days] = useState<IFilterSortData>({});
-  const [filterSortDataNext10Years, setFilterSortDataNext10Years] = useState<IFilterSortData>({});
-  const [filterSortDataLargeFarNextYear, setFilterSortDataLargeFarNextYear] = useState<
-    IFilterSortData
-  >({});
+  const [filterSortDataLast7Days, setFilterSortDataLast7Days] =
+    useState<IFilterSortData>({});
+  const [filterSortDataNext10Years, setFilterSortDataNext10Years] =
+    useState<IFilterSortData>({});
+  const [filterSortDataLargeFarNextYear, setFilterSortDataLargeFarNextYear] =
+    useState<IFilterSortData>({});
 
-  const [isRecentCAStatsModalShown, setIsRecentCAStatsModalShown] = useState(false);
+  const [isRecentCAStatsModalShown, setIsRecentCAStatsModalShown] =
+    useState(false);
 
   // Check if mock data is to be used
-  const mockQueryParam = new URLSearchParams(useLocation().search);
-  const [isMock] = useState(mockQueryParam.get('mock') === 'true');
+  // TODO: port to NEXTJS
+  // const mockQueryParam = new URLSearchParams(useLocation().search);
+  // const [isMock] = useState(mockQueryParam.get("mock") === "true");
+  const isMock = true;
 
   // Choose how long to check if the 'date' needs to be refreshed
   const intervalToCheckForDataSecs = isMock ? 10000 : 2;
@@ -75,13 +82,15 @@ export const MainUI = () => {
   const windowResizeHandler = useCallback(() => {
     setIsMobile(window.innerWidth < mobileWidthPxl);
   }, [setIsMobile]);
-  useEventListener('resize', windowResizeHandler);
-  useEffect(windowResizeHandler, []);
+  useEventListener("resize", windowResizeHandler);
+  useEffect(windowResizeHandler, [windowResizeHandler]);
 
   // Set up regular checks to see if it's time to refresh data
   const checkIfItsTimeForDataUpdate = () => {
     if (!!storedData) {
-      const dtSecs = (new Date().getTime() - new Date(storedData.timestamp).getTime()) / 1000;
+      const dtSecs =
+        (new Date().getTime() - new Date(storedData.timestamp).getTime()) /
+        1000;
       if (dtSecs > storedIntervalToRefreshDataSecs) {
         setIsSearching(true);
       }
@@ -90,11 +99,15 @@ export const MainUI = () => {
   useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
 
   useEffect(() => {
-    let tempFilterSortDataLargeFarNextYear = Object.assign({}, filterSortDataLargeFarNextYear);
-    tempFilterSortDataLargeFarNextYear.showCloseApproachesWithMinLessThan1LD = true;
+    let tempFilterSortDataLargeFarNextYear = Object.assign(
+      {},
+      filterSortDataLargeFarNextYear
+    );
+    tempFilterSortDataLargeFarNextYear.showCloseApproachesWithMinLessThan1LD =
+      true;
 
     setFilterSortDataLargeFarNextYear(tempFilterSortDataLargeFarNextYear);
-  }, []);
+  }, [filterSortDataLargeFarNextYear]);
 
   // Re-fetch data on pertinent changes
   useEffect(() => {
@@ -102,48 +115,63 @@ export const MainUI = () => {
       fetchAllData(isMock).then((data) => {
         if (!!data) setStoredData(data);
         setIsSearching(false);
-        setDisplayDate(data ? formattedTimestamp(data.timestamp) : '');
+        setDisplayDate(data ? formattedTimestamp(data.timestamp) : "");
       });
     } else {
-      setDisplayDate(storedData ? formattedTimestamp(storedData.timestamp) : '');
+      setDisplayDate(
+        storedData ? formattedTimestamp(storedData.timestamp) : ""
+      );
     }
-  }, [isMock, isSearching, setIsSearching]);
+  }, [isMock, isSearching, storedData, setStoredData]);
 
   const isDisplayed = !(isSearching || !storedData);
 
   return (
     <>
-      <MoonPhaseModal isShown={isMoonPhaseModalShown} setIsShown={setIsMoonPhaseModalShown} />
+      <MoonPhaseModal
+        isShown={isMoonPhaseModalShown}
+        setIsShown={setIsMoonPhaseModalShown}
+      />
       <RecentCAStatsModal
         isShown={isRecentCAStatsModalShown}
         setIsShown={setIsRecentCAStatsModalShown}
       />
 
-      <div className={'main-ui-container ' + classes.container}>
-        <div className={classes.imageLeft}>
-          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/pdco-logo.jpg" />
+      <div className={"main-ui-container " + styles.container}>
+        <div className={styles.imageLeft}>
+          <ImageCell
+            link="https://www.nasa.gov/planetarydefense"
+            imageUrl="images/pdco-logo.jpg"
+          />
         </div>
-        <div className={classes.imageRight}>
-          <ImageCell link="https://www.nasa.gov/planetarydefense" imageUrl="images/nasa-logo.png" />
+        <div className={styles.imageRight}>
+          <ImageCell
+            link="https://www.nasa.gov/planetarydefense"
+            imageUrl="images/nasa-logo.png"
+          />
         </div>
-        <div className={classes.title} onClick={() => setIsSearching(true)}>
+        <div className={styles.title} onClick={() => setIsSearching(true)}>
           <ErrorBoundary fallbackRender={() => <MyError />}>
             <div className="longTitle">
-              {'Planetary Defense Coordination Office Status Summary'}
+              {"Planetary Defense Coordination Office Status Summary"}
             </div>
-            <div className="shortTitle">{'PDCO STATUS'}</div>
-            <div className="date">
-              <span style={{ paddingRight: 3 }}>{displayDate + ' '}</span>
-              <FontAwesomeIcon style={{ fontSize: 10 }} flip="horizontal" icon={faRedo} />
+            <div className={styles.shortTitle}>{"PDCO STATUS"}</div>
+            <div className={styles.date}>
+              <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
+              <FontAwesomeIcon
+                style={{ fontSize: 10 }}
+                flip="horizontal"
+                icon={faRedo}
+              />
             </div>
           </ErrorBoundary>
         </div>
-        <div className={classes.clocks}>
+        <div className={styles.clocks}>
           <ErrorBoundary fallbackRender={() => <MyError />}>
             <Clocks />
           </ErrorBoundary>
         </div>
-        <div className={classes.neoCount}>
+        <div className={styles.neoCount}>
           <TitledCell
             title="RECENT CLOSE APPROACHES <1LD"
             onClick={() => setIsRecentCAStatsModalShown(true)}
@@ -151,11 +179,14 @@ export const MainUI = () => {
             isDisplayed={isDisplayed}
           >
             {!!storedData && (
-              <NeoCount cadData={storedData.cadData} dateAtDataFetch={storedData.timestamp} />
+              <NeoCount
+                cadData={storedData.cadData}
+                dateAtDataFetch={storedData.timestamp}
+              />
             )}
           </TitledCell>
         </div>
-        <div className={classes.sentry}>
+        <div className={styles.sentry}>
           <TitledCell
             title="SENTRY STATUS"
             link="https://cneos.jpl.nasa.gov/sentry/"
@@ -166,7 +197,7 @@ export const MainUI = () => {
             {!!storedData && <Sentry sentryData={storedData.sentryData} />}
           </TitledCell>
         </div>
-        <div className={classes.moonPhase}>
+        <div className={styles.moonPhase}>
           <TitledCell
             title="MOON PHASE"
             tooltip=""
@@ -177,7 +208,7 @@ export const MainUI = () => {
             <MoonPhase />
           </TitledCell>
         </div>
-        <div className={classes.programs}>
+        <div className={styles.programs}>
           <TitledCell
             title="PROJECTS"
             link=""
@@ -188,7 +219,7 @@ export const MainUI = () => {
             <ProgramsMap />
           </TitledCell>
         </div>
-        <div className={classes.recentTab}>
+        <div className={styles.recentTab}>
           <TitledCell
             title="CLOSE APPROACHES <1LD LAST 7 DAYS"
             link="https://cneos.jpl.nasa.gov/ca/"
@@ -214,7 +245,7 @@ export const MainUI = () => {
             )}
           </TitledCell>
         </div>
-        <div className={classes.futureTab}>
+        <div className={styles.futureTab}>
           <TitledCell
             title="CLOSE APPROACHES <1LD NEXT 10 YEARS"
             link="https://cneos.jpl.nasa.gov/ca/"
@@ -240,7 +271,7 @@ export const MainUI = () => {
             )}
           </TitledCell>
         </div>
-        <div className={classes.largeDistantTab}>
+        <div className={styles.largeDistantTab}>
           <TitledCell
             title="LARGE NEOs <19LD NEXT 1 YEAR"
             link="https://cneos.jpl.nasa.gov/ca/"

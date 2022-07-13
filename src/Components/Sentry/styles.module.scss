@@ -1,0 +1,34 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+.triangleSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.score {
+  margin-top: 30px;
+  color: black;
+  font-size: 30px;
+  flex: 1;
+  z-index: 10;
+}
+.title {
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  right: 0px;
+  height: 33%;
+}

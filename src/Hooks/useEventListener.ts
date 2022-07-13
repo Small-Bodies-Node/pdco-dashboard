@@ -1,9 +1,11 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 /**
  * Adapted from: https://usehooks.com/useEventListener/
  */
-export function useEventListener(eventName: any, handler: any, element = window) {
+export function useEventListener(eventName: any, handler: any, element?: any) {
+  // --->>
+
   // Create a ref that stores handler
   const savedHandler = useRef();
 
@@ -17,21 +19,23 @@ export function useEventListener(eventName: any, handler: any, element = window)
 
   useEffect(
     () => {
+      const effElement = element || window;
       // Make sure element supports addEventListener
-      const isSupported = element && element.addEventListener;
+      const isSupported = effElement && effElement.addEventListener;
       if (!isSupported) return;
 
       // Create event listener that calls handler function stored in ref
       const eventListener = (event: any) => {
-        if (!!savedHandler && savedHandler.current) (savedHandler as any).current(event);
+        if (!!savedHandler && savedHandler.current)
+          (savedHandler as any).current(event);
       };
 
       // Add event listener
-      element.addEventListener(eventName, eventListener);
+      effElement.addEventListener(eventName, eventListener);
 
       // Remove event listener on cleanup
       return () => {
-        element.removeEventListener(eventName, eventListener);
+        effElement.removeEventListener(eventName, eventListener);
       };
     },
     [eventName, element] // Re-run if eventName or element changes

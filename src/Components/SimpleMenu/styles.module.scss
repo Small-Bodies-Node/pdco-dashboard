@@ -1,0 +1,23 @@
+.container {
+  position: relative;
+  & ul {
+    margin: 0px;
+    & li {
+      display: inline-block;
+      margin: 0px 10px;
+      & a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .settings {
+    position: absolute;
+    top: 50%;
+    bottom: 0px;
+    right: 50px;
+    transform: translateY(-50%);
+  }
+}
