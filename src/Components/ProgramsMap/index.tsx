@@ -51,13 +51,15 @@ export const ProgramsMap = () => {
   return (
     <>
       <div className={styles.container}>
-        {/* <WorldDaylightMap
-          options={{
-            controlsPosition: "no-controls",
-            isSunshineDisplayed: false,
-            icons: smallMapIcons,
-          }}
-        /> */}
+        {/*
+          <WorldDaylightMap
+            options={{
+              controlsPosition: "no-controls",
+              isSunshineDisplayed: false,
+              icons: smallMapIcons,
+            }}
+          />
+        */}
         <div
           className={styles.overlay}
           onClick={() => {
