@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
-// Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMeteor,
@@ -21,10 +19,7 @@ import { ProgramsMap } from "../ProgramsMap";
 import { NeoCount } from "../NeoCount";
 import { TitledCell } from "../TitledCell";
 import { TableCAD } from "../TableCAD";
-import {
-  TLocalStorageKeys,
-  useLocalStorage,
-} from "../../hooks/useLocalStorage";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { formattedTimestamp } from "../../utils/formattedTime";
 import { fetchAllData } from "../../utils/fetchAllData";
 import { useInterval } from "../../hooks/useInterval";
@@ -36,7 +31,6 @@ import { FilterSortButton } from "../FilterSortButton";
 import { RecentCAStatsModal } from "../RecentCAStatsModal";
 import { IFetchedData } from "../../models/IFetchedData";
 import { mobileWidthPxl } from "../../utils/constants";
-
 import styles from "./styles.module.scss";
 
 /**
@@ -83,7 +77,7 @@ export const MainUI = () => {
     setIsMobile(window.innerWidth < mobileWidthPxl);
   }, [setIsMobile]);
   useEventListener("resize", windowResizeHandler);
-  useEffect(windowResizeHandler, [windowResizeHandler]);
+  useEffect(windowResizeHandler, []);
 
   // Set up regular checks to see if it's time to refresh data
   const checkIfItsTimeForDataUpdate = () => {
@@ -105,9 +99,8 @@ export const MainUI = () => {
     );
     tempFilterSortDataLargeFarNextYear.showCloseApproachesWithMinLessThan1LD =
       true;
-
     setFilterSortDataLargeFarNextYear(tempFilterSortDataLargeFarNextYear);
-  }, [filterSortDataLargeFarNextYear]);
+  }, []);
 
   // Re-fetch data on pertinent changes
   useEffect(() => {
@@ -122,182 +115,188 @@ export const MainUI = () => {
         storedData ? formattedTimestamp(storedData.timestamp) : ""
       );
     }
-  }, [isMock, isSearching, storedData, setStoredData]);
+  }, [isMock, isSearching, setIsSearching]);
 
   const isDisplayed = !(isSearching || !storedData);
 
   return (
     <>
-      <MoonPhaseModal
-        isShown={isMoonPhaseModalShown}
-        setIsShown={setIsMoonPhaseModalShown}
-      />
-      <RecentCAStatsModal
-        isShown={isRecentCAStatsModalShown}
-        setIsShown={setIsRecentCAStatsModalShown}
-      />
+      {!true ? (
+        <div>Hmmmm</div>
+      ) : (
+        <>
+          <MoonPhaseModal
+            isShown={isMoonPhaseModalShown}
+            setIsShown={setIsMoonPhaseModalShown}
+          />
+          <RecentCAStatsModal
+            isShown={isRecentCAStatsModalShown}
+            setIsShown={setIsRecentCAStatsModalShown}
+          />
 
-      <div className={"main-ui-container " + styles.container}>
-        <div className={styles.imageLeft}>
-          <ImageCell
-            link="https://www.nasa.gov/planetarydefense"
-            imageUrl="images/pdco-logo.jpg"
-          />
-        </div>
-        <div className={styles.imageRight}>
-          <ImageCell
-            link="https://www.nasa.gov/planetarydefense"
-            imageUrl="images/nasa-logo.png"
-          />
-        </div>
-        <div className={styles.title} onClick={() => setIsSearching(true)}>
-          <ErrorBoundary fallbackRender={() => <MyError />}>
-            <div className="longTitle">
-              {"Planetary Defense Coordination Office Status Summary"}
-            </div>
-            <div className={styles.shortTitle}>{"PDCO STATUS"}</div>
-            <div className={styles.date}>
-              <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
-              <FontAwesomeIcon
-                style={{ fontSize: 10 }}
-                flip="horizontal"
-                icon={faRedo}
+          <div className={"main-ui-container " + styles.container}>
+            <div className={styles.imageLeft}>
+              <ImageCell
+                link="https://www.nasa.gov/planetarydefense"
+                imageUrl="images/pdco-logo.jpg"
               />
             </div>
-          </ErrorBoundary>
-        </div>
-        <div className={styles.clocks}>
-          <ErrorBoundary fallbackRender={() => <MyError />}>
-            <Clocks />
-          </ErrorBoundary>
-        </div>
-        <div className={styles.neoCount}>
-          <TitledCell
-            title="RECENT CLOSE APPROACHES <1LD"
-            onClick={() => setIsRecentCAStatsModalShown(true)}
-            icon={() => <FontAwesomeIcon icon={faMeteor} />}
-            isDisplayed={isDisplayed}
-          >
-            {!!storedData && (
-              <NeoCount
-                cadData={storedData.cadData}
-                dateAtDataFetch={storedData.timestamp}
+            <div className={styles.imageRight}>
+              <ImageCell
+                link="https://www.nasa.gov/planetarydefense"
+                imageUrl="images/nasa-logo.png"
               />
-            )}
-          </TitledCell>
-        </div>
-        <div className={styles.sentry}>
-          <TitledCell
-            title="SENTRY STATUS"
-            link="https://cneos.jpl.nasa.gov/sentry/"
-            tooltip="Highest ts_max value in latest sentry data"
-            icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
-            isDisplayed={isDisplayed}
-          >
-            {!!storedData && <Sentry sentryData={storedData.sentryData} />}
-          </TitledCell>
-        </div>
-        <div className={styles.moonPhase}>
-          <TitledCell
-            title="MOON PHASE"
-            tooltip=""
-            icon={() => <FontAwesomeIcon icon={faMoon} />}
-            isDisplayed={isDisplayed}
-            onClick={() => setIsMoonPhaseModalShown(true)}
-          >
-            <MoonPhase />
-          </TitledCell>
-        </div>
-        <div className={styles.programs}>
-          <TitledCell
-            title="PROJECTS"
-            link=""
-            tooltip="Daylight map of world with PDCO project locations"
-            icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
-            isDisplayed={isDisplayed}
-          >
-            <ProgramsMap />
-          </TitledCell>
-        </div>
-        <div className={styles.recentTab}>
-          <TitledCell
-            title="CLOSE APPROACHES <1LD LAST 7 DAYS"
-            link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approach is defined as <1LD at smallest nominal distance"
-            icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={isDisplayed}
-            isHeightAuto={isMobile}
-            headerElement={
-              <FilterSortButton
-                filterSortData={filterSortDataLast7Days}
-                setFilterSortData={setFilterSortDataLast7Days}
-              />
-            }
-          >
-            {!!storedData && (
-              <TableCAD
-                period="recent"
-                cadData={storedData.cadData}
-                dateAtDataFetch={storedData.timestamp}
+            </div>
+            <div className={styles.title} onClick={() => setIsSearching(true)}>
+              <ErrorBoundary fallbackRender={() => <MyError />}>
+                <div className="longTitle">
+                  {"Planetary Defense Coordination Office Status Summary"}
+                </div>
+                <div className={styles.shortTitle}>{"PDCO STATUS"}</div>
+                <div className={styles.date}>
+                  <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
+                  <FontAwesomeIcon
+                    style={{ fontSize: 10 }}
+                    flip="horizontal"
+                    icon={faRedo}
+                  />
+                </div>
+              </ErrorBoundary>
+            </div>
+            <div className={styles.clocks}>
+              <ErrorBoundary fallbackRender={() => <MyError />}>
+                <Clocks />
+              </ErrorBoundary>
+            </div>
+            <div className={styles.neoCount}>
+              <TitledCell
+                title="RECENT CLOSE APPROACHES <1LD"
+                onClick={() => setIsRecentCAStatsModalShown(true)}
+                icon={() => <FontAwesomeIcon icon={faMeteor} />}
+                isDisplayed={isDisplayed}
+              >
+                {storedData && (
+                  <NeoCount
+                    cadData={storedData!.cadData}
+                    dateAtDataFetch={storedData!.timestamp}
+                  />
+                )}
+              </TitledCell>
+            </div>
+            <div className={styles.sentry}>
+              <TitledCell
+                title="SENTRY STATUS"
+                link="https://cneos.jpl.nasa.gov/sentry/"
+                tooltip="Highest ts_max value in latest sentry data"
+                icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
+                isDisplayed={isDisplayed}
+              >
+                {!!storedData && <Sentry sentryData={storedData!.sentryData} />}
+              </TitledCell>
+            </div>
+            <div className={styles.moonPhase}>
+              <TitledCell
+                title="MOON PHASE"
+                tooltip=""
+                icon={() => <FontAwesomeIcon icon={faMoon} />}
+                isDisplayed={isDisplayed}
+                onClick={() => setIsMoonPhaseModalShown(true)}
+              >
+                <MoonPhase />
+              </TitledCell>
+            </div>
+            <div className={styles.programs}>
+              <TitledCell
+                title="PROJECTS"
+                link=""
+                tooltip="Daylight map of world with PDCO project locations"
+                icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
+                isDisplayed={isDisplayed}
+              >
+                <ProgramsMap />
+              </TitledCell>
+            </div>
+            <div className={styles.recentTab}>
+              <TitledCell
+                title="CLOSE APPROACHES <1LD LAST 7 DAYS"
+                link="https://cneos.jpl.nasa.gov/ca/"
+                tooltip="Close Approach is defined as <1LD at smallest nominal distance"
+                icon={() => <FontAwesomeIcon icon={faTable} />}
+                isDisplayed={isDisplayed}
                 isHeightAuto={isMobile}
-                filterSortData={filterSortDataLast7Days}
-              />
-            )}
-          </TitledCell>
-        </div>
-        <div className={styles.futureTab}>
-          <TitledCell
-            title="CLOSE APPROACHES <1LD NEXT 10 YEARS"
-            link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approach is defined as <1LD at closest approach"
-            icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={isDisplayed}
-            isHeightAuto={isMobile}
-            headerElement={
-              <FilterSortButton
-                filterSortData={filterSortDataNext10Years}
-                setFilterSortData={setFilterSortDataNext10Years}
-              />
-            }
-          >
-            {!!storedData && (
-              <TableCAD
-                period="future"
-                cadData={storedData.cadData}
-                dateAtDataFetch={storedData.timestamp}
+                headerElement={
+                  <FilterSortButton
+                    filterSortData={filterSortDataLast7Days}
+                    setFilterSortData={setFilterSortDataLast7Days}
+                  />
+                }
+              >
+                {!!storedData && (
+                  <TableCAD
+                    period="recent"
+                    cadData={storedData!.cadData}
+                    dateAtDataFetch={storedData!.timestamp}
+                    isHeightAuto={isMobile}
+                    filterSortData={filterSortDataLast7Days}
+                  />
+                )}
+              </TitledCell>
+            </div>
+            <div className={styles.futureTab}>
+              <TitledCell
+                title="CLOSE APPROACHES <1LD NEXT 10 YEARS"
+                link="https://cneos.jpl.nasa.gov/ca/"
+                tooltip="Close Approach is defined as <1LD at closest approach"
+                icon={() => <FontAwesomeIcon icon={faTable} />}
+                isDisplayed={isDisplayed}
                 isHeightAuto={isMobile}
-                filterSortData={filterSortDataNext10Years}
-              />
-            )}
-          </TitledCell>
-        </div>
-        <div className={styles.largeDistantTab}>
-          <TitledCell
-            title="LARGE NEOs <19LD NEXT 1 YEAR"
-            link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approaches with H <24 in size passing within 19LD"
-            icon={() => <FontAwesomeIcon icon={faTable} />}
-            isDisplayed={isDisplayed}
-            isHeightAuto={isMobile}
-            headerElement={
-              <FilterSortButton
-                filterSortData={filterSortDataLargeFarNextYear}
-                setFilterSortData={setFilterSortDataLargeFarNextYear}
-              />
-            }
-          >
-            {!!storedData && (
-              <TableCAD
-                period="future"
-                cadData={storedData.largeDistantCadData}
-                dateAtDataFetch={storedData.timestamp}
+                headerElement={
+                  <FilterSortButton
+                    filterSortData={filterSortDataNext10Years}
+                    setFilterSortData={setFilterSortDataNext10Years}
+                  />
+                }
+              >
+                {!!storedData && (
+                  <TableCAD
+                    period="future"
+                    cadData={storedData!.cadData}
+                    dateAtDataFetch={storedData!.timestamp}
+                    isHeightAuto={isMobile}
+                    filterSortData={filterSortDataNext10Years}
+                  />
+                )}
+              </TitledCell>
+            </div>
+            <div className={styles.largeDistantTab}>
+              <TitledCell
+                title="LARGE NEOs <19LD NEXT 1 YEAR"
+                link="https://cneos.jpl.nasa.gov/ca/"
+                tooltip="Close Approaches with H <24 in size passing within 19LD"
+                icon={() => <FontAwesomeIcon icon={faTable} />}
+                isDisplayed={isDisplayed}
                 isHeightAuto={isMobile}
-                filterSortData={filterSortDataLargeFarNextYear}
-              />
-            )}
-          </TitledCell>
-        </div>
-      </div>
+                headerElement={
+                  <FilterSortButton
+                    filterSortData={filterSortDataLargeFarNextYear}
+                    setFilterSortData={setFilterSortDataLargeFarNextYear}
+                  />
+                }
+              >
+                {!!storedData && (
+                  <TableCAD
+                    period="future"
+                    cadData={storedData!.largeDistantCadData}
+                    dateAtDataFetch={storedData!.timestamp}
+                    isHeightAuto={isMobile}
+                    filterSortData={filterSortDataLargeFarNextYear}
+                  />
+                )}
+              </TitledCell>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

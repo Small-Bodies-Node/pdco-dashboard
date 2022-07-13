@@ -19,10 +19,8 @@ export const FilterSortButton = (props: IProps) => {
   // State
   const { filterSortData, setFilterSortData } = props;
   const [isDropdownShown, setIsDropdownShown] = useState(false);
-  const [internalSizeFilter, setInternalSizeFilter] = useState<
-    number | undefined
-  >();
-  const [internalHFilter, setInternalHFilter] = useState<number | undefined>();
+  const [internalSizeFilter, setInternalSizeFilter] = useState<number>(0);
+  const [internalHFilter, setInternalHFilter] = useState<number>(0);
 
   useEffect(() => {
     const clickListener = (e: Event) => {
@@ -62,7 +60,7 @@ export const FilterSortButton = (props: IProps) => {
   };
 
   const setSizeFilter = (filter?: number, final = false) => {
-    setInternalSizeFilter(!filter ? undefined : filter);
+    setInternalSizeFilter(filter || 0);
 
     if (final === true) {
       let tempFilterSortData = Object.assign({}, filterSortData);
@@ -78,7 +76,7 @@ export const FilterSortButton = (props: IProps) => {
   };
 
   const setHFilter = (filter?: number, final = false) => {
-    setInternalHFilter(!filter ? undefined : filter);
+    setInternalHFilter(filter || 0);
 
     if (final === true) {
       let tempFilterSortData = Object.assign({}, filterSortData);
@@ -173,7 +171,7 @@ export const FilterSortButton = (props: IProps) => {
 
           <div className={styles.sliderContainer}>
             <p>
-              {(internalSizeFilter && ">" + internalSizeFilter + "m") ?? "All"}
+              {/* {(internalSizeFilter && ">" + internalSizeFilter + "m") ?? "All"} */}
             </p>
 
             <input

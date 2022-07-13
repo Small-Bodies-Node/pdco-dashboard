@@ -21,7 +21,7 @@ interface IProps {
 export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
   // --->>
 
-  const { title, link, tooltip, headerElement } = props;
+  const { alignment, title, link, tooltip, headerElement } = props;
 
   // Aux component
   const TitleRow = () => {
@@ -37,7 +37,7 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.title} style={{ justifyContent: props.alignment }}>
+      <div className={styles.title} style={{ justifyContent: alignment }}>
         <Tooltip
           title={tooltip || ""}
           placement="top"
