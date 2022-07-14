@@ -9,7 +9,6 @@ import { cadFieldIndices, secsInDay } from "../../utils/constants";
 import { auToKm, auToLd, auToMi, kmToFt, kmToLd, magToSizeKm } from "../../utils/conversionFormulae";
 import styles from "./styles.module.scss";
 import Table from "../Table";
-import { TTableHeadElements } from "../../models/TTableHeadElements";
 import { TTableBodyElements } from "../../models/TTableBodyElements";
 import { NeoDetailsModal } from "../NeoDetailsModal";
 
@@ -376,20 +375,23 @@ export const TableCAD = ({
           const value = (row as any)[column.id];
           const tooltip = (row as any)[column.id + '_tooltip'];
 
-          return column.id === 'size' && !!row.diameter && !!row.diameter_sigma
-          ? `${row.diameter} ± ${row.diameter_sigma}`
-          : column.id === 'size' &&
-            !isNaN(parseFloat(row.minimum_size)) &&
-            !isNaN(parseFloat(row.maximum_size))
-          ? `${column.format(row.minimum_size)} - ${column.format(
-              row.maximum_size
-            )}`
-          : column.id === 'size'
-          ? column.format(row.nominal_size)
-          : column.format(value) + (column.id === 'dist' ?
-          auToLd(parseFloat(rawRows ? rawRows[index]?.dist : '0')) -
-            auToLd(parseFloat(row.min_distance)) >
-            0.1 ? '*' : '' : '')
+          return {
+            text: column.id === 'size' && !!row.diameter && !!row.diameter_sigma
+            ? `${row.diameter} ± ${row.diameter_sigma}`
+            : column.id === 'size' &&
+              !isNaN(parseFloat(row.minimum_size)) &&
+              !isNaN(parseFloat(row.maximum_size))
+            ? `${column.format(row.minimum_size)} - ${column.format(
+                row.maximum_size
+              )}`
+            : column.id === 'size'
+            ? column.format(row.nominal_size)
+            : column.format(value) + (column.id === 'dist' ?
+            auToLd(parseFloat(rawRows ? rawRows[index]?.dist : '0')) -
+              auToLd(parseFloat(row.min_distance)) >
+            0.1 ? '*' : '' : ''),
+            tooltip: tooltip
+          }
         }),
         color: rawRows && auToKm(parseFloat(rawRows[index]?.min_distance)) < 42164 ? 'yellow' : undefined,
         onClick: () => {
@@ -415,7 +417,8 @@ export const TableCAD = ({
           <Table
             headElements={columns.map(col => (
               {
-                element: col.label
+                element: col.label,
+                tooltip: col.label_tooltip
               }
             ))}
             bodyElements={bodyElements}

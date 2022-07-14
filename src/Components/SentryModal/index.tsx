@@ -51,7 +51,9 @@ export const SentryModal = ({ isShown, setIsShown, sentryData }: IProps) => {
     const bodyElements: TTableBodyElements = [];
     parsedData.forEach(i => {
       bodyElements.push({
-        elements: [i.fullname],
+        elements: [{
+          text: i.fullname
+        }],
         onClick: () => onClickSentryObject(i)
       })
     });

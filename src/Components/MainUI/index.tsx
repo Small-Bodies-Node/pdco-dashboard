@@ -33,6 +33,7 @@ import { IFetchedData } from "../../models/IFetchedData";
 import { mobileWidthPxl } from "../../utils/constants";
 import styles from "./styles.module.scss";
 import { SidebarMenu } from "../SidebarMenu";
+import { useRouter } from "next/router";
 
 /**
  *
@@ -64,10 +65,8 @@ export const MainUI = () => {
     useState(false);
 
   // Check if mock data is to be used
-  // TODO: port to NEXTJS
-  // const mockQueryParam = new URLSearchParams(useLocation().search);
-  // const [isMock] = useState(mockQueryParam.get("mock") === "true");
-  const isMock = true;
+  const router = useRouter();
+  const isMock = router.query['isMock'] === 'true';
 
   // Choose how long to check if the 'date' needs to be refreshed
   const intervalToCheckForDataSecs = isMock ? 10000 : 2;

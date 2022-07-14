@@ -85,28 +85,28 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     const distanceSizeBodyElements: TTableBodyElements = [
       {
         elements: [
-          `Distance (${DistanceUnits[distanceUnit]})`,
-          convertAuTo(rawRow.dist),
-          convertAuTo(rawRow.min_distance),
-          convertAuTo(rawRow.max_distance)
+          { text: `Distance (${DistanceUnits[distanceUnit]})` },
+          { text: convertAuTo(rawRow.dist) },
+          { text: convertAuTo(rawRow.min_distance) },
+          { text: convertAuTo(rawRow.max_distance) },
         ],
         onClick: incrementDistanceUnit
       },
       {
         elements: [
-          `Size (${SizeUnits[sizeUnit]})`,
-          convertKmTo(rawRow.nominal_size),
-          convertKmTo(rawRow.minimum_size),
-          convertKmTo(rawRow.maximum_size)
+          { text: `Size (${SizeUnits[sizeUnit]})` },
+          { text: convertKmTo(rawRow.nominal_size) },
+          { text: convertKmTo(rawRow.minimum_size) },
+          { text: convertKmTo(rawRow.maximum_size) },
         ],
         onClick: incrementSizeUnit
       },
       {
         elements: [
-          <span key={0}>Distance - R<sub>E</sub> ({SurfaceDistanceUnits[surfaceDistance]})</span>,
-          convertSurfaceDistanceAu(rawRow.dist),
-          convertSurfaceDistanceAu(rawRow.min_distance),
-          convertAuTo(rawRow.max_distance)
+          { text: <span key={0}>Distance - R<sub>E</sub> ({SurfaceDistanceUnits[surfaceDistance]})</span> },
+          { text: convertSurfaceDistanceAu(rawRow.dist) },
+          { text: convertSurfaceDistanceAu(rawRow.min_distance) },
+          { text: convertAuTo(rawRow.max_distance) },
         ],
         onClick: incrementSurfaceDistUnit
       }
@@ -115,30 +115,32 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
     const otherBodyElements = [
       {
         elements: [
-          'Close Approach Date',
-          `${rawRow.cd.toUTCString()} ± ${rawRow.cd_sigma}`
+          { text: 'Close Approach Date' },
+          { text: `${rawRow.cd.toUTCString()} ± ${rawRow.cd_sigma}` }
         ]
       },
       {
         elements: [
-          'H (mag)',
-          rawRow.h
+          { text: 'H (mag)' },
+          { text: rawRow.h }
         ]
       },
       {
         elements: [
-          'V-rel (km/s)',
-          parseFloat(rawRow.v_rel).toLocaleString('en-US', {
+          { text: 'V-rel (km/s)' },
+          { text: parseFloat(rawRow.v_rel).toLocaleString('en-US', {
             maximumFractionDigits: 5
           })
+          }
         ]
       },
       {
         elements: [
-          'V-inf (km/s)',
-          parseFloat(rawRow.v_inf).toLocaleString('en-US', {
+          { text: 'V-inf (km/s)' },
+          { text: parseFloat(rawRow.v_inf).toLocaleString('en-US', {
             maximumFractionDigits: 5
           })
+          }
         ]
       }
     ]

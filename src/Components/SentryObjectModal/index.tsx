@@ -76,8 +76,8 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
     const bodyElements: TTableBodyElements = [
       {
         elements: [
-          `Size (${SizeUnits[sizeUnit]})`,
-          convertKmTo(rawData.diameter)
+          { text: `Size (${SizeUnits[sizeUnit]})` },
+          { text: convertKmTo(rawData.diameter) }
         ],
         onClick: incrementSizeUnit
       }
@@ -88,8 +88,8 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
       bodyElements.push(
         {
           elements: [
-            'Date',
-            detailsData.pdate
+            { text: 'Date' },
+            { text: detailsData.pdate }
           ]
         }
       )
@@ -99,20 +99,20 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
     bodyElements.push(
       {
         elements: [
-          'ip',
-          rawData.ip
+          { text: 'ip' },
+          { text: rawData.ip }
         ]
       },
       {
         elements: [
-          'n_imp',
-          rawData.n_imp
+          { text: 'n_imp' },
+          { text: rawData.n_imp }
         ]
       },
       {
         elements: [
-          'h',
-          rawData.h
+          { text: 'h' },
+          { text: rawData.h }
         ]
       }
     );
@@ -122,20 +122,24 @@ export const SentryObjectModal = ({ isShown, setIsShown, rawData }: IProps) => {
       bodyElements.push(
         {
           elements: [
-            'Energy',
-            detailsData.energy
+            {
+              text: 'Energy'
+            },
+            {
+              text: detailsData.energy
+            }
           ]
         },
         {
           elements: [
-            'ts_max',
-            detailsData.ts_max
+            { text: 'ts_max' },
+            { text: detailsData.ts_max }
           ]
         },
         {
           elements: [
-            'ps_cum',
-            detailsData.ps_cum
+            { text: 'ps_cum' },
+            { text: detailsData.ps_cum }
           ]
         }
       )

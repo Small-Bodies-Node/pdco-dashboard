@@ -4,7 +4,10 @@
  * is clicked.
  */
 export type TTableBodyElements = {
-	elements: (JSX.Element | string)[],
+	elements: {
+		text: JSX.Element | string,
+		tooltip?: string
+	}[],
 	onClick?: () => void,
 	color?: string
 }[]

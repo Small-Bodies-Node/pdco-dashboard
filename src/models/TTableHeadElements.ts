@@ -3,6 +3,7 @@
  * element in the table. onClick runs when the th element is clicked.
  */
 export type TTableHeadElements = {
-	element: (JSX.Element | String),
+	element: (JSX.Element | string),
+	tooltip?: string,
 	onClick?: () => void
 }[];

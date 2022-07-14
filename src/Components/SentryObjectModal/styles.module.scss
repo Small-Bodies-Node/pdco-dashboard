@@ -90,7 +90,10 @@
 
 @media (max-width: $mobileWidthPxl) {
   .mainContentContainer {
-    max-width: 90%;
-    max-height: 80%;
+    max-width: unset;
+    max-height: unset;
+
+    width: 90%;
+    height: 70%;
   }
 }

@@ -1,3 +1,4 @@
+import { Tooltip, Zoom } from "@mui/material";
 import { TTableBodyElements } from "../../models/TTableBodyElements";
 import { TTableHeadElements } from "../../models/TTableHeadElements";
 import styles from "./styles.module.scss";
@@ -21,9 +22,17 @@ export default function Table({ headElements, bodyElements, children }: IProps) 
 				<thead className={styles.tHead}>
 					<tr>
 						{headElements.map((item, index) => (
-							<th className={styles.th} onClick={item.onClick} key={index}>
-								{item.element}
-							</th>
+							<Tooltip
+								key={index}
+								title={item.tooltip ?? ''}
+								placement="top"
+								TransitionComponent={Zoom}
+								arrow
+							>
+								<th className={styles.th} onClick={item.onClick}>
+									{item.element}
+								</th>
+							</Tooltip>
 						))}
 					</tr>
 				</thead>
@@ -39,9 +48,17 @@ export default function Table({ headElements, bodyElements, children }: IProps) 
 							key={rowIndex}
 						>
 							{row.elements.map((item, index) => (
-								<td key={index}>
-									{item}
-								</td>
+								<Tooltip
+									key={index}
+									title={item.tooltip ?? ''}
+									placement="top"
+									TransitionComponent={Zoom}
+									arrow
+								>
+									<td key={index}>
+										{item.text}
+									</td>
+								</Tooltip>
 							))}
 						</tr>
 					))}
