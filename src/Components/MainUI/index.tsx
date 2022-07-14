@@ -32,6 +32,7 @@ import { RecentCAStatsModal } from "../RecentCAStatsModal";
 import { IFetchedData } from "../../models/IFetchedData";
 import { mobileWidthPxl } from "../../utils/constants";
 import styles from "./styles.module.scss";
+import { SidebarMenu } from "../SidebarMenu";
 
 /**
  *
@@ -133,6 +134,8 @@ export const MainUI = () => {
             isShown={isRecentCAStatsModalShown}
             setIsShown={setIsRecentCAStatsModalShown}
           />
+          {/** Icon in top left and slide-out navigation menu */}
+          <SidebarMenu />
 
           <div className={"main-ui-container " + styles.container}>
             <div className={styles.imageLeft}>

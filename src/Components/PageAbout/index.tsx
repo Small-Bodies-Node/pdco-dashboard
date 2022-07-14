@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useEventListener } from "../../hooks/useEventListener";
+import { mobileWidthPxl } from "../../utils/constants";
 import { ImageCell } from "../ImageCell";
 import { MyError } from "../MyError";
 
@@ -7,6 +9,14 @@ import styles from "./styles.module.scss";
 
 export const PageAbout = () => {
   // --->>
+
+  // Check for changes in window size
+  const [isMobile, setIsMobile] = useState(false);
+  const windowResizeHandler = useCallback(() => {
+    setIsMobile(window.innerWidth < mobileWidthPxl);
+  }, [setIsMobile]);
+  useEventListener("resize", windowResizeHandler);
+  useEffect(windowResizeHandler, []);
 
   return (
     <div className={"main-ui-container " + styles.container}>
@@ -25,8 +35,8 @@ export const PageAbout = () => {
 
       <div className={styles.title}>
         <ErrorBoundary fallbackRender={() => <MyError />}>
-          <div className="longTitle">{"About"}</div>
-          <div className="shortTitle">{"ABOUT"}</div>
+          {!isMobile ? <div className="longTitle">{"About"}</div>
+          : <div className="shortTitle">{"ABOUT"}</div>}
         </ErrorBoundary>
       </div>
 

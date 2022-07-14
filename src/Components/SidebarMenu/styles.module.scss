@@ -1,9 +1,10 @@
 @import "../../styles/variables.scss";
 
 .container {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
+  z-index: 100;
 }
 
 .menuButton {
@@ -93,7 +94,7 @@
   }
 }
 @media (max-width: $mobileWidthPxl) {
-  container {
+  .container {
     left: 20px;
   }
 }
