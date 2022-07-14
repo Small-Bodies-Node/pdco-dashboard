@@ -4,13 +4,11 @@
   height: 100%;
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .title {
-  position: absolute;
-  top: 0px;
   height: 35px;
-  left: 0px;
-  right: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,20 +28,18 @@
   }
 }
 .content {
-  position: absolute;
-  top: 35px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  flex: 1;
+  max-height: calc(100% - 35px);
 }
 
 @media (max-width: $mobileWidthPxl) {
   .container {
     position: relative;
-    height: auto;
     width: 100%;
   }
   .title {

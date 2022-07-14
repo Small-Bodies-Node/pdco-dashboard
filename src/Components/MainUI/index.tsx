@@ -149,10 +149,11 @@ export const MainUI = () => {
             </div>
             <div className={styles.title} onClick={() => setIsSearching(true)}>
               <ErrorBoundary fallbackRender={() => <MyError />}>
-                <div className="longTitle">
+                {!isMobile ? <div className="longTitle">
                   {"Planetary Defense Coordination Office Status Summary"}
                 </div>
-                <div className={styles.shortTitle}>{"PDCO STATUS"}</div>
+                :
+                <div className={styles.shortTitle}>{"PDCO STATUS"}</div>}
                 <div className={styles.date}>
                   <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
                   <FontAwesomeIcon

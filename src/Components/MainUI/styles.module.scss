@@ -20,7 +20,7 @@
     "recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab";
   grid-gap: 20px;
   text-align: center;
-  border: $gridGap solid transparent;
+  border: 20px solid transparent;
   & > div {
     background-color: #181b2e;
     box-sizing: border-box;
@@ -73,7 +73,7 @@
 }
 .sentry {
   grid-area: sentry;
-  border: panelBorder;
+  border: $panelBorder;
   // background-color: purple;
 }
 .moonPhase {
@@ -139,5 +139,9 @@
     & .longTitle {
       display: none;
     }
+  }
+
+  .largeDistantTab {
+    max-height: 400px;
   }
 }

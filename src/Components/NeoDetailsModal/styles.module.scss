@@ -1,4 +1,6 @@
-@import "../../styles/variables.scss";
+/*import { makeStyles } from @material-ui/core;
+
+import { mobileWidthPxl } from ../../Utils/constants;*/
 
 .backgroundContainer {
   position: fixed;
@@ -25,13 +27,13 @@
 .closeButtonContainer {
   display: flex;
   align-items: center;
-  justify-content: flex-end
+  justify-content: flex-end;
 }
 .closeButton {
   cursor: pointer;
   transition: ease-in-out 0.12s;
   &:hover {
-    opacity: 0.7
+    opacity: 0.7;
   }
 }
 .tableContainer {
@@ -44,13 +46,13 @@
   align-items: center;
   justify-content: center;
 
-  & button, a, p {
+  & button a, p {
     outline: none;
     border: none;
     text-decoration: none;
     margin: 0;
     padding: 0;
-    font-size: 0.9rem
+    font-size: 0.9rem;
   }
 }
 .linkContainer {
@@ -62,7 +64,7 @@
   border-radius: 0.4rem;
 
   padding: 0.35rem;
-  margin: 0 0.35rem 0.75rem 0.35rem;
+  margin: 0.35rem 0.35rem 0.75rem 0.35rem;
 
   transition: ease-in-out 0.12s;
 
@@ -72,7 +74,8 @@
     background-color: #333A61;
   }
 }
-.mpcLink {
+.linkText {
+  font-size: 0.9rem;
   margin: 0;
   color: white;
 }
@@ -86,9 +89,6 @@
   cursor: pointer;
 }
 
-@media (max-width: $mobileWidthPxl) {
-  .mainContentContainer {
-    max-width: 90%;
-    max-height: 80%;
-  }
+.spacer {
+  margin: 8px 0 0 0;
 }

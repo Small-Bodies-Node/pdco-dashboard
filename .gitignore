@@ -14,6 +14,7 @@
 
 # production
 /build
+/build-pdco-dashboard
 
 # misc
 .DS_Store

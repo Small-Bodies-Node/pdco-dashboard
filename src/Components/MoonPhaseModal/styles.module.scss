@@ -1,13 +1,13 @@
 @import "../../styles/variables";
 
-.background-container {
+.backgroundContainer {
   position: fixed;
   width: 100vw;
   height: 100vh;
   left: 0;
   top: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 100px;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
