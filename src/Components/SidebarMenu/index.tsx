@@ -46,14 +46,18 @@ export const SidebarMenu = () => {
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/" onClick={() => setIsMenuOpen(false)}>
-            Dashboard
+          <Link href="/">
+            <a onClick={() => setIsMenuOpen(false)}>
+              Dashboard
+            </a>
           </Link>
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/about" onClick={() => setIsMenuOpen(false)}>
-            About
+          <Link href="/about">
+            <a onClick={() => setIsMenuOpen(false)}>
+              About
+            </a>
           </Link>
         </div>
       </div>

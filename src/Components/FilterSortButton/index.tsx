@@ -4,6 +4,7 @@ import {
   faFilter,
   faArrowUp,
   faArrowDown,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { IFilterSortData } from "../../models/IFilterSortData";
@@ -13,6 +14,9 @@ interface IProps {
   filterSortData: IFilterSortData;
   setFilterSortData: (data: IFilterSortData) => void;
 }
+/**
+ * Dropdown button with size filters and sort options
+ */
 export const FilterSortButton = (props: IProps) => {
   // --->>
 
@@ -22,6 +26,7 @@ export const FilterSortButton = (props: IProps) => {
   const [internalSizeFilter, setInternalSizeFilter] = useState<number>(0);
   const [internalHFilter, setInternalHFilter] = useState<number>(0);
 
+  // Initialize a listener to detect a click outside of the dropdown
   useEffect(() => {
     const clickListener = (e: Event) => {
       if (
@@ -45,6 +50,8 @@ export const FilterSortButton = (props: IProps) => {
     };
   }, [isDropdownShown]);
 
+  // Set the column, reversing the direction if the already selected
+  // column is clicked
   const setColumn = (col?: "dist" | "size") => {
     let tempFilterSortData = Object.assign({}, filterSortData);
     tempFilterSortData.column = col;
@@ -59,6 +66,9 @@ export const FilterSortButton = (props: IProps) => {
     setFilterSortData(tempFilterSortData);
   };
 
+  // Store the size filter in state. If final is true, store the
+  // number into the filterSortData state object to trigger the data
+  // to be filtered.
   const setSizeFilter = (filter?: number, final = false) => {
     setInternalSizeFilter(filter || 0);
 
@@ -75,6 +85,9 @@ export const FilterSortButton = (props: IProps) => {
     }
   };
 
+  // Store the h filter in state. If final is true, store the
+  // number into the filterSortData state object to trigger the data
+  // to be filtered.
   const setHFilter = (filter?: number, final = false) => {
     setInternalHFilter(filter || 0);
 
@@ -122,6 +135,15 @@ export const FilterSortButton = (props: IProps) => {
               onClick={() => setColumn()}
             >
               <p>Date (default)</p>
+
+              {!filterSortData.column && (
+                <div>
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    size="xs"
+                  />
+                </div>
+              )}
             </div>
 
             <div
@@ -171,7 +193,7 @@ export const FilterSortButton = (props: IProps) => {
 
           <div className={styles.sliderContainer}>
             <p>
-              {/* {(internalSizeFilter && ">" + internalSizeFilter + "m") ?? "All"} */}
+              {internalSizeFilter && internalSizeFilter > 0 ? ">" + internalSizeFilter + "m" : "All"}
             </p>
 
             <input

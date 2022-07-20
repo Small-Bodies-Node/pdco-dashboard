@@ -13,6 +13,10 @@ interface IProps {
 
 	children?: JSX.Element | JSX.Element[];
 }
+/**
+ * Table component which creates a table with the passed head 
+ * elements, body elements, and children.
+ */
 export default function Table({ headElements, bodyElements, children }: IProps) {
 	return (
 		<div className={styles.container}>
