@@ -34,6 +34,7 @@ import { mobileWidthPxl } from "../../utils/constants";
 import styles from "./styles.module.scss";
 import { SidebarMenu } from "../SidebarMenu";
 import { useRouter } from "next/router";
+import { DiscoveryStats } from "../DiscoveryStats";
 
 /**
  *
@@ -173,7 +174,7 @@ export const MainUI = () => {
             </div>
             <div className={styles.neoCount}>
               <TitledCell
-                title="RECENT CLOSE APPROACHES <1LD"
+                title="RECENT CAs <1LD"
                 onClick={() => setIsRecentCAStatsModalShown(true)}
                 icon={() => <FontAwesomeIcon icon={faMeteor} />}
                 isDisplayed={isDisplayed}
@@ -184,6 +185,14 @@ export const MainUI = () => {
                     dateAtDataFetch={storedData!.timestamp}
                   />
                 )}
+              </TitledCell>
+            </div>
+            <div className={styles.discoveryStats}>
+              <TitledCell
+                title="DISCOVERY STATS"
+                isDisplayed={isDisplayed}
+              >
+                <DiscoveryStats />
               </TitledCell>
             </div>
             <div className={styles.sentry}>

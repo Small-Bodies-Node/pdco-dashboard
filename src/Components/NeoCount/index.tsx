@@ -131,7 +131,7 @@ export const NeoCount = ({ cadData, dateAtDataFetch }: IProps) => {
         </div>
         <div className={styles.week}>
           <TitledCell
-            title={`<7 DAYS`}
+            title={`<7d`}
             tooltip="Number of close approaches in the last 7 days"
             alignment="center"
             isDisplayed={true}
@@ -147,7 +147,7 @@ export const NeoCount = ({ cadData, dateAtDataFetch }: IProps) => {
         </div>
         <div className={styles.month}>
           <TitledCell
-            title={`<30 DAYS`}
+            title={`<30d`}
             tooltip="Number of close approaches in the last 30 days"
             alignment="center"
             isDisplayed={true}
@@ -163,7 +163,7 @@ export const NeoCount = ({ cadData, dateAtDataFetch }: IProps) => {
         </div>
         <div className={styles.year}>
           <TitledCell
-            title={`<365 DAYS`}
+            title={`<365d`}
             tooltip="Number of close approaches in the last 365 days"
             alignment="center"
             isDisplayed={true}

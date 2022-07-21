@@ -16,7 +16,7 @@
   grid-template-areas:
     "imageLeft     imageLeft     imageLeft     title         title         title         title         title         title         title         title         title         title         title         title         title         title               title               title               title               title               imageRight          imageRight          imageRight"
     "imageLeft     imageLeft     imageLeft     clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks              clocks              clocks              clocks              clocks              imageRight          imageRight          imageRight"
-    "neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      neoCount      sentry        sentry        sentry        sentry        moonPhase     moonPhase     moonPhase     moonPhase     programs            programs            programs            programs            programs            programs            programs            programs"
+    "neoCount      neoCount      neoCount      neoCount      neoCount      discovery     discovery     discovery     sentry        sentry        sentry        sentry        moonPhase     moonPhase     moonPhase     moonPhase     programs            programs            programs            programs            programs            programs            programs            programs"
     "recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab";
   grid-gap: 20px;
   text-align: center;
@@ -71,6 +71,10 @@
   border: $panelBorder;
   // background-color: cyan;
 }
+.discoveryStats {
+  grid-area: discovery;
+  border: $panelBorder;
+}
 .sentry {
   grid-area: sentry;
   border: $panelBorder;
@@ -103,6 +107,17 @@
   // background-color: yellow;
 }
 
+/* Expand the discovery stats */
+@media (max-width: 1420px) {
+  .container {
+    grid-template-areas:
+    "imageLeft     imageLeft     imageLeft     title         title         title         title         title         title         title         title         title         title         title         title         title         title               title               title               title               title               imageRight          imageRight          imageRight"
+    "imageLeft     imageLeft     imageLeft     clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks        clocks              clocks              clocks              clocks              clocks              imageRight          imageRight          imageRight"
+    "neoCount      neoCount      neoCount      neoCount      neoCount      discovery     discovery     discovery     discovery     sentry        sentry        sentry        sentry        moonPhase     moonPhase     moonPhase     programs            programs            programs            programs            programs            programs            programs            programs"
+    "recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     recentTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     futureTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab     largeDistantTab";
+  }
+}
+
 @media (max-width: $mobileWidthPxl) {
   .container {
     height: auto; // Let height grow with content
@@ -111,6 +126,7 @@
       minmax(0px, 90px)
       minmax(0px, 120px)
       minmax(0px, 150px)
+      minmax(0px, 180px)
       minmax(0px, 180px)
       minmax(100px, auto)
       minmax(100px, auto)
@@ -125,6 +141,7 @@
       "clocks    clocks    clocks    clocks"
       "sentry    sentry    programs  programs"
       "neoCount  neoCount  neoCount  neoCount"
+      "discovery discovery discovery discovery"
       "recentTab recentTab recentTab recentTab"
       "futureTab futureTab futureTab  futureTab"
       "largeDistantTab largeDistantTab largeDistantTab largeDistantTab"
