@@ -1,3 +1,4 @@
+import { Tooltip, Zoom } from "@mui/material";
 import React from "react";
 // import { Tooltip, Zoom } from "@material-ui/core";
 
@@ -25,11 +26,9 @@ export const NeoCountRows = (props: IProps) => {
             key={ind}
           >
             {row.tooltip ? (
-              // TODO: update tooltip
-              // <Tooltip title={row.tooltip} placement="top" TransitionComponent={Zoom} arrow>
-              //   <span>{row.text}</span>
-              // </Tooltip>
-              <span>Tooltip</span>
+              <Tooltip title={row.tooltip} placement="top" TransitionComponent={Zoom} arrow>
+                <span>{row.text}</span>
+              </Tooltip>
             ) : (
               <span>{row.text}</span>
             )}

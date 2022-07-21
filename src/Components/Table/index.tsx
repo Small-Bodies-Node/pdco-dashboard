@@ -26,17 +26,18 @@ export default function Table({ headElements, bodyElements, children }: IProps) 
 				<thead className={styles.tHead}>
 					<tr>
 						{headElements.map((item, index) => (
-							<Tooltip
-								key={index}
-								title={item.tooltip ?? ''}
-								placement="top"
-								TransitionComponent={Zoom}
-								arrow
-							>
-								<th className={styles.th} onClick={item.onClick}>
-									{item.element}
-								</th>
-							</Tooltip>
+							<th className={styles.th} onClick={item.onClick} key={index}>
+								<Tooltip
+									title={item.tooltip ?? ''}
+									placement="top"
+									TransitionComponent={Zoom}
+									arrow
+								>
+									<span>
+										{item.element}
+									</span>
+								</Tooltip>
+							</th>
 						))}
 					</tr>
 				</thead>
@@ -52,17 +53,18 @@ export default function Table({ headElements, bodyElements, children }: IProps) 
 							key={rowIndex}
 						>
 							{row.elements.map((item, index) => (
-								<Tooltip
-									key={index}
-									title={item.tooltip ?? ''}
-									placement="top"
-									TransitionComponent={Zoom}
-									arrow
-								>
-									<td key={index}>
-										{item.text}
-									</td>
-								</Tooltip>
+								<td key={index}>
+									<Tooltip
+										title={item.tooltip ?? ''}
+										placement="top"
+										TransitionComponent={Zoom}
+										arrow
+									>
+										<span>
+											{item.text}
+										</span>
+									</Tooltip>
+								</td>
 							))}
 						</tr>
 					))}
