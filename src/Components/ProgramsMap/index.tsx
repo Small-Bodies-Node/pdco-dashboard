@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { WorldDaylightMap } from "world-daylight-map";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { IIcon } from "world-daylight-map/dist/models";
+import { IIcon } from "world-daylight-map/dist/models/IIcon";
 import moment from "moment-timezone";
 
 import { smallMapIcons, largeMapIcons } from "./icons";
@@ -51,7 +51,7 @@ export const ProgramsMap = () => {
   return (
     <>
       <div className={styles.container}>
-        {/*
+        {
           <WorldDaylightMap
             options={{
               controlsPosition: "no-controls",
@@ -59,7 +59,7 @@ export const ProgramsMap = () => {
               icons: smallMapIcons,
             }}
           />
-        */}
+        }
         <div
           className={styles.overlay}
           onClick={() => {
