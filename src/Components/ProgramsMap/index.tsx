@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+// import { WorldDaylightMap } from "world-daylight-map";
+
+// import dynamic from "next/dynamic";
 import { WorldDaylightMap } from "world-daylight-map";
+// const WorldDaylightMap: any = dynamic(() => import("world-daylight-map"), {
+// ssr: false,
+// });
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { IIcon } from "world-daylight-map/dist/models/IIcon";
