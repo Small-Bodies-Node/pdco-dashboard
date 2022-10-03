@@ -74,11 +74,10 @@ export const ProgramsMap = () => {
           }}
         />
 
+        {isDialogOpen &&
         <div
           className={styles.dialog}
-          //onClose={() => setIsDialogOpen(false)}
           aria-labelledby="programs-dialog"
-          hidden={!isDialogOpen}
         >
           <div className={styles.dialogInner}>
             <div className={styles.dialogContainer} ref={mapRef}>
@@ -163,7 +162,7 @@ export const ProgramsMap = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </>
   );

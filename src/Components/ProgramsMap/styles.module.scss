@@ -26,10 +26,8 @@
 }
 .dialogInner {
   background-color: #181b2e;
-  min-width: 50%;
-  max-width: 70%;
-  min-height: 50%;
-  max-height: 70%;
+  width: 60%;
+  height: 65%;
   border-radius: 0.5rem;
   padding: 1rem;
   overflow: auto;
@@ -39,7 +37,7 @@
 .dialogContainer {
   position: relative;
   box-sizing: border-box;
-  min-height: 300px;
+  flex: 1;
   &::before {
     display: block;
     padding-top: 50%;
