@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+// import { WorldDaylightMap } from "world-daylight-map";
+
+// import dynamic from "next/dynamic";
 import { WorldDaylightMap } from "world-daylight-map";
+// const WorldDaylightMap: any = dynamic(() => import("world-daylight-map"), {
+// ssr: false,
+// });
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { IIcon } from "world-daylight-map/dist/models";
+import { IIcon } from "world-daylight-map/dist/models/IIcon";
 import moment from "moment-timezone";
 
 import { smallMapIcons, largeMapIcons } from "./icons";
@@ -51,7 +58,7 @@ export const ProgramsMap = () => {
   return (
     <>
       <div className={styles.container}>
-        {/*
+        {
           <WorldDaylightMap
             options={{
               controlsPosition: "no-controls",
@@ -59,7 +66,7 @@ export const ProgramsMap = () => {
               icons: smallMapIcons,
             }}
           />
-        */}
+        }
         <div
           className={styles.overlay}
           onClick={() => {
@@ -67,97 +74,96 @@ export const ProgramsMap = () => {
           }}
         />
 
-        {/*
-        <Dialog
-          fullWidth={true}
-          maxWidth={"xl" as DialogProps["maxWidth"]}
-          onClose={() => setIsDialogOpen(false)}
+        <div
+          className={styles.dialog}
+          //onClose={() => setIsDialogOpen(false)}
           aria-labelledby="programs-dialog"
-          open={isDialogOpen}
+          hidden={!isDialogOpen}
         >
-          <div className={styles.dialogContainer} ref={mapRef}>
-            <div
-              className={styles.menuContainer}
-              style={{
-                left: `${isMenuOpen ? 0 : -300}px`,
-              }}
-            >
-              <div className={styles.menuHeader}>
-                <p>Sites</p>
+          <div className={styles.dialogInner}>
+            <div className={styles.dialogContainer} ref={mapRef}>
+              <div
+                className={styles.menuContainer}
+                style={{
+                  left: `${isMenuOpen ? 0 : -300}px`,
+                }}
+              >
+                <div className={styles.menuHeader}>
+                  <p>Sites</p>
 
-                <div
-                  className={styles.closeButton}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <FontAwesomeIcon icon={faTimes} />
+                  <div
+                    className={styles.closeButton}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </div>
                 </div>
+
+                <span className={styles.sortTitle}>Sort</span>
+
+                <select
+                  className={styles.sort}
+                  value={sort}
+                  onChange={(e) =>
+                    setSort(e.target.value as "alphabetical" | "longitude")
+                  }
+                >
+                  <option value="longitude">Longitude</option>
+
+                  <option value="alphabetical">Alphabetical (a-z)</option>
+                </select>
+
+                {sortedLargeMapIcons.map((item, index) => (
+                  <div className={styles.menuRow} key={index}>
+                    <p>{item.iconLabel}</p>
+
+                    <a
+                      href={item.iconLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.iconLink}
+                    </a>
+
+                    {item.timeZone && (
+                      <p>
+                        {moment
+                          .tz(item.timeZone)
+                          .format("MMM D, Y HH:mm (z, [UTC]Z)")}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
 
-              <span className={styles.sortTitle}>Sort</span>
+              <div className={styles.dialogMapWrapper}>
+                <WorldDaylightMap
+                  options={{
+                    controlsPosition: "outer-top",
+                    isSunshineDisplayed: !false,
+                    icons: largeMapIcons,
+                    // icons: largeMapIcons.concat(smallMapIcons)
+                    // icons: smallMapIcons.concat(largeMapIcons)
+                  }}
+                />
+              </div>
 
-              <select
-                className={styles.sort}
-                value={sort}
-                onChange={(e) =>
-                  setSort(e.target.value as "alphabetical" | "longitude")
-                }
+              <div
+                className={styles.menuButton}
+                onClick={() => setIsMenuOpen(true)}
               >
-                <option value="longitude">Longitude</option>
+                <FontAwesomeIcon icon={faBars} />
+              </div>
 
-                <option value="alphabetical">Alphabetical (a-z)</option>
-              </select>
-
-              {sortedLargeMapIcons.map((item, index) => (
-                <div className={styles.menuRow} key={index}>
-                  <p>{item.iconLabel}</p>
-
-                  <a
-                    href={item.iconLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {item.iconLink}
-                  </a>
-
-                  {item.timeZone && (
-                    <p>
-                      {moment
-                        .tz(item.timeZone)
-                        .format("MMM D, Y HH:mm (z, [UTC]Z)")}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.dialogMapWrapper}>
-              <WorldDaylightMap
-                options={{
-                  controlsPosition: "outer-top",
-                  isSunshineDisplayed: !false,
-                  icons: largeMapIcons,
-                  // icons: largeMapIcons.concat(smallMapIcons)
-                  // icons: smallMapIcons.concat(largeMapIcons)
-                }}
-              />
-            </div>
-
-            <div
-              className={styles.menuButton}
-              onClick={() => setIsMenuOpen(true)}
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-
-            <div
-              className={styles.closeButton}
-              onClick={() => setIsDialogOpen(false)}
-            >
-              <FontAwesomeIcon icon={faTimes} />
+              <div
+                className={styles.closeButton}
+                onClick={() => setIsDialogOpen(false)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </div>
             </div>
           </div>
-        </Dialog>
-*/}
+        </div>
       </div>
     </>
   );
