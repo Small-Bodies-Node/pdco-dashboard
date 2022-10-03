@@ -1,0 +1,118 @@
+@import "../../styles/variables.scss";
+
+.backgroundContainer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0px;
+  top: 0px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mainContentContainer {
+  background-color: #181b2e;
+  min-width: 50%;
+  max-width: 70%;
+  min-height: 50%;
+  max-height: 70%;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+.closeButtonContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.closeButton {
+  cursor: pointer;
+  transition: ease-in-out 0.12s;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.titledCellContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+}
+.timePeriodTitle {
+  margin: 1rem 0 4px 0;
+}
+.yearTitle {
+  margin: 1rem 0 4px 0;
+}
+.loadButton {
+  border: solid 2px $borderColor;
+  background: rgb(36, 39, 57);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 1.5rem 0 0 0;
+  padding: 2px 6px;
+  text-decoration: none;
+}
+.loadButton:disabled {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dataRowsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  flex: 1;
+  padding: 0 1rem;
+}
+.dataRowContainerTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1rem 0 0 0;
+}
+.dataRow {
+	display: flex;
+	flex-direction: row;
+
+	width: 100%;
+  margin: 8px 0;
+}
+.dataRowTitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+.dataRowBody {
+  font-weight: bold;
+	margin: 0 0 0 8px;
+}
+.dataSubText {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 1rem 0 0 0;
+  max-width: 500px;
+}
+.cneosButton {
+  border: solid 2px $borderColor;
+  background: rgb(36, 39, 57);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.5rem 0 0 0;
+  padding: 2px 6px;
+  text-decoration: none;
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .mainContentContainer {
+    max-width: 90%;
+    max-height: 80%;
+  }
+}

@@ -26,12 +26,12 @@ export const DiscoveryStats = () => {
       const tempDataRows = [];
 
       // Fetch data
-      const neaTotals: IDiscoveryStats = await (await fetch('/api/getDiscoveryStats')).json();
+      const neaTotals: IDiscoveryStats = await (await fetch('/api/getDiscoveryStatsAllTime')).json();
 
       // Add data to temporary data rows variable
-      tempDataRows.push({ title: 'Total NEAs Discovered', data: neaTotals.neosDiscovered.toString() });
-      tempDataRows.push({ title: 'Total NEAs Discovered (>140m)', data: neaTotals.neosGreaterThan140m.toString() });
-      tempDataRows.push({ title: 'Total NEAs Discovered (>1km)', data: neaTotals.neosGreaterThan1km.toString() });
+      tempDataRows.push({ title: 'Total NEAs', data: neaTotals.neosDiscovered.toString() });
+      tempDataRows.push({ title: 'Total NEAs (>140m)', data: neaTotals.neosGreaterThan140m.toString() });
+      tempDataRows.push({ title: 'Total NEAs (>1km)', data: neaTotals.neosGreaterThan1km.toString() });
 
       // Load data into state
       setDataRows(tempDataRows);

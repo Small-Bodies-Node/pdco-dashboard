@@ -8,6 +8,7 @@ import {
   faGlobeAmericas,
   faRedo,
   faMoon,
+  faChartColumn
 } from "@fortawesome/free-solid-svg-icons";
 
 // My constants, hooks, etc.
@@ -35,6 +36,7 @@ import styles from "./styles.module.scss";
 import { SidebarMenu } from "../SidebarMenu";
 import { useRouter } from "next/router";
 import { DiscoveryStats } from "../DiscoveryStats";
+import { DiscoveryStatsModal } from "../DiscoveryStatsModal";
 
 /**
  *
@@ -63,6 +65,8 @@ export const MainUI = () => {
     useState<IFilterSortData>({});
 
   const [isRecentCAStatsModalShown, setIsRecentCAStatsModalShown] =
+    useState(false);
+  const [isDiscoveryStatsModalShown, setIsDiscoveryStatsModalShown] =
     useState(false);
 
   // Check if mock data is to be used
@@ -134,6 +138,10 @@ export const MainUI = () => {
             isShown={isRecentCAStatsModalShown}
             setIsShown={setIsRecentCAStatsModalShown}
           />
+          <DiscoveryStatsModal
+            isShown={isDiscoveryStatsModalShown}
+            setIsShown={setIsDiscoveryStatsModalShown}
+          />
           {/** Icon in top left and slide-out navigation menu */}
           <SidebarMenu />
 
@@ -190,6 +198,8 @@ export const MainUI = () => {
             <div className={styles.discoveryStats}>
               <TitledCell
                 title="DISCOVERY STATS"
+                onClick={() => setIsDiscoveryStatsModalShown(true)}
+                icon={() => <FontAwesomeIcon icon={faChartColumn} />}
                 isDisplayed={isDisplayed}
               >
                 <DiscoveryStats />
