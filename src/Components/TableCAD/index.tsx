@@ -147,7 +147,7 @@ export const TableCAD = ({
 
     let newRawRows = filteredDataArrays?.map(
       (datumArr: (string | null)[]): IRawRow => {
-        const name = datumArr[cadFieldIndices.fullname]!.replaceAll(/\(|\)/g, '').trim();
+        const name = datumArr[cadFieldIndices.fullname]?.replaceAll(/\(|\)/g, '').trim();
 
         let diameter = datumArr[cadFieldIndices.diameter];
         let min_size = (
@@ -172,7 +172,7 @@ export const TableCAD = ({
         }
 
         return {
-          fullname: name,
+          fullname: name ?? '',
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,

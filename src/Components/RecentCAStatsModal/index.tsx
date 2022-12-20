@@ -86,7 +86,8 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
       setFiscalYear(dateToday.getFullYear());
     }
 
-    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${dateToday.getFullYear()}-${`${
+    //const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${dateToday.getFullYear()}-${`${
+    const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${dateToday.getFullYear()}-${`${
       dateToday.getMonth() + 1
     }`.padStart(2, "0")}-${`${dateToday.getDate() + 1}`.padStart(
       2,
@@ -224,7 +225,8 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
       )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
-    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+    // const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+    const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${endDateString}&distMax=1LD`;
 
     let fyAllCount = 0;
     let fyGeoCount = 0;
@@ -280,7 +282,8 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
       )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
-    const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+    // const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
+    const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${endDateString}&distMax=1LD`;
 
     let calendarAllCount = 0;
     let calendarGeoCount = 0;

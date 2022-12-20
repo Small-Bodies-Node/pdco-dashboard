@@ -10,7 +10,6 @@ import { secsInDay } from "./constants";
  */
 export async function fetchAllDataReal(): Promise<IFetchedData | null> {
   // Urls for data fetching
-  const sentryUrl = "https://ssd-api.jpl.nasa.gov/sentry.api";
   const cadUrl = getCadUrl();
   const largeDistantCadUrl = getDistantLargeCadUrl();
 
@@ -20,7 +19,7 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
     ICadData?,
     ICadData?
   ] = [undefined, undefined, undefined];
-  return fetch(sentryUrl)
+  return fetch('/api/getSentryData')
     .then(async (res) => {
       sentryData = (await res.json()) as ISentryData;
     })
@@ -50,7 +49,7 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
 
 function getCadUrl() {
   const baseUrl =
-    "https://ssd-api.jpl.nasa.gov/cad.api?www=1&nea-comet=Y&fullname=true&diameter=true";
+    "/api/getCadData";
 
   // Build string for future date
   const d = new Date();
@@ -61,13 +60,13 @@ function getCadUrl() {
   const futureDateStr = futureDate.toISOString().split("T")[0];
 
   // Assemble final url
-  const res = `&min-dist-max=1LD&date-min=-365&date-max=${futureDateStr}`;
+  const res = `?minDistMax=1LD&dateMin=-365&dateMax=${futureDateStr}`;
   return baseUrl + res;
 }
 
 function getDistantLargeCadUrl() {
   const baseUrl =
-    "https://ssd-api.jpl.nasa.gov/cad.api?www=1&nea-comet=Y&fullname=true&diameter=true";
+    "/api/getCadData";
 
   // Build string for future date
   const d = new Date();
@@ -78,6 +77,6 @@ function getDistantLargeCadUrl() {
   const futureDateStr = futureDate.toISOString().split("T")[0];
 
   // Assemble final url
-  const res = `&dist-max=19LD&h-max=24&date-min=-365&date-max=${futureDateStr}`;
+  const res = `?distMax=19LD&hMax=24&dateMin=-365&dateMax=${futureDateStr}`;
   return baseUrl + res;
 }
