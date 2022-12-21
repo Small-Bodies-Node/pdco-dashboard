@@ -91,7 +91,7 @@ export const DiscoveryStatsModal = ({ isShown, setIsShown }: IProps) => {
 		setDisplayedStartDate(numbersStartDateString);
 		setDisplayedEndDate(numbersEndDateString);
 
-		const cadData = await(await fetch(`https://ssd-api.jpl.nasa.gov/cad.api?date-min=${cadStartDateString}&date-max=${cadEndDateString}&dist-max=1LD`)).json();
+		const cadData = await (await fetch(`/api/getCadData?dateMin=${cadStartDateString}&dateMax=${cadEndDateString}&distMax=1LD`)).json();
 		let belowGeo = 0;
 		cadData.data.forEach((element: string[]) => {
 			if(parseFloat(element[4]) < 0.00023920795) {
