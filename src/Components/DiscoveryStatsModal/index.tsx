@@ -43,8 +43,14 @@ export const DiscoveryStatsModal = ({ isShown, setIsShown }: IProps) => {
 		}
 
 		setYears(elements);
-		loadData();
+		//loadData();
 	}, []);
+
+	useEffect(() => {
+		if(isShown && !discoveryStats) {
+			loadData();
+		}
+	}, [isShown]);
 
 	// Load data for selected time perido and year
 	const loadData = async () => {

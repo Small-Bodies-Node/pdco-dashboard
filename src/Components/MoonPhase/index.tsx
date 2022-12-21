@@ -22,7 +22,7 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
   // --->>
 
   const [moonCyclePercent, setMoonCyclePercent] = useState(0);
-  const [moonPhase, setMoonPhase] = useState("");
+  const [moonPhase, setMoonPhase] = useState<string | null>(null);
 
   // Use calculations from https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
   // Moon cycle length from http://www.agopax.it/Libri_astronomia/pdf/Astronomical%20Algorithms.pdf
@@ -104,7 +104,7 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
   // Generated image path from current moon phase text
   const getMoonImageURL = (): string => {
     const baseImageURL = "images/moons/";
-    return baseImageURL + moonPhase.replaceAll(" ", "") + ".jpg";
+    return baseImageURL + (moonPhase ? moonPhase.replaceAll(" ", "") : "Full") + ".jpg";
   };
 
   return (

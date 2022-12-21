@@ -240,7 +240,7 @@ export const MainUI = () => {
             </div>
             <div className={styles.recentTab}>
               <TitledCell
-                title="CLOSE APPROACHES <1LD LAST 7 DAYS"
+                title="CLOSE APPROACHES <1LD LAST 30 DAYS"
                 link="https://cneos.jpl.nasa.gov/ca/"
                 tooltip="Close Approach is defined as <1LD at smallest nominal distance"
                 icon={() => <FontAwesomeIcon icon={faTable} />}

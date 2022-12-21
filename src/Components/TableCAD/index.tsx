@@ -142,7 +142,7 @@ export const TableCAD = ({
       if (!dateIsStringOrNull) return false;
       const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
       const dDays = (+new Date(dateAtDataFetch) - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
-      return period === 'recent' ? 0 <= dDays && dDays <= 7 : dDays <= 0;
+      return period === 'recent' ? 0 <= dDays && dDays <= 30 : dDays <= 0;
     });
 
     let newRawRows = filteredDataArrays?.map(
