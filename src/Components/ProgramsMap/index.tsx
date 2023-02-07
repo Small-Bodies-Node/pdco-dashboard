@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-// import { WorldDaylightMap } from "world-daylight-map";
+import Image from "next/image";
 
-// import dynamic from "next/dynamic";
 import { WorldDaylightMap } from "world-daylight-map";
-// const WorldDaylightMap: any = dynamic(() => import("world-daylight-map"), {
-// ssr: false,
-// });
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +9,6 @@ import { IIcon } from "world-daylight-map/dist/models/IIcon";
 import moment from "moment-timezone";
 
 import { smallMapIcons, largeMapIcons } from "./icons";
-// import { Dialog, DialogProps } from "@material-ui/core";
 import styles from "./styles.module.scss";
 
 export const ProgramsMap = () => {
@@ -59,13 +54,20 @@ export const ProgramsMap = () => {
     <>
       <div className={styles.container}>
         {
-          <WorldDaylightMap
-            options={{
-              controlsPosition: "no-controls",
-              isSunshineDisplayed: false,
-              icons: smallMapIcons,
-            }}
-          />
+          // <WorldDaylightMap
+          //   options={{
+          //     controlsPosition: "no-controls",
+          //     isSunshineDisplayed: false,
+          //     icons: smallMapIcons,
+          //   }}
+          // />
+
+          // TEMPORARY FIX
+          // WorldDaylightMap is broken when used >1 time
+          // so, use image here instead
+          <div className={styles.imageContainer}>
+            <Image src="/images/projectsmap.png" alt="Projects map" layout="fill" />
+          </div>
         }
         <div
           className={styles.overlay}
