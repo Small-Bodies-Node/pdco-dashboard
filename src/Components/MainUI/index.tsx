@@ -37,6 +37,7 @@ import { SidebarMenu } from "../SidebarMenu";
 import { useRouter } from "next/router";
 import { DiscoveryStats } from "../DiscoveryStats";
 import { DiscoveryStatsModal } from "../DiscoveryStatsModal";
+import { NeoSearchModal } from "../NeoSearchModal";
 
 /**
  *

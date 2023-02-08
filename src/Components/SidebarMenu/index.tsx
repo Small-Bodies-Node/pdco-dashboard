@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles.module.scss";
+import { NeoSearchModal } from "../NeoSearchModal";
 
 /**
  * ...
@@ -13,8 +14,23 @@ export const SidebarMenu = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const [isNeoSearchModalModalShown, setIsNeoSearchModalShown] =
+    useState(false);
+  const [neoSearchQuery, setNeoSearchQuery] = useState("");
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setNeoSearchQuery("");
+  }
+
   return (
     <div className={styles.container}>
+      <NeoSearchModal
+        isShown={isNeoSearchModalModalShown}
+        setIsShown={setIsNeoSearchModalShown}
+        query={neoSearchQuery}
+      />
+
       <div className={styles.menuButton} onClick={() => setIsMenuOpen(true)}>
         <FontAwesomeIcon icon={faBars} />
       </div>
@@ -25,7 +41,7 @@ export const SidebarMenu = () => {
           background: `${isMenuOpen ? "rgba(0, 0, 0, 0.5)" : "transparent"}`,
           pointerEvents: isMenuOpen ? "auto" : "none",
         }}
-        onClick={() => setIsMenuOpen(false)}
+        onClick={() => closeMenu()}
       />
 
       <div
@@ -39,7 +55,7 @@ export const SidebarMenu = () => {
 
           <div
             className={styles.closeButton}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => closeMenu()}
           >
             <FontAwesomeIcon icon={faTimes} />
           </div>
@@ -47,7 +63,7 @@ export const SidebarMenu = () => {
 
         <div className={styles.menuRow}>
           <Link href="/">
-            <a onClick={() => setIsMenuOpen(false)}>
+            <a onClick={() => closeMenu()}>
               Dashboard
             </a>
           </Link>
@@ -55,10 +71,36 @@ export const SidebarMenu = () => {
 
         <div className={styles.menuRow}>
           <Link href="/about">
-            <a onClick={() => setIsMenuOpen(false)}>
+            <a onClick={() => closeMenu()}>
               About
             </a>
           </Link>
+        </div>
+
+        <div className={styles.menuRow}>
+          <p className={styles.searchHeader}>
+            NEO Search
+          </p>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsNeoSearchModalShown(true);
+            }}
+            className={styles.searchBox}
+          >
+            <input
+              placeholder="Search NEOs..."
+              value={neoSearchQuery}
+              onChange={(e) => setNeoSearchQuery(e.target.value)}
+              type="text"
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            <button type="submit" onClick={(e) => e.stopPropagation()}>
+              Search
+            </button>
+          </form>
         </div>
       </div>
     </div>
