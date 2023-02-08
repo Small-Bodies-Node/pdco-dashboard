@@ -100,23 +100,24 @@ export const ProgramsMap = () => {
                   </div>
                 </div>
 
-                <span className={styles.sortTitle}>Sort</span>
+                <div className={styles.sortContainer}>
+                  <span className={styles.sortTitle}>Sort</span>
 
-                <select
-                  className={styles.sort}
-                  value={sort}
-                  onChange={(e) =>
-                    setSort(e.target.value as "alphabetical" | "longitude")
-                  }
-                >
-                  <option value="longitude">Longitude</option>
+                  <select
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value as "alphabetical" | "longitude")
+                    }
+                  >
+                    <option value="longitude">Longitude</option>
 
-                  <option value="alphabetical">Alphabetical (a-z)</option>
-                </select>
+                    <option value="alphabetical">Alphabetical (a-z)</option>
+                  </select>
+                </div>
 
                 {sortedLargeMapIcons.map((item, index) => (
                   <div className={styles.menuRow} key={index}>
-                    <p>{item.iconLabel}</p>
+                    <p className={styles.menuRowHeader}>{item.iconLabel}</p>
 
                     <a
                       href={item.iconLink}

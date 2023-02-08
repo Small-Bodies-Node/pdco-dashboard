@@ -99,13 +99,23 @@
     margin: 1rem;
   }
 }
+.sortContainer {
+  display: flex;
+  flex-direction: row;
+  margin: 0 1rem 2rem 1rem;
+
+  & select {
+    width: 100%;
+  }
+
+  & span {
+    margin: 0 1.5rem 0 0;
+  }
+}
 .sortTitle {
   margin: 0 1rem;
   font-size: 1rem;
   font-weight: 600;
-}
-.sort {
-  margin: 0px 1rem 1rem 1rem;
 }
 .menuRow {
   display: flex;
@@ -115,12 +125,19 @@
 
   margin: 0px 1rem 1.5rem 1rem;
 
+  text-align: left;
+
+  & .menuRowHeader {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
   & p,
   a {
     color: white;
     text-decoration: none;
-
     margin: 0px;
+    font-size: 0.85rem;
   }
   & a {
     text-decoration: underline;
