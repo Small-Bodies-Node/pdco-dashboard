@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { PageAbout } from "../../Components/PageAbout";
-import { SidebarMenu } from "../../Components/SidebarMenu";
-
+import { PageAbout } from "../../components/PageAbout";
+import { SidebarMenu } from "../../components/SidebarMenu";
 
 const About: NextPage = () => {
   return (
