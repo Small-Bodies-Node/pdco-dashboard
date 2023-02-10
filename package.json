@@ -20,7 +20,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/material": "^5.9.0",
-    "moment-timezone": "^0.5.34",
+    "moment-timezone": "^0.5.35",
     "next": "^13.1.6",
     "numeral": "^2.0.6",
     "pdf-lib": "^1.17.1",
