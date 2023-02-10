@@ -1,0 +1,40 @@
+.container {
+	overflow: auto;
+
+	width: 100%;
+	max-height: 100%;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	border-color: gray;
+	border-spacing: 0;
+	color: white;
+	font-size: 0.9rem;
+	text-align: left;
+}
+
+.table th, .table td {
+	padding: 10px 5px;
+	cursor: pointer;
+	font-size: 0.85rem;
+}
+
+.th {
+	background-color: #181b2e;
+	font-weight: 500;
+	position: sticky;
+	top: 0;
+	padding-top: 0 !important;
+}
+
+.tr {
+	border-top: 1px solid rgba(81, 81, 81, 1);
+	border-bottom: 1px solid rgba(81, 81, 81, 1);
+	background-color: rgba(255,255,255,0.05);
+
+	&:hover {
+		background-color: rgba(255,255,255,0.1);
+	}
+}

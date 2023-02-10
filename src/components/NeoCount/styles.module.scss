@@ -1,0 +1,38 @@
+@import "../../styles/variables.scss";
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.labels {
+  flex: 0.5;
+}
+.week {
+  flex: 1;
+}
+.month {
+  flex: 1;
+}
+.year {
+  flex: 1;
+}
+
+.count {
+  width: 100%;
+  height: 100%;
+  font-size: 60px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .container {
+    //
+  }
+  .count {
+    font-size: 40px;
+  }
+}

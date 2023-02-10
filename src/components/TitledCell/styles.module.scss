@@ -1,0 +1,70 @@
+@import "../../styles/variables.scss";
+
+.container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.title {
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  & * {
+    white-space: nowrap;
+  }
+  & a,
+  p {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    &:hover {
+      color: cyan;
+    }
+  }
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  flex: 1;
+  max-height: calc(100% - 35px);
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .container {
+    position: relative;
+    width: 100%;
+  }
+  .title {
+    position: relative;
+    padding: 0.35rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    & a {
+      text-decoration: none;
+      color: white;
+      &:hover {
+        color: cyan;
+      }
+      padding: 0.5rem 2rem;
+    }
+  }
+  .content {
+    position: relative;
+    height: auto;
+    width: 100%;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}

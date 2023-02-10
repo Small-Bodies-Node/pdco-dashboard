@@ -1,0 +1,220 @@
+@import "./../../styles/variables.scss";
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  & img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.mapWrapper {
+  position: absolute;
+  // background-color: green;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+
+  background: rgba(0, 0, 0, 0.5);
+}
+.dialogInner {
+  background-color: #181b2e;
+  width: 90%;
+  height: 85%;
+  border-radius: 0.25rem;
+  //padding: 1rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+.dialogContainer {
+  position: relative;
+  box-sizing: border-box;
+  flex: 1;
+  &::before {
+    display: block;
+    padding-top: 50%;
+    content: " ";
+    padding: 10px;
+  }
+}
+.dialogMapWrapper {
+  position: absolute;
+  background-color: green;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  transition: ease-in-out 0.2s;
+
+  & > div > div {
+    margin: 0px 60px 0px 60px;
+  }
+}
+.menuContainer {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  width: 25%;
+  min-width: 250px;
+  max-width: 300px;
+  height: 100%;
+
+  background: #181b2e;
+  z-index: 10;
+
+  transition: ease-in-out 0.12s;
+}
+.menuHeader {
+  display: flex;
+  flex-direction: row;
+  margin: 0px 0px 1rem 0px;
+
+  & p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1rem;
+  }
+}
+.sortContainer {
+  display: flex;
+  flex-direction: row;
+  margin: 0 1rem 2rem 1rem;
+
+  & select {
+    width: 100%;
+  }
+
+  & span {
+    margin: 0 1.5rem 0 0;
+  }
+}
+.sortTitle {
+  margin: 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.menuRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  margin: 0px 1rem 1.5rem 1rem;
+
+  text-align: left;
+
+  & .menuRowHeader {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  & p,
+  a {
+    color: white;
+    text-decoration: none;
+    margin: 0px;
+    font-size: 0.85rem;
+  }
+  & a {
+    text-decoration: underline;
+    word-break: break-all;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+.menuButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  border: solid 1px rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border: solid 1px rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+.overlay {
+  position: absolute;
+  // backgroundColor: blue;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.example {
+  color: red;
+}
+.imagePlaceholder {
+  position: absolute;
+  background-color: blue;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-image: url("/images/world-placeholder.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .dialogMapWrapper {
+    & > div > div {
+      margin: 0px;
+    }
+  }
+  .menuButton {
+    display: none;
+  }
+  .closeButton {
+    display: none;
+  }
+}
