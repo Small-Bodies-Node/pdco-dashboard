@@ -138,10 +138,7 @@ export const FilterSortButton = (props: IProps) => {
 
               {!filterSortData.column && (
                 <div>
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    size="xs"
-                  />
+                  <FontAwesomeIcon icon={faCheck} size="xs" />
                 </div>
               )}
             </div>
@@ -193,7 +190,9 @@ export const FilterSortButton = (props: IProps) => {
 
           <div className={styles.sliderContainer}>
             <p>
-              {internalSizeFilter && internalSizeFilter > 0 ? ">" + internalSizeFilter + "m" : "All"}
+              {internalSizeFilter && internalSizeFilter > 0
+                ? ">" + internalSizeFilter + "m"
+                : "All"}
             </p>
 
             <input
@@ -285,7 +284,7 @@ export const FilterSortButton = (props: IProps) => {
             id="showCloseApproachesWithMinLessThan1LD"
             name="showCloseApproachesWithMinLessThan1LD"
             onChange={(e) => setFilterUncertainNEOs(e.target.checked)}
-            checked={filterSortData.showCloseApproachesWithMinLessThan1LD}
+            checked={!!filterSortData.showCloseApproachesWithMinLessThan1LD}
           />
         </div>
       </div>

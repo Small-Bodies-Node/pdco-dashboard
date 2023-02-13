@@ -21,7 +21,7 @@ export const SidebarMenu = () => {
   const closeMenu = () => {
     setIsMenuOpen(false);
     setNeoSearchQuery("");
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -53,34 +53,25 @@ export const SidebarMenu = () => {
         <div className={styles.menuHeader}>
           <p>Menu</p>
 
-          <div
-            className={styles.closeButton}
-            onClick={() => closeMenu()}
-          >
+          <div className={styles.closeButton} onClick={() => closeMenu()}>
             <FontAwesomeIcon icon={faTimes} />
           </div>
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/">
-            <a onClick={() => closeMenu()}>
-              Dashboard
-            </a>
+          <Link href="/" onClick={() => closeMenu()}>
+            Dashboard
           </Link>
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/about">
-            <a onClick={() => closeMenu()}>
-              About
-            </a>
+          <Link href="/about" onClick={() => closeMenu()}>
+            About
           </Link>
         </div>
 
         <div className={styles.menuRow}>
-          <p className={styles.searchHeader}>
-            NEO Search
-          </p>
+          <p className={styles.searchHeader}>NEO Search</p>
 
           <form
             onSubmit={(e) => {

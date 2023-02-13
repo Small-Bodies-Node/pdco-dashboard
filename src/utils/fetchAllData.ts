@@ -7,7 +7,7 @@ import { magToSizeKm } from "./conversionFormulae";
  * Choose data source depending on environment
  */
 export const fetchAllData = async (isMock = false) => {
-  // --------------------------------->>>
+  // --->>
 
   const allRawData = isMock //
     ? await fetchAllDataMock()
