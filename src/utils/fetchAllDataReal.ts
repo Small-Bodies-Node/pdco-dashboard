@@ -9,18 +9,56 @@ import { secsInDay } from "./constants";
  * cad twice with different params
  */
 export async function fetchAllDataReal(): Promise<IFetchedData | null> {
+  // --->>
+
   // Urls for data fetching
   const cadUrl = getCadUrl();
   const largeDistantCadUrl = getDistantLargeCadUrl();
+  const sentryUrl = "/api/getSentryData";
 
+  const urls = [cadUrl, largeDistantCadUrl, sentryUrl];
+
+  const promisedData = urls.map((url) =>
+    fetch(url)
+      .then((res) => {
+        if (res.status > 200) {
+          throw new Error();
+        }
+        return res.json();
+      })
+      .catch((err: Error) => {
+        console.log("Error fetching from " + url, err.message);
+        return null;
+      })
+  );
+
+  const data = await Promise.all(promisedData);
+
+  const [cadData, largeDistantCadData, sentryData]: [
+    ICadData | null,
+    ICadData | null,
+    ISentryData | null
+  ] = data as any;
+
+  return {
+    sentryData,
+    cadData,
+    largeDistantCadData,
+    timestamp: new Date().toUTCString(),
+  };
+
+  /*
   // Structured with promise chain to avoid rate limit
   let [sentryData, cadData, largeDistantCadData]: [
     ISentryData?,
     ICadData?,
     ICadData?
   ] = [undefined, undefined, undefined];
-  return fetch('/api/getSentryData')
+  return fetch("/api/getSentryData")
     .then(async (res) => {
+      if (res) {
+        return;
+      }
       sentryData = (await res.json()) as ISentryData;
     })
     .then(async () => {
@@ -45,11 +83,11 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
         timestamp: new Date().toUTCString(),
       };
     });
+    */
 }
 
 function getCadUrl() {
-  const baseUrl =
-    "/api/getCadData";
+  const baseUrl = "/api/getCadData";
 
   // Build string for future date
   const d = new Date();
@@ -65,8 +103,7 @@ function getCadUrl() {
 }
 
 function getDistantLargeCadUrl() {
-  const baseUrl =
-    "/api/getCadData";
+  const baseUrl = "/api/getCadData";
 
   // Build string for future date
   const d = new Date();

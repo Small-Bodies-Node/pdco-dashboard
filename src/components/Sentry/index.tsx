@@ -35,6 +35,7 @@ export const Sentry = ({ sentryData }: IProps) => {
   const [isPopupShown, setIsPopupShown] = useState(false);
 
   useEffect(() => {
+    if (!sentryData || !sentryData.data) return;
     // Filter out those objects that contain ts_max values that aren't a string
     // TODO: figure out a more robust test of the fitness of such objects
     const tsMaxValues = sentryData.data

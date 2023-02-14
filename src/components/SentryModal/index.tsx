@@ -18,7 +18,6 @@ interface IProps {
  * Popup which shows a list of objects with a torino scale value >= 1.
  */
 export const SentryModal = ({ isShown, setIsShown, sentryData }: IProps) => {
-  
   /**
    * State
    */
@@ -30,51 +29,65 @@ export const SentryModal = ({ isShown, setIsShown, sentryData }: IProps) => {
   const [isSentryZero, setIsSentryZero] = useState(true);
 
   const [isObjectModalShown, setIsObjectModalShown] = useState(false);
-  const [selectedRawData, setSelectedRawData] = useState<ISentryData['data'][0] | undefined>();
+  const [selectedRawData, setSelectedRawData] = useState<
+    ISentryData["data"][0] | undefined
+  >();
 
-  const onClickSentryObject = (data: ISentryData['data'][0]) => {
+  const onClickSentryObject = (data: ISentryData["data"][0]) => {
     setSelectedRawData(data);
     setIsObjectModalShown(true);
   };
 
   // Parse data and create arrays to pass to table
   useEffect(() => {
+    if (!sentryData || !sentryData.data) return;
+
     // Parse objects with torino scale > 0
     const parsedData = sentryData.data.filter((i) => {
-      return parseInt(i.ts_max || '0') > 0;
+      return parseInt(i.ts_max || "0") > 0;
     });
 
-    if(parsedData.length > 0) {
+    if (parsedData.length > 0) {
       setIsSentryZero(false);
     }
 
     const bodyElements: TTableBodyElements = [];
-    parsedData.forEach(i => {
+    parsedData.forEach((i) => {
       bodyElements.push({
-        elements: [{
-          text: i.fullname
-        }],
-        onClick: () => onClickSentryObject(i)
-      })
+        elements: [
+          {
+            text: i.fullname,
+          },
+        ],
+        onClick: () => onClickSentryObject(i),
+      });
     });
 
-    const headerElements: TTableHeadElements = [{
-      element: "Name"
-    }];
+    const headerElements: TTableHeadElements = [
+      {
+        element: "Name",
+      },
+    ];
 
     // Store in state
     setHeaderElements(headerElements);
     setBodyElements(bodyElements);
   }, [sentryData]);
 
-  if(!isShown) {
+  if (!isShown) {
     return null;
   }
 
   if (isSentryZero) {
     return (
-      <div className={styles.backgroundContainer} onClick={() => setIsShown(false)}>
-        <div className={styles.mainContentContainer} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.backgroundContainer}
+        onClick={() => setIsShown(false)}
+      >
+        <div
+          className={styles.mainContentContainer}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className={styles.closeButtonContainer}>
             <FontAwesomeIcon
               className={styles.closeButton}
@@ -108,8 +121,14 @@ export const SentryModal = ({ isShown, setIsShown, sentryData }: IProps) => {
         rawData={selectedRawData}
       />
 
-      <div className={styles.backgroundContainer} onClick={() => setIsShown(false)}>
-        <div className={styles.mainContentContainer} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.backgroundContainer}
+        onClick={() => setIsShown(false)}
+      >
+        <div
+          className={styles.mainContentContainer}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className={styles.closeButtonContainer}>
             <FontAwesomeIcon
               className={styles.closeButton}
@@ -128,10 +147,7 @@ export const SentryModal = ({ isShown, setIsShown, sentryData }: IProps) => {
             isDisplayed={true}
             isHeightAuto={true}
           >
-            <Table
-              headElements={headerElements}
-              bodyElements={bodyElements}
-            />
+            <Table headElements={headerElements} bodyElements={bodyElements} />
           </TitledCell>
         </div>
       </div>
