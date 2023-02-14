@@ -6,12 +6,10 @@ import { magToSizeKm } from "./conversionFormulae";
 /**
  * Choose data source depending on environment
  */
-export const fetchAllData = async (isMock = false) => {
+export const fetchAllData = async (isMock = true) => {
   // --->>
 
-  const allRawData = isMock //
-    ? await fetchAllDataMock()
-    : await fetchAllDataReal();
+  const allRawData = await (isMock ? fetchAllDataMock() : fetchAllDataReal());
   if (!allRawData) return null;
 
   // Mutate allRawData.cadData by appending computed size for each CA's data array
@@ -23,7 +21,6 @@ export const fetchAllData = async (isMock = false) => {
       }
       return [...datumArr, "" + magToSizeKm(+magIsStringOrNull)];
     });
-
     return allRawData;
   }
   return null;

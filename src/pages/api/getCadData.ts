@@ -22,7 +22,7 @@ const getCadData = async (req: NextApiRequest, res: NextApiResponse) => {
   // res.status(200).json(data);
 
   const httpResponse = await fetch(url).catch((err: Error) => {
-    console.log("Fetch Error >>>", err.message);
+    console.log("Fetch Error >>>", err.message, "<<<");
     return err;
   });
 
@@ -30,7 +30,7 @@ const getCadData = async (req: NextApiRequest, res: NextApiResponse) => {
     const data = await httpResponse.json();
     res.status(200).send(data);
   } else {
-    res.status(400).end(httpResponse);
+    res.status(500).end(httpResponse);
   }
 };
 

@@ -8,7 +8,7 @@ import {
   faGlobeAmericas,
   faRedo,
   faMoon,
-  faChartColumn
+  faChartColumn,
 } from "@fortawesome/free-solid-svg-icons";
 
 // My constants, hooks, etc.
@@ -32,12 +32,12 @@ import { FilterSortButton } from "../FilterSortButton";
 import { RecentCAStatsModal } from "../RecentCAStatsModal";
 import { IFetchedData } from "../../models/IFetchedData";
 import { mobileWidthPxl } from "../../utils/constants";
-import styles from "./styles.module.scss";
 import { SidebarMenu } from "../SidebarMenu";
 import { useRouter } from "next/router";
 import { DiscoveryStats } from "../DiscoveryStats";
 import { DiscoveryStatsModal } from "../DiscoveryStatsModal";
-import { NeoSearchModal } from "../NeoSearchModal";
+
+import styles from "./styles.module.scss";
 
 /**
  *
@@ -46,7 +46,9 @@ export const MainUI = () => {
   // --->>
 
   // State
-  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>(
+  const router = useRouter();
+  const [isMock, setIsMock] = useState(true);
+  const [storedData, setStoredData] = useLocalStorage<IFetchedData | null>(
     "API_DATA",
     null
   );
@@ -56,23 +58,33 @@ export const MainUI = () => {
   );
   const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState("");
-
   const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
+
+  const defaultFilter: IFilterSortData = {
+    column: "dist",
+    direction: "ascending",
+    isShowCloseApproachesWithMinLessThan1LD: false,
+  };
+
   const [filterSortDataLast7Days, setFilterSortDataLast7Days] =
-    useState<IFilterSortData>({});
+    useState<IFilterSortData>({ ...defaultFilter });
   const [filterSortDataNext10Years, setFilterSortDataNext10Years] =
-    useState<IFilterSortData>({});
+    useState<IFilterSortData>({ ...defaultFilter });
   const [filterSortDataLargeFarNextYear, setFilterSortDataLargeFarNextYear] =
-    useState<IFilterSortData>({});
+    useState<IFilterSortData>({
+      ...defaultFilter,
+      isShowCloseApproachesWithMinLessThan1LD: true,
+    });
 
   const [isRecentCAStatsModalShown, setIsRecentCAStatsModalShown] =
     useState(false);
   const [isDiscoveryStatsModalShown, setIsDiscoveryStatsModalShown] =
     useState(false);
 
-  // Check if mock data is to be used
-  const router = useRouter();
-  const isMock = router.query['isMock'] === 'true';
+  // Determine isMock from query params
+  useEffect(() => {
+    setIsMock(router.query["isMock"] === "true");
+  }, [router]);
 
   // Choose how long to check if the 'date' needs to be refreshed
   const intervalToCheckForDataSecs = isMock ? 10000 : 2;
@@ -83,7 +95,7 @@ export const MainUI = () => {
     setIsMobile(window.innerWidth < mobileWidthPxl);
   }, [setIsMobile]);
   useEventListener("resize", windowResizeHandler);
-  useEffect(windowResizeHandler, []);
+  useEffect(windowResizeHandler, [windowResizeHandler]);
 
   // Set up regular checks to see if it's time to refresh data
   const checkIfItsTimeForDataUpdate = () => {
@@ -98,6 +110,7 @@ export const MainUI = () => {
   };
   useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
 
+  /*
   useEffect(() => {
     let tempFilterSortDataLargeFarNextYear = Object.assign(
       {},
@@ -107,6 +120,7 @@ export const MainUI = () => {
       true;
     setFilterSortDataLargeFarNextYear(tempFilterSortDataLargeFarNextYear);
   }, []);
+  */
 
   // Re-fetch data on pertinent changes
   useEffect(() => {
@@ -121,14 +135,14 @@ export const MainUI = () => {
         storedData ? formattedTimestamp(storedData.timestamp) : ""
       );
     }
-  }, [isMock, isSearching, setIsSearching]);
+  }, [isMock, isSearching, setIsSearching, storedData, setStoredData]);
 
   const isDisplayed = !(isSearching || !storedData);
 
   return (
     <>
       {!true ? (
-        <div>Hmmmm</div>
+        <div>Test View</div>
       ) : (
         <>
           <MoonPhaseModal
@@ -161,11 +175,13 @@ export const MainUI = () => {
             </div>
             <div className={styles.title} onClick={() => setIsSearching(true)}>
               <ErrorBoundary fallbackRender={() => <MyError />}>
-                {!isMobile ? <div className="longTitle">
-                  {"Planetary Defense Coordination Office Status Summary"}
-                </div>
-                :
-                <div className={styles.shortTitle}>{"PDCO STATUS"}</div>}
+                {!isMobile ? (
+                  <div className="longTitle">
+                    {"Planetary Defense Coordination Office Status Summary"}
+                  </div>
+                ) : (
+                  <div className={styles.shortTitle}>{"PDCO STATUS"}</div>
+                )}
                 <div className={styles.date}>
                   <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
                   <FontAwesomeIcon
@@ -188,9 +204,9 @@ export const MainUI = () => {
                 icon={() => <FontAwesomeIcon icon={faMeteor} />}
                 isDisplayed={isDisplayed}
               >
-                {storedData && (
+                {storedData?.cadData && (
                   <NeoCount
-                    cadData={storedData!.cadData}
+                    cadData={storedData.cadData}
                     dateAtDataFetch={storedData!.timestamp}
                   />
                 )}
@@ -214,7 +230,9 @@ export const MainUI = () => {
                 icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
                 isDisplayed={isDisplayed}
               >
-                {!!storedData && <Sentry sentryData={storedData!.sentryData} />}
+                {storedData?.sentryData && (
+                  <Sentry sentryData={storedData.sentryData} />
+                )}
               </TitledCell>
             </div>
             <div className={styles.moonPhase}>
@@ -254,10 +272,10 @@ export const MainUI = () => {
                   />
                 }
               >
-                {!!storedData && (
+                {storedData?.cadData && (
                   <TableCAD
                     period="recent"
-                    cadData={storedData!.cadData}
+                    cadData={storedData.cadData}
                     dateAtDataFetch={storedData!.timestamp}
                     isHeightAuto={isMobile}
                     filterSortData={filterSortDataLast7Days}
@@ -280,10 +298,10 @@ export const MainUI = () => {
                   />
                 }
               >
-                {!!storedData && (
+                {storedData?.cadData && (
                   <TableCAD
                     period="future"
-                    cadData={storedData!.cadData}
+                    cadData={storedData.cadData}
                     dateAtDataFetch={storedData!.timestamp}
                     isHeightAuto={isMobile}
                     filterSortData={filterSortDataNext10Years}
@@ -306,10 +324,10 @@ export const MainUI = () => {
                   />
                 }
               >
-                {!!storedData && (
+                {storedData?.largeDistantCadData && (
                   <TableCAD
                     period="future"
-                    cadData={storedData!.largeDistantCadData}
+                    cadData={storedData.largeDistantCadData}
                     dateAtDataFetch={storedData!.timestamp}
                     isHeightAuto={isMobile}
                     filterSortData={filterSortDataLargeFarNextYear}

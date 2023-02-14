@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import * as numeralWithDefault from 'numeral';
+import * as numeralWithDefault from "numeral";
 
 import { useContainerDimensions } from "../../hooks/useContainerDimensions";
 import { ICadData } from "../../models/ICadData";
 import { IFilterSortData } from "../../models/IFilterSortData";
 import { apiDateStringToJsDate } from "../../utils/apiDateStringToJsDate";
 import { cadFieldIndices, secsInDay } from "../../utils/constants";
-import { auToKm, auToLd, auToMi, kmToFt, kmToLd, magToSizeKm } from "../../utils/conversionFormulae";
+import {
+  auToKm,
+  auToLd,
+  auToMi,
+  kmToFt,
+  kmToLd,
+  magToSizeKm,
+} from "../../utils/conversionFormulae";
 import styles from "./styles.module.scss";
 import Table from "../Table";
 import { TTableBodyElements } from "../../models/TTableBodyElements";
@@ -20,7 +27,7 @@ interface ICol {
   label_tooltip: string;
   minWidth?: number;
   maxWidth?: number;
-  align: 'left';
+  align: "left";
   format: (value: string) => string;
   colClickHandler?: () => void;
 }
@@ -46,7 +53,7 @@ export interface IRawRow {
   v_inf: string;
 }
 
-interface IDisplayRow extends Omit<IRawRow, 'cd'> {
+interface IDisplayRow extends Omit<IRawRow, "cd"> {
   cd: string;
   //
   fullname_tooltip: string;
@@ -65,15 +72,15 @@ type TSizeUnit = typeof sizeUnits[number];
 interface IProps {
   cadData: ICadData;
   dateAtDataFetch: string;
-  period: 'recent' | 'future';
+  period: "recent" | "future";
   isHeightAuto?: boolean;
   filterSortData: IFilterSortData;
 }
 
- interface IProps {
+interface IProps {
   cadData: ICadData;
   dateAtDataFetch: string;
-  period: 'recent' | 'future';
+  period: "recent" | "future";
   isHeightAuto?: boolean;
   filterSortData: IFilterSortData;
 }
@@ -90,7 +97,7 @@ export const TableCAD = ({
   dateAtDataFetch,
   period,
   isHeightAuto,
-  filterSortData
+  filterSortData,
 }: IProps) => {
   // --->>
 
@@ -113,11 +120,11 @@ export const TableCAD = ({
 
   // Set stateful click handlers on certain columns
   columns.forEach((col) => {
-    if (col.id === 'dist') {
+    if (col.id === "dist") {
       col.colClickHandler = () =>
         setDistUnit((prev) => ((prev + 1) % distanceUnits.length) as TDistUnit);
     }
-    if (col.id === 'size') {
+    if (col.id === "size") {
       col.colClickHandler = () =>
         setSizeUnit((prev) => ((prev + 1) % sizeUnits.length) as TSizeUnit);
     }
@@ -128,26 +135,35 @@ export const TableCAD = ({
     // --------->>>
 
     // Extract arrays of cad data and filter into 'recent' | 'future' categories
-    const filteredDataArrays = cadData?.data.filter((datumArr: (string | null)[]) => {
-      // Logic to remove any datumArr's with  any null entries in our displayed cols
-      const colIds = columns.map((col) => col.id);
-      const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
-        const indicesOfDisplayedCols = colIds.map((colId) => cadFieldIndices[colId]);
-        return !!el && indicesOfDisplayedCols.includes(ind) ? [...acc, el] : acc;
-      }, []);
-      if (!colDatumEntries.every(Boolean)) return false;
+    const filteredDataArrays = cadData?.data.filter(
+      (datumArr: (string | null)[]) => {
+        // Logic to remove any datumArr's with  any null entries in our displayed cols
+        const colIds = columns.map((col) => col.id);
+        const colDatumEntries = datumArr.reduce<string[]>((acc, el, ind) => {
+          const indicesOfDisplayedCols = colIds.map(
+            (colId) => cadFieldIndices[colId]
+          );
+          return !!el && indicesOfDisplayedCols.includes(ind)
+            ? [...acc, el]
+            : acc;
+        }, []);
+        if (!colDatumEntries.every(Boolean)) return false;
 
-      // Logic to filter out entries NOT in this table's 'period' defn
-      const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
-      if (!dateIsStringOrNull) return false;
-      const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
-      const dDays = (+new Date(dateAtDataFetch) - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
-      return period === 'recent' ? 0 <= dDays && dDays <= 30 : dDays <= 0;
-    });
+        // Logic to filter out entries NOT in this table's 'period' defn
+        const dateIsStringOrNull = datumArr[cadFieldIndices.cd];
+        if (!dateIsStringOrNull) return false;
+        const dateFromData = apiDateStringToJsDate(dateIsStringOrNull);
+        const dDays =
+          (+new Date(dateAtDataFetch) - +dateFromData) / (secsInDay * 1000); // dMillSecs => Days
+        return period === "recent" ? 0 <= dDays && dDays <= 30 : dDays <= 0;
+      }
+    );
 
     let newRawRows = filteredDataArrays?.map(
       (datumArr: (string | null)[]): IRawRow => {
-        const name = datumArr[cadFieldIndices.fullname]?.replaceAll(/\(|\)/g, '').trim();
+        const name = datumArr[cadFieldIndices.fullname]
+          ?.replaceAll(/\(|\)/g, "")
+          .trim();
 
         let diameter = datumArr[cadFieldIndices.diameter];
         let min_size = (
@@ -162,17 +178,26 @@ export const TableCAD = ({
         // If API does not return a diameter value, then estimate necessary values
         if (!diameter) {
           diameter = (
-            (magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25) +
-              magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05)) /
+            (magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? "0"), 0.25) +
+              magToSizeKm(
+                parseFloat(datumArr[cadFieldIndices.h] ?? "0"),
+                0.05
+              )) /
             2
           ).toString();
 
-          min_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25).toString();
-          max_size = magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05).toString();
+          min_size = magToSizeKm(
+            parseFloat(datumArr[cadFieldIndices.h] ?? "0"),
+            0.25
+          ).toString();
+          max_size = magToSizeKm(
+            parseFloat(datumArr[cadFieldIndices.h] ?? "0"),
+            0.05
+          ).toString();
         }
 
         return {
-          fullname: name ?? '',
+          fullname: name ?? "",
           cd: apiDateStringToJsDate(datumArr[cadFieldIndices.cd]!),
           cd_sigma: datumArr[cadFieldIndices.t_sigma_f]!,
           h: datumArr[cadFieldIndices.h]!,
@@ -185,7 +210,7 @@ export const TableCAD = ({
           min_distance: datumArr[cadFieldIndices.dist_min]!,
           max_distance: datumArr[cadFieldIndices.dist_max]!,
           v_rel: datumArr[cadFieldIndices.v_rel]!,
-          v_inf: datumArr[cadFieldIndices.v_inf]!
+          v_inf: datumArr[cadFieldIndices.v_inf]!,
         };
       }
     );
@@ -194,7 +219,10 @@ export const TableCAD = ({
     if (!!filterSortData.sizeFilterMeters) {
       newRawRows =
         newRawRows?.filter((data) => {
-          if (parseFloat(data.maximum_size) < (filterSortData.sizeFilterMeters ?? 0) / 1000) {
+          if (
+            parseFloat(data.maximum_size) <
+            (filterSortData.sizeFilterMeters ?? 0) / 1000
+          ) {
             return false;
           }
 
@@ -216,7 +244,7 @@ export const TableCAD = ({
 
     // Filter data if selected for uncertain NEOs
     // Filters to only show NEOs where distance (nominal, not minimum) is <1LD
-    if (!filterSortData.showCloseApproachesWithMinLessThan1LD) {
+    if (!filterSortData.isShowCloseApproachesWithMinLessThan1LD) {
       newRawRows =
         newRawRows?.filter((data) => {
           if (auToLd(parseFloat(data.dist)) < 1) {
@@ -230,12 +258,19 @@ export const TableCAD = ({
     // Sort data if selected
     if (!!filterSortData.column) {
       newRawRows.sort((a, b) => {
-        const columnIndice = filterSortData.column === 'dist' ? 'dist' : 'nominal_size';
+        const columnIndice =
+          filterSortData.column === "dist" ? "dist" : "nominal_size";
 
-        if (parseFloat(a[columnIndice] ?? '0') < parseFloat(b[columnIndice] ?? '0')) {
-          return filterSortData.direction === 'descending' ? 1 : -1;
-        } else if (parseFloat(a[columnIndice] ?? '0') > parseFloat(b[columnIndice] ?? '0')) {
-          return filterSortData.direction === 'descending' ? -1 : 1;
+        if (
+          parseFloat(a[columnIndice] ?? "0") <
+          parseFloat(b[columnIndice] ?? "0")
+        ) {
+          return filterSortData.direction === "descending" ? 1 : -1;
+        } else if (
+          parseFloat(a[columnIndice] ?? "0") >
+          parseFloat(b[columnIndice] ?? "0")
+        ) {
+          return filterSortData.direction === "descending" ? -1 : 1;
         }
 
         return 0;
@@ -255,116 +290,116 @@ export const TableCAD = ({
     // --------->>>
 
     // Map raw-data rows to displayable text for table cells and tooltips
-    const newDisplayRows = rawRows?.map(
-      (rawRow): IDisplayRow => {
-        // Show abbreviated fullname in cell, unabbreviated in tooltip
-        const fullname = getAbbreviatedName(rawRow.fullname, width);
-        const fullname_tooltip = rawRow.fullname;
+    const newDisplayRows = rawRows?.map((rawRow): IDisplayRow => {
+      // Show abbreviated fullname in cell, unabbreviated in tooltip
+      const fullname = getAbbreviatedName(rawRow.fullname, width);
+      const fullname_tooltip = rawRow.fullname;
 
-        // Show date without time in cell, with time in tooltip
-        const cd = `${rawRow.cd.getMonth() + 1}/${rawRow.cd.getDate()}/${rawRow.cd.getFullYear()}`;
-        const cd_tooltip = rawRow.cd.toUTCString();
+      // Show date without time in cell, with time in tooltip
+      const cd = `${
+        rawRow.cd.getMonth() + 1
+      }/${rawRow.cd.getDate()}/${rawRow.cd.getFullYear()}`;
+      const cd_tooltip = rawRow.cd.toUTCString();
 
-        // Show h as is in both cell and tooltip
-        const h = numeral(parseFloat(rawRow.h)).format('0.0');
-        const h_tooltip = rawRow.h;
+      // Show h as is in both cell and tooltip
+      const h = numeral(parseFloat(rawRow.h)).format("0.0");
+      const h_tooltip = rawRow.h;
 
-        // Display dist as different formats depending on unit selected
-        let dist: string; // rawRow.dist is in au by default
-        let dist_tooltip: string;
-        switch (distUnit) {
-          case 0: // ld selected
-            dist = auToLd(parseFloat(rawRow.dist)).toPrecision(3);
-            dist_tooltip = `${auToLd(parseFloat(rawRow.dist))}`;
-            break;
-          case 1: // km selected
-            /*             dist = ML(auToKm(parseFloat(rawRow.dist)), { precision: 0 });
+      // Display dist as different formats depending on unit selected
+      let dist: string; // rawRow.dist is in au by default
+      let dist_tooltip: string;
+      switch (distUnit) {
+        case 0: // ld selected
+          dist = auToLd(parseFloat(rawRow.dist)).toPrecision(3);
+          dist_tooltip = `${auToLd(parseFloat(rawRow.dist))}`;
+          break;
+        case 1: // km selected
+          /*             dist = ML(auToKm(parseFloat(rawRow.dist)), { precision: 0 });
             dist = numeral(auToKm(parseFloat(rawRow.dist))).format('0.0'); */
-            dist = numeral(auToKm(parseFloat(rawRow.dist))).format();
-            dist_tooltip = `${auToKm(parseFloat(rawRow.dist))}`;
-            break;
-          case 2: // au selected
-            dist = parseFloat(rawRow.dist).toPrecision(3);
-            dist_tooltip = rawRow.dist;
-            break;
-          case 3: // mi selected
-            dist = auToMi(parseFloat(rawRow.dist)).toString();
-            dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
-            break;
-          default:
-            throw 'Not supposed to be possible';
-        }
-
-        // Display size as different formats depending on unit selected
-        let minimum_size: string; // rawRow.size is in km by default
-        let maximum_size: string; // rawRow.size is in km by default
-        let nominal_size: string;
-        let size_tooltip: string;
-
-        let diameter: string | undefined;
-        let diameter_sigma: string | undefined;
-        switch (sizeUnit) {
-          case 0: // m selected
-            nominal_size = (parseFloat(rawRow.nominal_size) * 1000).toFixed(0);
-            minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
-            maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
-
-            diameter = !rawRow.diameter
-              ? undefined
-              : (parseFloat(rawRow.diameter) * 1000).toFixed(0);
-            diameter_sigma = !rawRow.diameter_sigma
-              ? undefined
-              : (parseFloat(rawRow.diameter_sigma) * 1000).toFixed(0);
-
-            size_tooltip = `${rawRow.nominal_size}`;
-            break;
-          case 1: // ft selected
-            nominal_size = kmToFt(parseFloat(rawRow.nominal_size)).toFixed(0);
-            minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
-            maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
-
-            diameter = !rawRow.diameter
-              ? undefined
-              : kmToFt(parseFloat(rawRow.diameter)).toFixed(0);
-            diameter_sigma = !rawRow.diameter_sigma
-              ? undefined
-              : kmToFt(parseFloat(rawRow.diameter_sigma)).toFixed(0);
-
-            size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
-            break;
-          default:
-            throw 'Not supposed to be possible';
-        }
-
-        return {
-          fullname,
-          fullname_tooltip,
-          cd,
-          cd_sigma: rawRow.cd_sigma,
-          cd_tooltip,
-          dist,
-          dist_tooltip,
-          diameter,
-          diameter_sigma,
-          nominal_size,
-          minimum_size,
-          maximum_size,
-          size_tooltip,
-          h,
-          h_tooltip,
-          min_distance: rawRow.min_distance,
-          max_distance: rawRow.max_distance,
-          v_rel: rawRow.v_rel,
-          v_inf: rawRow.v_inf
-        };
+          dist = numeral(auToKm(parseFloat(rawRow.dist))).format();
+          dist_tooltip = `${auToKm(parseFloat(rawRow.dist))}`;
+          break;
+        case 2: // au selected
+          dist = parseFloat(rawRow.dist).toPrecision(3);
+          dist_tooltip = rawRow.dist;
+          break;
+        case 3: // mi selected
+          dist = auToMi(parseFloat(rawRow.dist)).toString();
+          dist_tooltip = `${auToMi(parseFloat(rawRow.dist))}`;
+          break;
+        default:
+          throw "Not supposed to be possible";
       }
-    );
+
+      // Display size as different formats depending on unit selected
+      let minimum_size: string; // rawRow.size is in km by default
+      let maximum_size: string; // rawRow.size is in km by default
+      let nominal_size: string;
+      let size_tooltip: string;
+
+      let diameter: string | undefined;
+      let diameter_sigma: string | undefined;
+      switch (sizeUnit) {
+        case 0: // m selected
+          nominal_size = (parseFloat(rawRow.nominal_size) * 1000).toFixed(0);
+          minimum_size = (parseFloat(rawRow.minimum_size) * 1000).toFixed(0);
+          maximum_size = (parseFloat(rawRow.maximum_size) * 1000).toFixed(0);
+
+          diameter = !rawRow.diameter
+            ? undefined
+            : (parseFloat(rawRow.diameter) * 1000).toFixed(0);
+          diameter_sigma = !rawRow.diameter_sigma
+            ? undefined
+            : (parseFloat(rawRow.diameter_sigma) * 1000).toFixed(0);
+
+          size_tooltip = `${rawRow.nominal_size}`;
+          break;
+        case 1: // ft selected
+          nominal_size = kmToFt(parseFloat(rawRow.nominal_size)).toFixed(0);
+          minimum_size = kmToFt(parseFloat(rawRow.minimum_size)).toFixed(0);
+          maximum_size = kmToFt(parseFloat(rawRow.maximum_size)).toFixed(0);
+
+          diameter = !rawRow.diameter
+            ? undefined
+            : kmToFt(parseFloat(rawRow.diameter)).toFixed(0);
+          diameter_sigma = !rawRow.diameter_sigma
+            ? undefined
+            : kmToFt(parseFloat(rawRow.diameter_sigma)).toFixed(0);
+
+          size_tooltip = `${kmToLd(parseFloat(rawRow.nominal_size))}`;
+          break;
+        default:
+          throw "Not supposed to be possible";
+      }
+
+      return {
+        fullname,
+        fullname_tooltip,
+        cd,
+        cd_sigma: rawRow.cd_sigma,
+        cd_tooltip,
+        dist,
+        dist_tooltip,
+        diameter,
+        diameter_sigma,
+        nominal_size,
+        minimum_size,
+        maximum_size,
+        size_tooltip,
+        h,
+        h_tooltip,
+        min_distance: rawRow.min_distance,
+        max_distance: rawRow.max_distance,
+        v_rel: rawRow.v_rel,
+        v_inf: rawRow.v_inf,
+      };
+    });
     setDisplayRows(newDisplayRows);
   }, [rawRows, distUnit, sizeUnit, width, filterSortData]);
 
   // Map the display rows into the arrays for the table
   useEffect(() => {
-    if(!displayRows) {
+    if (!displayRows) {
       return;
     }
 
@@ -373,32 +408,40 @@ export const TableCAD = ({
       return {
         elements: columns.map((column, columnIndex) => {
           const value = (row as any)[column.id];
-          const tooltip = (row as any)[column.id + '_tooltip'];
+          const tooltip = (row as any)[column.id + "_tooltip"];
 
           return {
-            text: column.id === 'size' && !!row.diameter && !!row.diameter_sigma
-            ? `${row.diameter} ± ${row.diameter_sigma}`
-            : column.id === 'size' &&
-              !isNaN(parseFloat(row.minimum_size)) &&
-              !isNaN(parseFloat(row.maximum_size))
-            ? `${column.format(row.minimum_size)} - ${column.format(
-                row.maximum_size
-              )}`
-            : column.id === 'size'
-            ? column.format(row.nominal_size)
-            : column.format(value) + (column.id === 'dist' ?
-            auToLd(parseFloat(rawRows ? rawRows[index]?.dist : '0')) -
-              auToLd(parseFloat(row.min_distance)) >
-            0.1 ? '*' : '' : ''),
-            tooltip: tooltip
-          }
+            text:
+              column.id === "size" && !!row.diameter && !!row.diameter_sigma
+                ? `${row.diameter} ± ${row.diameter_sigma}`
+                : column.id === "size" &&
+                  !isNaN(parseFloat(row.minimum_size)) &&
+                  !isNaN(parseFloat(row.maximum_size))
+                ? `${column.format(row.minimum_size)} - ${column.format(
+                    row.maximum_size
+                  )}`
+                : column.id === "size"
+                ? column.format(row.nominal_size)
+                : column.format(value) +
+                  (column.id === "dist"
+                    ? auToLd(parseFloat(rawRows ? rawRows[index]?.dist : "0")) -
+                        auToLd(parseFloat(row.min_distance)) >
+                      0.1
+                      ? "*"
+                      : ""
+                    : ""),
+            tooltip: tooltip,
+          };
         }),
-        color: rawRows && auToKm(parseFloat(rawRows[index]?.min_distance)) < 42164 ? 'yellow' : undefined,
+        color:
+          rawRows && auToKm(parseFloat(rawRows[index]?.min_distance)) < 42164
+            ? "yellow"
+            : undefined,
         onClick: () => {
           setIsObjectModalShown(true);
           unchangedRawRows && setSelectedRawRow(unchangedRawRows[index]);
-        }
-      }
+        },
+      };
     });
 
     setBodyElements(bodyElements);
@@ -415,17 +458,17 @@ export const TableCAD = ({
       <div className={styles.container} ref={containerRef}>
         <div className={styles.tableContainer}>
           <Table
-            headElements={columns.map(col => (
-              {
-                element: col.label,
-                tooltip: col.label_tooltip
-              }
-            ))}
+            headElements={columns.map((col) => ({
+              element: col.label,
+              tooltip: col.label_tooltip,
+            }))}
             bodyElements={bodyElements}
           />
         </div>
 
-        <div className={styles.total}>Total: {displayRows ? displayRows.length : -1}</div>
+        <div className={styles.total}>
+          Total: {displayRows ? displayRows.length : -1}
+        </div>
       </div>
     </>
   );
@@ -439,51 +482,54 @@ const getCols: (distUnit: TDistUnit, sizeUnit: TDistUnit) => ICol[] = (
   // Displayed Cols
   ///////////////////////////////////////
   {
-    id: 'fullname',
-    label: 'Object',
-    label_tooltip: 'Name of comet or asteroid',
+    id: "fullname",
+    label: "Object",
+    label_tooltip: "Name of comet or asteroid",
     minWidth: 90,
     maxWidth: 90,
-    align: 'left',
-    format: (value: string) => value
+    align: "left",
+    format: (value: string) => value,
   },
   {
-    id: 'cd',
-    label: 'Date',
-    label_tooltip: 'Date of closest approach',
+    id: "cd",
+    label: "Date",
+    label_tooltip: "Date of closest approach",
     minWidth: 0,
-    align: 'left',
-    format: (value: string) => value
+    align: "left",
+    format: (value: string) => value,
   },
   {
-    id: 'dist',
-    label: `Dist (${!distUnit ? 'LD' : distUnit === 1 ? 'km' : distUnit === 2 ? 'au' : 'mi'})`,
-    label_tooltip: 'Close Approach nominal distance',
+    id: "dist",
+    label: `Dist (${
+      !distUnit ? "LD" : distUnit === 1 ? "km" : distUnit === 2 ? "au" : "mi"
+    })`,
+    label_tooltip: "Close Approach nominal distance",
     minWidth: 0,
-    align: 'left',
+    align: "left",
     format: (value: string) =>
       !distUnit
         ? (Math.round(parseFloat(value) * 100) / 100).toString()
         : distUnit === 3
-        ? Math.round(parseFloat(value)).toLocaleString('en-US')
-        : value
+        ? Math.round(parseFloat(value)).toLocaleString("en-US")
+        : value,
   },
   {
-    id: 'size',
-    label: `Size (${!sizeUnit ? 'm' : 'ft'})`,
-    label_tooltip: 'Diameter from API, or average value using H of 0.25 and 0.05',
+    id: "size",
+    label: `Size (${!sizeUnit ? "m" : "ft"})`,
+    label_tooltip:
+      "Diameter from API, or average value using H of 0.25 and 0.05",
     minWidth: 0,
-    align: 'left',
-    format: (value: string) => value
+    align: "left",
+    format: (value: string) => value,
   },
   {
-    id: 'h',
-    label: 'H (mag)',
-    label_tooltip: 'Absolute magnitude',
+    id: "h",
+    label: "H (mag)",
+    label_tooltip: "Absolute magnitude",
     minWidth: 0,
-    align: 'left',
-    format: (value: string) => value
-  }
+    align: "left",
+    format: (value: string) => value,
+  },
 
   ///////////////////////////////////////
   // Non-Displayed Cols
@@ -565,11 +611,17 @@ const getAbbreviatedName = (name: string, componentWidth: number) => {
 
   const nameLength = name.length;
   if (nameLength <= maxNameLength + 0) return name;
-  if (nameLength <= maxNameLength + 1) return name.substring(0, maxNameLength + 1) + '';
-  if (nameLength <= maxNameLength + 2) return name.substring(0, maxNameLength + 2) + '';
-  if (nameLength <= maxNameLength + 3) return name.substring(0, maxNameLength + 3) + '';
-  if (nameLength <= maxNameLength + 4) return name.substring(0, maxNameLength + 4) + '';
-  if (nameLength <= maxNameLength + 5) return name.substring(0, maxNameLength + 5) + '';
-  if (nameLength <= maxNameLength + 6) return name.substring(0, maxNameLength + 3) + '...';
-  return name.substring(0, maxNameLength + 3) + '...';
+  if (nameLength <= maxNameLength + 1)
+    return name.substring(0, maxNameLength + 1) + "";
+  if (nameLength <= maxNameLength + 2)
+    return name.substring(0, maxNameLength + 2) + "";
+  if (nameLength <= maxNameLength + 3)
+    return name.substring(0, maxNameLength + 3) + "";
+  if (nameLength <= maxNameLength + 4)
+    return name.substring(0, maxNameLength + 4) + "";
+  if (nameLength <= maxNameLength + 5)
+    return name.substring(0, maxNameLength + 5) + "";
+  if (nameLength <= maxNameLength + 6)
+    return name.substring(0, maxNameLength + 3) + "...";
+  return name.substring(0, maxNameLength + 3) + "...";
 };

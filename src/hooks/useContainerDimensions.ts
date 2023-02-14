@@ -1,15 +1,30 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface IDimensions {
   width: number;
   height: number;
 }
 
+/**
+ *
+ */
 export const useContainerDimensions = (myRef: React.RefObject<HTMLElement>) => {
+  // --->>
+
+  /*
   const getDimensions = () => ({
     width: myRef?.current?.offsetWidth || 0,
     height: myRef?.current?.offsetHeight || 0,
   });
+  */
+
+  const getDimensions = useCallback(
+    () => ({
+      width: myRef?.current?.offsetWidth || 0,
+      height: myRef?.current?.offsetHeight || 0,
+    }),
+    [myRef]
+  );
 
   const [dimensions, setDimensions] = useState<IDimensions>({
     width: 0,
@@ -30,7 +45,7 @@ export const useContainerDimensions = (myRef: React.RefObject<HTMLElement>) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [myRef]);
+  }, [myRef, getDimensions]);
 
   return dimensions;
 };

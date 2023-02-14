@@ -54,7 +54,7 @@ export const FilterSortButton = (props: IProps) => {
   // column is clicked
   const setColumn = (col?: "dist" | "size") => {
     let tempFilterSortData = Object.assign({}, filterSortData);
-    tempFilterSortData.column = col;
+    tempFilterSortData.column = col || "dist";
 
     if (filterSortData.column === col && !!filterSortData) {
       tempFilterSortData.direction =
@@ -106,7 +106,7 @@ export const FilterSortButton = (props: IProps) => {
 
   const setFilterUncertainNEOs = (show: boolean) => {
     let tempFilterSortData = Object.assign({}, filterSortData);
-    tempFilterSortData.showCloseApproachesWithMinLessThan1LD = show;
+    tempFilterSortData.isShowCloseApproachesWithMinLessThan1LD = show;
 
     setFilterSortData(tempFilterSortData);
   };
@@ -284,7 +284,7 @@ export const FilterSortButton = (props: IProps) => {
             id="showCloseApproachesWithMinLessThan1LD"
             name="showCloseApproachesWithMinLessThan1LD"
             onChange={(e) => setFilterUncertainNEOs(e.target.checked)}
-            checked={!!filterSortData.showCloseApproachesWithMinLessThan1LD}
+            checked={!!filterSortData.isShowCloseApproachesWithMinLessThan1LD}
           />
         </div>
       </div>

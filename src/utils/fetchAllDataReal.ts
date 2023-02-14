@@ -27,7 +27,7 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
         return res.json();
       })
       .catch((err: Error) => {
-        console.log("Error fetching from " + url, err.message);
+        console.log("Error fetching from " + url, ">>>", err.message, "<<<");
         return null;
       })
   );

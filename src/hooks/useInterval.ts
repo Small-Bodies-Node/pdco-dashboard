@@ -25,5 +25,5 @@ export function useInterval(
       let id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay]);
+  }, [delay, isImmediatelyFired]);
 }
