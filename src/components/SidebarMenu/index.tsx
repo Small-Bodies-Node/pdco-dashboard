@@ -62,7 +62,7 @@ export const SidebarMenu = () => {
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a onClick={() => closeMenu()}>
               Dashboard
             </a>
@@ -70,7 +70,7 @@ export const SidebarMenu = () => {
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/about">
+          <Link href="/about" legacyBehavior>
             <a onClick={() => closeMenu()}>
               About
             </a>

@@ -4,6 +4,7 @@ import { useEventListener } from "../../hooks/useEventListener";
 import { mobileWidthPxl } from "../../utils/constants";
 import { ImageCell } from "../ImageCell";
 import { MyError } from "../MyError";
+import { SidebarMenu } from "../SidebarMenu";
 
 import styles from "./styles.module.scss";
 
