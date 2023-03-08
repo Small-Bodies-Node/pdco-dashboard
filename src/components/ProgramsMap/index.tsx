@@ -78,6 +78,11 @@ export const ProgramsMap = () => {
           className={styles.dialog}
           aria-labelledby="programs-dialog"
         >
+          <div
+            className={styles.dialogBackground}
+            onClick={() => setIsDialogOpen(false)}
+          />
+
           <div className={styles.dialogInner}>
             <div className={styles.dialogContainer} ref={mapRef}>
               <div
