@@ -11,7 +11,6 @@ import styles from "./styles.module.scss";
 import Table from "../Table";
 import { TTableBodyElements } from "../../models/TTableBodyElements";
 import { NeoDetailsModal } from "../NeoDetailsModal";
-import { parseDate } from "pdf-lib";
 
 const numeral = numeralWithDefault.default;
 
