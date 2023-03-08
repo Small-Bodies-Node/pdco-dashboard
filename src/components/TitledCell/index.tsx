@@ -1,6 +1,7 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
+import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { MyError } from "../MyError";
@@ -23,6 +24,8 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
 
   const { alignment, title, link, tooltip, headerElement } = props;
 
+  const [isMouseOverTitle, setIsMouseOverTitle] = useState(false);
+
   // Aux component
   const TitleRow = () => {
     return (
@@ -43,13 +46,31 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
           placement="top"
           TransitionComponent={Zoom}
           arrow
+          disableHoverListener
+          disableFocusListener
+          open={isMouseOverTitle}
         >
           {!!link ? (
-            <a target="_blank" href={link!} rel="noreferrer">
+            <a
+              target="_blank"
+              href={link!}
+              rel="noreferrer"
+              className={isMouseOverTitle ? styles.titleHover : ''}
+              onClick={() => setIsMouseOverTitle(false)}
+              onMouseEnter={() => setIsMouseOverTitle(true)}
+              onMouseLeave={() => setIsMouseOverTitle(false)}
+            >
               <TitleRow />
             </a>
           ) : !!props.onClick ? (
-            <p onClick={props.onClick}>
+            <p
+              onClick={() => {
+                props.onClick && props.onClick();
+                setIsMouseOverTitle(false);
+              }}
+              onMouseEnter={() => setIsMouseOverTitle(true)}
+              onMouseLeave={() => setIsMouseOverTitle(false)}
+            >
               <TitleRow />
             </p>
           ) : (

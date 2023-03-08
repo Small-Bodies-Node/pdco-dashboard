@@ -69,7 +69,7 @@ export const PageAbout = () => {
         <ul>
           <li>
             This is the dashboard for quickly summarizing the state of concern
-            for the Planetary Defence Coordination Office.
+            for the Planetary Defense Coordination Office.
           </li>
 
           <li>Made by Daniel Darg, with additional work done by Jake Short.</li>

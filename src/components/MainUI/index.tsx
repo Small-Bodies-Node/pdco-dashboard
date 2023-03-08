@@ -182,6 +182,7 @@ export const MainUI = () => {
         <div className={styles.neoCount}>
           <TitledCell
             title="RECENT CAs <1LD"
+            tooltip="Click for more detailed recent CA stats."
             onClick={() => setIsRecentCAStatsModalShown(true)}
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={isDisplayed}
@@ -197,6 +198,7 @@ export const MainUI = () => {
         <div className={styles.discoveryStats}>
           <TitledCell
             title="DISCOVERY STATS"
+            tooltip="Click for more detailed discovery stats."
             onClick={() => setIsDiscoveryStatsModalShown(true)}
             icon={() => <FontAwesomeIcon icon={faChartColumn} />}
             isDisplayed={isDisplayed}
@@ -208,7 +210,7 @@ export const MainUI = () => {
           <TitledCell
             title="SENTRY STATUS"
             link="https://cneos.jpl.nasa.gov/sentry/"
-            tooltip="Highest ts_max value in latest sentry data"
+            tooltip="Highest ts_max value in latest sentry data. Click to visit CNEOS sentry page."
             icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
             isDisplayed={isDisplayed}
           >
@@ -218,7 +220,7 @@ export const MainUI = () => {
         <div className={styles.moonPhase}>
           <TitledCell
             title="MOON PHASE"
-            tooltip=""
+            tooltip="Click for monthly moon phases view."
             icon={() => <FontAwesomeIcon icon={faMoon} />}
             isDisplayed={isDisplayed}
             onClick={() => setIsMoonPhaseModalShown(true)}
@@ -229,8 +231,7 @@ export const MainUI = () => {
         <div className={styles.programs}>
           <TitledCell
             title="PROJECTS"
-            link=""
-            tooltip="Daylight map of world with PDCO project locations"
+            tooltip="Daylight map of world with PDCO project locations."
             icon={() => <FontAwesomeIcon icon={faGlobeAmericas} />}
             isDisplayed={isDisplayed}
           >
@@ -241,7 +242,7 @@ export const MainUI = () => {
           <TitledCell
             title="CLOSE APPROACHES <1LD LAST 30 DAYS"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approach is defined as <1LD at smallest nominal distance"
+            tooltip="Close Approach is defined as <1LD at smallest nominal distance. Click to visit CNEOS CA page."
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
@@ -267,7 +268,7 @@ export const MainUI = () => {
           <TitledCell
             title="CLOSE APPROACHES <1LD NEXT 10 YEARS"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approach is defined as <1LD at closest approach"
+            tooltip="Close Approach is defined as <1LD at closest approach. Click to visit CNEOS CA page."
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
@@ -293,7 +294,7 @@ export const MainUI = () => {
           <TitledCell
             title="LARGE NEOs <19LD NEXT 1 YEAR"
             link="https://cneos.jpl.nasa.gov/ca/"
-            tooltip="Close Approaches with H <24 in size passing within 19LD"
+            tooltip="Close Approaches with H <24 in size passing within 19LD. Click to visit CNEOS CA page."
             icon={() => <FontAwesomeIcon icon={faTable} />}
             isDisplayed={isDisplayed}
             isHeightAuto={isMobile}
