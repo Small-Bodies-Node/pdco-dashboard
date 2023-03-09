@@ -81,131 +81,20 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     if (dateToday.getMonth() + 1 < 10) {
       startDateString = `${dateToday.getFullYear() - 2}-01-01`;
 
-      setFiscalYear(dateToday.getFullYear() - 1);
+      onFiscalYearChange(dateToday.getFullYear() - 1);
     } else {
-      setFiscalYear(dateToday.getFullYear());
+      onFiscalYearChange(dateToday.getFullYear());
     }
 
-    //const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${dateToday.getFullYear()}-${`${
-    const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${dateToday.getFullYear()}-${`${
-      dateToday.getMonth() + 1
-    }`.padStart(2, "0")}-${`${dateToday.getDate() + 1}`.padStart(
-      2,
-      "0"
-    )}&dist-max=1LD`;
-
-    fetch(cadUrl)
-      .then((res) => res.json())
-      .then((result) => {
-        /**
-         * Data processing
-         */
-
-        let fyAllCount = 0;
-        let fyGeoCount = 0;
-        let fy50mCount = 0;
-        let calendarAllCount = 0;
-        let calendarGeoCount = 0;
-        let calendar50mCount = 0;
-
-        // ---------
-        // FY
-        // ---------
-        {
-          let startDate = new Date(
-            `${dateToday.getFullYear() - 1}-10-01T00:00+00:00`
-          );
-          let endDate = new Date(
-            `${dateToday.getFullYear()}-09-30T23:59+00:00`
-          );
-          // Have not reached this year's fiscal year yet
-          if (dateToday.getMonth() + 1 < 10) {
-            startDate = new Date(
-              `${dateToday.getFullYear() - 2}-10-01T00:00+00:00`
-            );
-            endDate = new Date(
-              `${dateToday.getFullYear() - 1}-09-30T23:59+00:00`
-            );
-          }
-
-          result.data.forEach((element: string[]) => {
-            let date = apiDateStringToJsDate(element[cadFieldIndices.cd]);
-
-            // Date is within the range
-            if (startDate <= date && endDate >= date) {
-              fyAllCount++;
-
-              // Within geodistance
-              if (
-                parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
-              ) {
-                fyGeoCount++;
-              }
-              // > 50m
-              if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
-                fy50mCount++;
-              }
-            }
-          });
-        }
-
-        // ---------
-        // Calendar
-        // ---------
-        {
-          const startDate = new Date(
-            `${dateToday.getFullYear()}-01-01T00:00+00:00`
-          );
-          const endDate = new Date(
-            `${dateToday.getFullYear()}-${`${
-              dateToday.getMonth() + 1
-            }`.padStart(2, "0")}-${`${dateToday.getDate() + 1}`.padStart(
-              2,
-              "0"
-            )}T23:59+00:00`
-          );
-
-          result.data.forEach((element: string[]) => {
-            let date = apiDateStringToJsDate(element[cadFieldIndices.cd]);
-
-            // Date is within the range
-            if (startDate <= date && endDate >= date) {
-              calendarAllCount++;
-
-              // Within geodistance
-              if (
-                parseFloat(element[cadFieldIndices.dist] ?? "1") < geoDistanceAu
-              ) {
-                calendarGeoCount++;
-              }
-              // > 50m
-              if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
-                calendar50mCount++;
-              }
-            }
-          });
-        }
-
-        // Store values in state
-        setFyAll(fyAllCount);
-        setFyGeo(fyGeoCount);
-        setFy50m(fy50mCount);
-        setCalendarAll(calendarAllCount);
-        setCalendarGeo(calendarGeoCount);
-        setCalendar50m(calendar50mCount);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    onCalendarYearChange(dateToday.getFullYear());
   }, []);
 
   // Handle changes to the fiscal year
-  const onFiscalYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onFiscalYearChange = (selectedYear: number) => {
     setFyAll("-");
     setFyGeo("-");
     setFy50m("-");
 
-    const selectedYear = parseInt(e.target.value);
     setFiscalYear(selectedYear);
 
     // Process change
@@ -225,7 +114,6 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
       )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
-    // const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
     const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${endDateString}&distMax=1LD`;
 
     let fyAllCount = 0;
@@ -260,12 +148,11 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
   };
 
   // Handle changes to the calendar year
-  const onCalendarYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onCalendarYearChange = (selectedYear: number) => {
     setCalendarAll("-");
     setCalendarGeo("-");
     setCalendar50m("-");
 
-    const selectedYear = parseInt(e.target.value);
     setCalendarYear(selectedYear);
 
     // Process change
@@ -353,7 +240,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
               Fiscal Year {isMobile ? <br /> : "("}
               <select
                 value={fiscalYear}
-                onChange={(e) => onFiscalYearChange(e)}
+                onChange={(e) => onFiscalYearChange(parseInt(e.target.value))}
               >
                 {fiscalYearSelectElements}
               </select>
@@ -364,7 +251,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
               Calendar Year {isMobile ? <br /> : "("}
               <select
                 value={calendarYear}
-                onChange={(e) => onCalendarYearChange(e)}
+                onChange={(e) => onCalendarYearChange(parseInt(e.target.value))}
               >
                 {calendarYearSelectElements}
               </select>
