@@ -20,7 +20,6 @@ import { ProgramsMap } from "../ProgramsMap";
 import { NeoCount } from "../NeoCount";
 import { TitledCell } from "../TitledCell";
 import { TableCAD } from "../TableCAD";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { formattedTimestamp } from "../../utils/formattedTime";
 import { fetchAllData } from "../../utils/fetchAllData";
 import { useInterval } from "../../hooks/useInterval";
@@ -37,7 +36,6 @@ import { SidebarMenu } from "../SidebarMenu";
 import { useRouter } from "next/router";
 import { DiscoveryStats } from "../DiscoveryStats";
 import { DiscoveryStatsModal } from "../DiscoveryStatsModal";
-import { NeoSearchModal } from "../NeoSearchModal";
 
 /**
  *

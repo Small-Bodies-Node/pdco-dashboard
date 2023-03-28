@@ -1,0 +1,5 @@
+{
+	"name": "PDCO Dashboard",
+	"display": "standalone",
+	"start_url": "/"
+}
