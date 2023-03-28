@@ -10,5 +10,6 @@ export default async function getSentryData(
 		await fetch('https://ssd-api.jpl.nasa.gov/sentry.api')
 	).json();
 
+	res.setHeader('Cache-Control', 'public, max-age=43200');
   res.status(200).json(sentryData);
 }

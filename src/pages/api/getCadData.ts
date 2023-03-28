@@ -13,6 +13,8 @@ const getCadData = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	const url = baseUrl + (minDistMax ? `&min-dist-max=${minDistMax}` : '') + (distMax ? `&dist-max=${distMax}` : '') + (dateMin ? `&date-min=${dateMin}` : '') + (dateMax ? `&date-max=${dateMax}` : '') + (hMax ? `&h-max=${hMax}` : '');
 	const data = await(await fetch(url)).json();
+
+	res.setHeader('Cache-Control', 'public, max-age=43200');
 	res.status(200).json(data);
 };
 

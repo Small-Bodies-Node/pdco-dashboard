@@ -23,6 +23,7 @@ const getDiscoveryStats = (req: NextApiRequest, res: NextApiResponse) => {
 		}
 		else {
 			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', 'public, max-age=43200');
 			res.end(JSON.stringify(result));
 		}
 	});

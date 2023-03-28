@@ -46,13 +46,8 @@ export const MainUI = () => {
   // --->>
 
   // State
-  const [storedData, setStoredData] = useLocalStorage<null | IFetchedData>(
-    "API_DATA",
+  const [fetchedData, setFetchedData] = useState<null | IFetchedData>(
     null
-  );
-  const [storedIntervalToRefreshDataSecs] = useLocalStorage<number>(
-    "CHECK_FOR_DATA_REFRESH_INTERVAL",
-    12 * 60 * 60
   );
   const [isSearching, setIsSearching] = useState(!true);
   const [displayDate, setDisplayDate] = useState("");
@@ -99,33 +94,31 @@ export const MainUI = () => {
 
   // Set up regular checks to see if it's time to refresh data
   const checkIfItsTimeForDataUpdate = () => {
-    if (!!storedData) {
-      const dtSecs =
-        (new Date().getTime() - new Date(storedData.timestamp).getTime()) /
-        1000;
-      if (dtSecs > storedIntervalToRefreshDataSecs) {
-        setIsSearching(true);
+    if (!!fetchedData) {
+      // age is greater than 12 hours
+      if ((fetchedData.maxAge / 1000) > 12 * 60 * 60) {
+        refreshData();
       }
     }
   };
   useInterval(checkIfItsTimeForDataUpdate, intervalToCheckForDataSecs * 1000);
 
-  // Re-fetch data on pertinent changes
+  // get the data on first load
   useEffect(() => {
-    if (!storedData || isSearching || isMock) {
-      fetchAllData(isMock).then((data) => {
-        if (!!data) setStoredData(data);
-        setIsSearching(false);
-        setDisplayDate(data ? formattedTimestamp(data.timestamp) : "");
-      });
-    } else {
-      setDisplayDate(
-        storedData ? formattedTimestamp(storedData.timestamp) : ""
-      );
-    }
-  }, [isMock, isSearching, setIsSearching]);
+    refreshData();
+  }, []);
 
-  const isDisplayed = !(isSearching || !storedData);
+  const refreshData = (noCache?: boolean) => {
+    setIsSearching(true);
+
+    fetchAllData(isMock, noCache).then((data) => {
+      if (!!data) setFetchedData(data);
+      setIsSearching(false);
+      setDisplayDate(data ? formattedTimestamp(Date.now() - data.maxAge) : "");
+    });
+  }
+
+  const isDisplayed = !(isSearching || !fetchedData);
 
   return (
     <>
@@ -157,7 +150,7 @@ export const MainUI = () => {
             imageUrl="images/nasa-logo.png"
           />
         </div>
-        <div className={styles.title} onClick={() => setIsSearching(true)}>
+        <div className={styles.title} onClick={() => refreshData(true)}>
           <ErrorBoundary fallbackRender={() => <MyError />}>
             {!isMobile ? <div className="longTitle">
               {"Planetary Defense Coordination Office Status Summary"}
@@ -187,10 +180,10 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faMeteor} />}
             isDisplayed={isDisplayed}
           >
-            {storedData && (
+            {fetchedData && (
               <NeoCount
-                cadData={storedData!.cadData}
-                dateAtDataFetch={storedData!.timestamp}
+                cadData={fetchedData!.cadData}
+                dateAtDataFetch={fetchedData!.timestamp}
               />
             )}
           </TitledCell>
@@ -214,7 +207,7 @@ export const MainUI = () => {
             icon={() => <FontAwesomeIcon icon={faShieldAlt} />}
             isDisplayed={isDisplayed}
           >
-            {!!storedData && <Sentry sentryData={storedData!.sentryData} />}
+            {!!fetchedData && <Sentry sentryData={fetchedData!.sentryData} />}
           </TitledCell>
         </div>
         <div className={styles.moonPhase}>
@@ -253,11 +246,11 @@ export const MainUI = () => {
               />
             }
           >
-            {!!storedData && (
+            {!!fetchedData && (
               <TableCAD
                 period="recent"
-                cadData={storedData!.cadData}
-                dateAtDataFetch={storedData!.timestamp}
+                cadData={fetchedData!.cadData}
+                dateAtDataFetch={fetchedData!.timestamp}
                 isHeightAuto={isMobile}
                 filterSortData={filterSortDataLast7Days}
               />
@@ -279,11 +272,11 @@ export const MainUI = () => {
               />
             }
           >
-            {!!storedData && (
+            {!!fetchedData && (
               <TableCAD
                 period="future"
-                cadData={storedData!.cadData}
-                dateAtDataFetch={storedData!.timestamp}
+                cadData={fetchedData!.cadData}
+                dateAtDataFetch={fetchedData!.timestamp}
                 isHeightAuto={isMobile}
                 filterSortData={filterSortDataNext10Years}
               />
@@ -305,11 +298,11 @@ export const MainUI = () => {
               />
             }
           >
-            {!!storedData && (
+            {!!fetchedData && (
               <TableCAD
                 period="future"
-                cadData={storedData!.largeDistantCadData}
-                dateAtDataFetch={storedData!.timestamp}
+                cadData={fetchedData!.largeDistantCadData}
+                dateAtDataFetch={fetchedData!.timestamp}
                 isHeightAuto={isMobile}
                 filterSortData={filterSortDataLargeFarNextYear}
               />
