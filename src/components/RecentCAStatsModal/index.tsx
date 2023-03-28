@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMeteor, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import { apiDateStringToJsDate } from "../../utils/apiDateStringToJsDate";
 import { useEventListener } from "../../hooks/useEventListener";
 import { magToSizeKm } from "../../utils/conversionFormulae";
 import { TitledCell } from "../TitledCell";
@@ -119,7 +118,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     let fyAllCount = 0;
     let fyGeoCount = 0;
     let fy50mCount = 0;
-    fetch(cadUrl)
+    fetch(cadUrl, { cache: "no-cache" })
       .then((res) => res.json())
       .then((result) => {
         result.data.forEach((element: string[]) => {
@@ -131,8 +130,12 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           ) {
             fyGeoCount++;
           }
+
+          const estimatedSize = ((magToSizeKm(parseFloat(element[cadFieldIndices.h] ?? '0'), 0.25) +
+            magToSizeKm(parseFloat(element[cadFieldIndices.h] ?? '0'), 0.05)) /
+          2);
           // > 50m
-          if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+          if (estimatedSize > 0.05) {
             fy50mCount++;
           }
         });
@@ -175,7 +178,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     let calendarAllCount = 0;
     let calendarGeoCount = 0;
     let calendar50mCount = 0;
-    fetch(cadUrl)
+    fetch(cadUrl, { cache: "no-cache" })
       .then((res) => res.json())
       .then((result) => {
         result.data.forEach((element: string[]) => {
@@ -187,8 +190,12 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
           ) {
             calendarGeoCount++;
           }
+          
+          const estimatedSize = ((magToSizeKm(parseFloat(element[cadFieldIndices.h] ?? '0'), 0.25) +
+            magToSizeKm(parseFloat(element[cadFieldIndices.h] ?? '0'), 0.05)) /
+          2);
           // > 50m
-          if (magToSizeKm(parseFloat(element[cadFieldIndices.h])) > 0.05) {
+          if (estimatedSize > 0.05) {
             calendar50mCount++;
           }
         });

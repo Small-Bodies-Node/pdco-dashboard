@@ -92,10 +92,10 @@ export const MainUI = () => {
 
   // Set up regular checks to see if it's time to refresh data
   const checkIfItsTimeForDataUpdate = () => {
-    if (!!fetchedData) {
+    if (!!fetchedData && !isSearching) {
       // age is greater than 12 hours
       if ((fetchedData.maxAge / 1000) > 12 * 60 * 60) {
-        refreshData();
+        refreshData(true);
       }
     }
   };
