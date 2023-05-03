@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Deploys code to remote EC2
+
+export GRE="\033[32m"
+export WHI="\033[37m"
+
+rsync \
+  -avzd \
+  -e "ssh -i ~/work/aws/sbn-ddarg-ec2-various.pem" \
+  build/ \
+  dwd@pdco.astro-prod-it.aws.umd.edu:~/pdco-dashboard/build/
+
+echo -e """${GRE}
+  See: https://pdco.astro-prod-it.aws.umd.edu
+${WHI}"""
+
+# #!/bin/bash
+# #
+# #
+
+# rsync -d -i ~/work/aws/sbn-ddarg-ec2-various.pem \
+#   build/ \
+#   dwd@pdco.astro-prod-it.aws.umd.edu:~/pdco-dashboard/build/
