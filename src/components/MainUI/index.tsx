@@ -51,10 +51,10 @@ export const MainUI = () => {
   const [displayDate, setDisplayDate] = useState("");
 
   const [isMoonPhaseModalShown, setIsMoonPhaseModalShown] = useState(false);
-  const [filterSortDataLast7Days, setFilterSortDataLast7Days] =
+  const [filterSortDataLast30Days, setFilterSortDataLast30Days] =
     useState<IFilterSortData>({
       column: "date",
-      direction: "ascending",
+      direction: "descending",
       isShowingCloseApproachesWithMinLessThan1LD: false
     });
   const [filterSortDataNext10Years, setFilterSortDataNext10Years] =
@@ -144,7 +144,7 @@ export const MainUI = () => {
         </div>
         <div className={styles.imageRight}>
           <ImageCell
-            link="https://www.nasa.gov/planetarydefense"
+            link="https://www.nasa.gov"
             imageUrl="images/nasa-logo.png"
           />
         </div>
@@ -156,7 +156,7 @@ export const MainUI = () => {
             :
             <div className={styles.shortTitle}>{"PDCO STATUS"}</div>}
             <div className={styles.date}>
-              <span style={{ paddingRight: 3 }}>{displayDate + " "}</span>
+              <span style={{ paddingRight: 3 }} suppressHydrationWarning>{displayDate + " "}</span>
               <FontAwesomeIcon
                 style={{ fontSize: 10 }}
                 flip="horizontal"
@@ -216,7 +216,7 @@ export const MainUI = () => {
             isDisplayed={isDisplayed}
             onClick={() => setIsMoonPhaseModalShown(true)}
           >
-            <MoonPhase />
+            <MoonPhase setIsMoonPhaseModalShown={setIsMoonPhaseModalShown} />
           </TitledCell>
         </div>
         <div className={styles.programs}>
@@ -239,8 +239,8 @@ export const MainUI = () => {
             isHeightAuto={isMobile}
             headerElement={
               <FilterSortButton
-                filterSortData={filterSortDataLast7Days}
-                setFilterSortData={setFilterSortDataLast7Days}
+                filterSortData={filterSortDataLast30Days}
+                setFilterSortData={setFilterSortDataLast30Days}
               />
             }
           >
@@ -250,7 +250,7 @@ export const MainUI = () => {
                 cadData={fetchedData!.cadData}
                 dateAtDataFetch={fetchedData!.timestamp}
                 isHeightAuto={isMobile}
-                filterSortData={filterSortDataLast7Days}
+                filterSortData={filterSortDataLast30Days}
               />
             )}
           </TitledCell>

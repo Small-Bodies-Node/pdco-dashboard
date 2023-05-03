@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 import styles from "./styles.module.scss";
 
@@ -16,9 +17,10 @@ enum EMoonPhaseTypes {
 interface IProps {
   mobileWidthFull?: boolean;
   moonDate?: Date;
+  setIsMoonPhaseModalShown: (arg0: boolean) => void;
 }
 
-export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
+export const MoonPhase = ({ mobileWidthFull, moonDate, setIsMoonPhaseModalShown }: IProps) => {
   // --->>
 
   const [moonCyclePercent, setMoonCyclePercent] = useState(0);
@@ -116,6 +118,7 @@ export const MoonPhase = ({ mobileWidthFull, moonDate }: IProps) => {
         style={
           mobileWidthFull ? { width: "100%", height: "unset" } : undefined
         }
+        onClick={() => setIsMoonPhaseModalShown(true)}
       />
 
       <p className={styles.moonPhaseText}>{moonPhase}</p>

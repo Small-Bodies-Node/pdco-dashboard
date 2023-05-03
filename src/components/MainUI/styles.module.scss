@@ -49,6 +49,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  cursor: pointer;
   & div {
     padding-bottom: 2px;
   }

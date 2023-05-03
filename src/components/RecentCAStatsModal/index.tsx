@@ -74,22 +74,21 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     }
     setCalendarYearSelectElements(calendarElementsArray);
 
-    let startDateString = `${dateToday.getFullYear() - 1}-01-01`;
-
     // Have not reached this year's fiscal year yet
+    let fiscalYearToFetch = dateToday.getFullYear();
     if (dateToday.getMonth() + 1 < 10) {
-      startDateString = `${dateToday.getFullYear() - 2}-01-01`;
-
-      onFiscalYearChange(dateToday.getFullYear() - 1);
-    } else {
-      onFiscalYearChange(dateToday.getFullYear());
+      fiscalYearToFetch = dateToday.getFullYear() - 1;
     }
 
-    onCalendarYearChange(dateToday.getFullYear());
+    // sequentially call to prevent api from
+    // rejecting calls
+    onFiscalYearChange(fiscalYearToFetch).then(() => {
+      onCalendarYearChange(dateToday.getFullYear());
+    });
   }, []);
 
   // Handle changes to the fiscal year
-  const onFiscalYearChange = (selectedYear: number) => {
+  const onFiscalYearChange = (selectedYear: number): Promise<void> => {
     setFyAll("-");
     setFyGeo("-");
     setFy50m("-");
@@ -118,7 +117,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
     let fyAllCount = 0;
     let fyGeoCount = 0;
     let fy50mCount = 0;
-    fetch(cadUrl, { cache: "no-cache" })
+    return fetch(cadUrl, { cache: "no-cache" })
       .then((res) => res.json())
       .then((result) => {
         result.data.forEach((element: string[]) => {
@@ -151,7 +150,7 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
   };
 
   // Handle changes to the calendar year
-  const onCalendarYearChange = (selectedYear: number) => {
+  const onCalendarYearChange = (selectedYear: number): Promise<void> => {
     setCalendarAll("-");
     setCalendarGeo("-");
     setCalendar50m("-");
@@ -172,13 +171,12 @@ export const RecentCAStatsModal = ({ isShown, setIsShown }: IProps) => {
       )}-${`${dateToday.getDate() + 1}`.padStart(2, "0")}`;
     }
 
-    // const cadUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDateString}&date-max=${endDateString}&dist-max=1LD`;
     const cadUrl = `/api/getCadData?dateMin=${startDateString}&dateMax=${endDateString}&distMax=1LD`;
 
     let calendarAllCount = 0;
     let calendarGeoCount = 0;
     let calendar50mCount = 0;
-    fetch(cadUrl, { cache: "no-cache" })
+    return fetch(cadUrl, { cache: "no-cache" })
       .then((res) => res.json())
       .then((result) => {
         result.data.forEach((element: string[]) => {
