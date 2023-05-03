@@ -22,7 +22,6 @@ export const DiscoveryStats = () => {
     //---------->>>
 
     const getData = async () => {
-      console.log('getting data!')
       const tempDataRows = [];
 
       // Fetch data

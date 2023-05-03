@@ -95,7 +95,7 @@ export const DiscoveryStatsModal = ({ isShown, setIsShown }: IProps) => {
 		const discoveryStats: IDiscoveryStatsData = await (await fetch(`/api/getDiscoveryStats?numbersStartDate=${numbersStartDateString}&numbersEndDate=${numbersEndDateString}`, { cache: "no-cache" })).json();
 		setDiscoveryStats(discoveryStats);
 		setDisplayedStartDate(numbersStartDateString);
-		setDisplayedEndDate(numbersEndDateString);
+		setDisplayedEndDate(discoveryStats.actualFetchedEndDate);
 
 		const cadData = await (await fetch(`/api/getCadData?dateMin=${cadStartDateString}&dateMax=${cadEndDateString}&distMax=1LD`, { cache: "no-cache" })).json();
 		let belowGeo = 0;
