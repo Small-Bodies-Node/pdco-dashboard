@@ -62,18 +62,14 @@ export const SidebarMenu = () => {
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/">
-            <a onClick={() => closeMenu()}>
-              Dashboard
-            </a>
+          <Link href="/" onClick={() => closeMenu()}>
+            Dashboard
           </Link>
         </div>
 
         <div className={styles.menuRow}>
-          <Link href="/about">
-            <a onClick={() => closeMenu()}>
-              About
-            </a>
+          <Link href="/about" onClick={() => closeMenu()}>
+            About
           </Link>
         </div>
 

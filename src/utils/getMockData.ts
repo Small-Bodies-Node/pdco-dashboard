@@ -3,6 +3,7 @@
  *
  */
 export const getMockData = () => ({
+  maxAge: 0,
   sentryData: {
     count: '1295',
     signature: {

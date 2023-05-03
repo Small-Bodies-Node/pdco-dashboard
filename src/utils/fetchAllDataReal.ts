@@ -8,10 +8,13 @@ import { secsInDay } from "./constants";
  * At the moment, we're using two routes('sentry' and 'cad'), and calling
  * cad twice with different params
  */
-export async function fetchAllDataReal(): Promise<IFetchedData | null> {
+export async function fetchAllDataReal(noCache: boolean): Promise<IFetchedData | null> {
   // Urls for data fetching
   const cadUrl = getCadUrl();
   const largeDistantCadUrl = getDistantLargeCadUrl();
+
+  // stores max age of HTTP respones
+  let maxAge = 0;
 
   // Structured with promise chain to avoid rate limit
   let [sentryData, cadData, largeDistantCadData]: [
@@ -19,17 +22,32 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
     ICadData?,
     ICadData?
   ] = [undefined, undefined, undefined];
-  return fetch('/api/getSentryData')
+  return fetch('/api/getSentryData', { cache: noCache ? "no-cache" : "default" })
     .then(async (res) => {
+      // get age of response and store it, if bigger
+      const resTimestamp = Date.parse(res.headers.get("Date") ?? "0");
+      const age = Date.now() - resTimestamp;
+      maxAge = Math.max(maxAge, age);
+
       sentryData = (await res.json()) as ISentryData;
     })
     .then(async () => {
-      return fetch(cadUrl).then(async (res) => {
+      return fetch(cadUrl, { cache: noCache ? "no-cache" : "default" }).then(async (res) => {
+        // get age of response and store it, if bigger
+        const resTimestamp = Date.parse(res.headers.get("Date") ?? "0");
+        const age = Date.now() - resTimestamp;
+        maxAge = Math.max(maxAge, age);
+
         cadData = (await res.json()) as ICadData;
       });
     })
     .then(async () => {
-      return fetch(largeDistantCadUrl).then(async (res) => {
+      return fetch(largeDistantCadUrl, { cache: noCache ? "no-cache" : "default" }).then(async (res) => {
+        // get age of response and store it, if bigger
+        const resTimestamp = Date.parse(res.headers.get("Date") ?? "0");
+        const age = Date.now() - resTimestamp;
+        maxAge = Math.max(maxAge, age);
+
         largeDistantCadData = (await res.json()) as ICadData;
       });
     })
@@ -43,6 +61,7 @@ export async function fetchAllDataReal(): Promise<IFetchedData | null> {
         cadData,
         largeDistantCadData,
         timestamp: new Date().toUTCString(),
+        maxAge
       };
     });
 }

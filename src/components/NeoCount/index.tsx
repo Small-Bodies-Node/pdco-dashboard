@@ -4,7 +4,7 @@ import { TitledCell } from "../TitledCell";
 import { cadFieldIndices, geoDistanceAu } from "../../utils/constants";
 import { apiDateStringToJsDate } from "../../utils/apiDateStringToJsDate";
 import { NeoCountRows } from "../NeoCountRows";
-import { auToLd } from "../../utils/conversionFormulae";
+import { auToLd, magToSizeKm } from "../../utils/conversionFormulae";
 import { ICadData } from "../../models/ICadData";
 
 import styles from "./styles.module.scss";
@@ -61,7 +61,10 @@ export const NeoCount = ({ cadData, dateAtDataFetch }: IProps) => {
 
     // Function to filter cad events to within GEO (~42K km)
     const filter50ms = () => (datumArr: (string | null)[]) => {
-      const sizeIsStringOrNull = datumArr[cadFieldIndices.size];
+      let sizeIsStringOrNull = datumArr[cadFieldIndices.size] || `${((magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.25) +
+        magToSizeKm(parseFloat(datumArr[cadFieldIndices.h] ?? '0'), 0.05)) /
+      2)}`;
+      
       if (!sizeIsStringOrNull) return false;
       const size = parseFloat(sizeIsStringOrNull);
       return size > 1 / 20; // is size (km) smaller than 50m?

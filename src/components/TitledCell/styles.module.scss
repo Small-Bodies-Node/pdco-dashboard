@@ -22,10 +22,13 @@
     text-decoration: none;
     color: white;
     cursor: pointer;
-    &:hover {
-      color: cyan;
+    :hover {
+      color: cyan !important;
     }
   }
+}
+.titleHover {
+  color: cyan !important;
 }
 .content {
   display: flex;

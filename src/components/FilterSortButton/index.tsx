@@ -52,18 +52,19 @@ export const FilterSortButton = (props: IProps) => {
 
   // Set the column, reversing the direction if the already selected
   // column is clicked
-  const setColumn = (col?: "dist" | "size") => {
-    let tempFilterSortData = Object.assign({}, filterSortData);
-    tempFilterSortData.column = col;
-
+  const setColumn = (col: "date" | "dist" | "size") => {
     if (filterSortData.column === col && !!filterSortData) {
-      tempFilterSortData.direction =
-        filterSortData.direction === "descending" ? "ascending" : "descending";
+      setFilterSortData({
+        ...filterSortData,
+        direction: filterSortData.direction === "descending" ? "ascending" : "descending"
+      });
     } else {
-      tempFilterSortData.direction = "ascending";
+      setFilterSortData({
+        ...filterSortData,
+        column: col,
+        direction: "ascending"
+      });
     }
-
-    setFilterSortData(tempFilterSortData);
   };
 
   // Store the size filter in state. If final is true, store the
@@ -73,15 +74,17 @@ export const FilterSortButton = (props: IProps) => {
     setInternalSizeFilter(filter || 0);
 
     if (final === true) {
-      let tempFilterSortData = Object.assign({}, filterSortData);
-
       if (!filter) {
-        tempFilterSortData.sizeFilterMeters = undefined;
+        setFilterSortData({
+          ...filterSortData,
+          sizeFilterMeters: undefined
+        });
       } else {
-        tempFilterSortData.sizeFilterMeters = filter;
+        setFilterSortData({
+          ...filterSortData,
+          sizeFilterMeters: filter
+        });
       }
-
-      setFilterSortData(tempFilterSortData);
     }
   };
 
@@ -105,10 +108,10 @@ export const FilterSortButton = (props: IProps) => {
   };
 
   const setFilterUncertainNEOs = (show: boolean) => {
-    let tempFilterSortData = Object.assign({}, filterSortData);
-    tempFilterSortData.showCloseApproachesWithMinLessThan1LD = show;
-
-    setFilterSortData(tempFilterSortData);
+    setFilterSortData({
+      ...filterSortData,
+      isShowingCloseApproachesWithMinLessThan1LD: show
+    });
   };
 
   return (
@@ -131,15 +134,19 @@ export const FilterSortButton = (props: IProps) => {
 
           <div className={styles.optionsContainer}>
             <div
-              id={filterSortData.column === undefined ? "selected" : undefined}
-              onClick={() => setColumn()}
+              id={filterSortData.column === "date" ? "selected" : undefined}
+              onClick={() => setColumn("date")}
             >
               <p>Date (default)</p>
 
-              {!filterSortData.column && (
+              {filterSortData.column === "date" && (
                 <div>
                   <FontAwesomeIcon
-                    icon={faCheck}
+                    icon={
+                      filterSortData.direction === "descending"
+                        ? faArrowDown
+                        : faArrowUp
+                    }
                     size="xs"
                   />
                 </div>
@@ -285,7 +292,7 @@ export const FilterSortButton = (props: IProps) => {
             id="showCloseApproachesWithMinLessThan1LD"
             name="showCloseApproachesWithMinLessThan1LD"
             onChange={(e) => setFilterUncertainNEOs(e.target.checked)}
-            checked={filterSortData.showCloseApproachesWithMinLessThan1LD}
+            checked={filterSortData.isShowingCloseApproachesWithMinLessThan1LD}
           />
         </div>
       </div>

@@ -9,4 +9,5 @@ export interface IFetchedData {
   cadData: ICadData;
   largeDistantCadData: ICadData;
   timestamp: string;
+  maxAge: number; // maximum age of HTTP response, in ms
 }

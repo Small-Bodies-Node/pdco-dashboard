@@ -44,12 +44,21 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
           TransitionComponent={Zoom}
           arrow
         >
+          <div>
           {!!link ? (
-            <a target="_blank" href={link!} rel="noreferrer">
+            <a
+              target="_blank"
+              href={link!}
+              rel="noreferrer"
+            >
               <TitleRow />
             </a>
           ) : !!props.onClick ? (
-            <p onClick={props.onClick}>
+            <p
+              onClick={() => {
+                props.onClick && props.onClick();
+              }}
+            >
               <TitleRow />
             </p>
           ) : (
@@ -57,6 +66,7 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
               <TitleRow />
             </span>
           )}
+          </div>
         </Tooltip>
 
         {!!headerElement && headerElement}

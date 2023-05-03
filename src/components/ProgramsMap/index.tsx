@@ -54,20 +54,17 @@ export const ProgramsMap = () => {
     <>
       <div className={styles.container}>
         {
-          // <WorldDaylightMap
-          //   options={{
-          //     controlsPosition: "no-controls",
-          //     isSunshineDisplayed: false,
-          //     icons: smallMapIcons,
-          //   }}
-          // />
-
-          // TEMPORARY FIX
-          // WorldDaylightMap is broken when used >1 time
-          // so, use image here instead
-          <div className={styles.imageContainer}>
-            <Image src="/images/projectsmap.png" alt="Projects map" layout="fill" />
-          </div>
+        // NOTE: this is a temporary fix
+        // the tile on the dashboard will hide
+        // when the pop-up is shown
+        !isDialogOpen &&
+          <WorldDaylightMap
+            options={{
+              controlsPosition: "no-controls",
+              isSunshineDisplayed: false,
+              icons: smallMapIcons,
+            }}
+          />
         }
         <div
           className={styles.overlay}
@@ -81,6 +78,11 @@ export const ProgramsMap = () => {
           className={styles.dialog}
           aria-labelledby="programs-dialog"
         >
+          <div
+            className={styles.dialogBackground}
+            onClick={() => setIsDialogOpen(false)}
+          />
+
           <div className={styles.dialogInner}>
             <div className={styles.dialogContainer} ref={mapRef}>
               <div
