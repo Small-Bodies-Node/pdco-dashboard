@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
-import { MainUI } from "../../components/MainUI";
+import { MainUI } from "../../Components/MainUI";
 
 const Home: NextPage = () => {
   return (
