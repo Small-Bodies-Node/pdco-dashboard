@@ -17,7 +17,7 @@ enum EMoonPhaseTypes {
 interface IProps {
   mobileWidthFull?: boolean;
   moonDate?: Date;
-  setIsMoonPhaseModalShown: (arg0: boolean) => void;
+  setIsMoonPhaseModalShown?: (arg0: boolean) => void;
 }
 
 export const MoonPhase = ({ mobileWidthFull, moonDate, setIsMoonPhaseModalShown }: IProps) => {
@@ -115,10 +115,11 @@ export const MoonPhase = ({ mobileWidthFull, moonDate, setIsMoonPhaseModalShown 
         className={styles.moonImage}
         src={getMoonImageURL()}
         alt="Moon phase"
-        style={
-          mobileWidthFull ? { width: "100%", height: "unset" } : undefined
-        }
-        onClick={() => setIsMoonPhaseModalShown(true)}
+        style={{
+          ...mobileWidthFull ? { width: "100%", height: "unset" } : {},
+          ...setIsMoonPhaseModalShown ? { cursor: "pointer" } : {}
+        }}
+        onClick={() => setIsMoonPhaseModalShown && setIsMoonPhaseModalShown(true)}
       />
 
       <p className={styles.moonPhaseText}>{moonPhase}</p>
