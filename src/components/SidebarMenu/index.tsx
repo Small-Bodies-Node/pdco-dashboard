@@ -74,6 +74,18 @@ export const SidebarMenu = () => {
         </div>
 
         <div className={styles.menuRow}>
+          <Link href="/reference" onClick={() => closeMenu()}>
+            Reference
+          </Link>
+        </div>
+
+        <div className={styles.menuRow}>
+          <Link href="/quicklinks" onClick={() => closeMenu()}>
+            Quick Links
+          </Link>
+        </div>
+
+        <div className={styles.menuRow}>
           <p className={styles.searchHeader}>
             NEO Search
           </p>
