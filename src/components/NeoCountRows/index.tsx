@@ -25,13 +25,14 @@ export const NeoCountRows = (props: IProps) => {
             style={{ fontWeight: row.fontWeight || "normal" }}
             key={ind}
           >
-            {row.tooltip ? (
+            {/* {row.tooltip ? (
               <Tooltip title={row.tooltip} placement="top" TransitionComponent={Zoom} arrow>
                 <span>{row.text}</span>
               </Tooltip>
             ) : (
               <span>{row.text}</span>
-            )}
+            )} */}
+            <span>{row.text}</span>
           </div>
         ))}
       </div>

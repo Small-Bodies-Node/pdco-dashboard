@@ -59,12 +59,12 @@ export const PageReference = () => {
 								"AU"
 							]}
 							data={[
-								["Mean Earth Radius", "6,371", "3,959", "0", "0.00", "0.000043"],
-								["ISS Mean Orbit Distance", "6,779", "4,212", "0.16", "0.000", "0.000045"],
-								["Geosynchronous Orbit Distance", "42,164", "26,199", "1.0", "0.00", "0.000282"],
-								["Mean Lunar Distance", "384,402", "238,856", "9", "0", "0.002570"],
-								["PHA threshold (distance from Earth's ORBIT)", "7,479,894", "4,647,790", "177", "0.0", "0.05"],
-								["AU", "149,597,871", "92,955,807", "3,548", "1", "1"]
+								["Mean Earth Radius", "6,371", "3,959", "1", "0.02", "0.000043"],
+								["ISS Mean Orbit Distance", "6,779", "4,212", "1.06", "0.018", "0.000045"],
+								["Geosynchronous Orbit Distance", "42,164", "26,199", "6.6", "0.11", "0.000282"],
+								["Mean Lunar Distance", "384,402", "238,856", "60", "1", "0.002570"],
+								["PHA threshold (distance from Earth's ORBIT)", "7,479,894", "4,647,790", "1,174", "19.5", "0.05"],
+								["AU", "149,597,871", "92,955,807", "23,481", "389", "1"]
 							]}
 						/>
 					</div>
