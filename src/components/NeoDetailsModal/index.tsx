@@ -88,7 +88,7 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           { text: <span key={0}>Distance - R<sub>E</sub> ({ESurfaceDistanceUnits[surfaceDistance]})</span> },
           { text: convertSurfaceDistanceAu(rawRow.dist) },
           { text: convertSurfaceDistanceAu(rawRow.min_distance) },
-          { text: convertAuTo(rawRow.max_distance) },
+          { text: convertSurfaceDistanceAu(rawRow.max_distance) },
         ],
         onClick: () => setSurfaceDistance((surfaceDistance + 1) % ESurfaceDistanceUnits.__LENGTH)
       }
@@ -281,18 +281,6 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           isHeightAuto={true}
         >
           <div className={styles.rowContainer}>
-            {/** LINK TO SBDB SITE */}
-            <div className={styles.linkContainer}>
-              <a
-                href={getSSDUrlFromFullName(rawRow.fullname)}
-                className={styles.linkText}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                SBDB Data
-              </a>
-            </div>
-
             {/** LINK TO SBDB SITE WITH ORBIT DIAGRAM */}
             <div className={styles.linkContainer}>
               <a
@@ -313,7 +301,7 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                CNEOS Orbit
+                CNEOS CA Plot
               </a>
             </div>
 

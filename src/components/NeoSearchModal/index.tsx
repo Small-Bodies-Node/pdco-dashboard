@@ -2,6 +2,7 @@ import React from 'react';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TitledCell } from '../TitledCell';
 
 interface IProps {
   isShown: boolean;
@@ -44,43 +45,48 @@ export const NeoSearchModal = ({ isShown, setIsShown, query }: IProps) => {
           />
         </div>
 
-        <div className={styles.linksContainer}>
-          {/** LINK TO SBDB SITE */}
-          <div className={styles.linkContainer}>
-            <a
-              href={getSSDUrlFromFullName()}
-              className={styles.linkText}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              SBDB Data
-            </a>
-          </div>
+        <TitledCell
+          title={query}
+          isDisplayed
+        >
+          <div className={styles.linksContainer}>
+            {/** LINK TO SBDB SITE */}
+            <div className={styles.linkContainer}>
+              <a
+                href={getSSDUrlFromFullName()}
+                className={styles.linkText}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                SBDB Data
+              </a>
+            </div>
 
-          {/** LINK TO ORBIT DIAGRAM */}
-          <div className={styles.linkContainer}>
-            <a
-              href={getSSDUrlFromFullName() + '&view=VOP'}
-              className={styles.linkText}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              SBDB Orbit
-            </a>
-          </div>
+            {/** LINK TO ORBIT DIAGRAM */}
+            <div className={styles.linkContainer}>
+              <a
+                href={getSSDUrlFromFullName() + '&view=VOP'}
+                className={styles.linkText}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                SBDB Orbit
+              </a>
+            </div>
 
-          {/** LINK TO MPC SITE */}
-          <div className={styles.linkContainer}>
-            <a
-              href={getMPCUrlFromFullName()}
-              className={styles.linkText}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              MPC Data
-            </a>
+            {/** LINK TO MPC SITE */}
+            <div className={styles.linkContainer}>
+              <a
+                href={getMPCUrlFromFullName()}
+                className={styles.linkText}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                MPC Data
+              </a>
+            </div>
           </div>
-        </div>
+        </TitledCell>
       </div>
     </div>
   );

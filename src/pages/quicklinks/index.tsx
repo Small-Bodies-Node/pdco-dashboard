@@ -1,20 +1,20 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { PageAbout } from "../../components/PageAbout";
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import { PageQuickLinks } from "../../components/PageQuickLinks";
 
-const About: NextPage = () => {
+const QuickLinks: NextPage = () => {
   return (
     <div className={""}>
       <Head>
-        <title>About Page</title>
-        <meta name="description" content="About the PDCO Dashboard website" />
+        <title>Quick Links Page</title>
+        <meta name="description" content="Quick links" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PageAbout />
+      <PageQuickLinks />
     </div>
   );
 };
 
-export default About;
+export default QuickLinks;

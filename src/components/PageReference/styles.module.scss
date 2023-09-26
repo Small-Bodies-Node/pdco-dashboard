@@ -1,0 +1,128 @@
+@import "../../styles/variables.scss";
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 650px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-rows: minmax(50px, 0.8fr) minmax(0px, 0.5fr) minmax(0px, 5fr);
+  grid-template-columns: repeat(8, minmax(0px, 1fr));
+  grid-template-areas:
+    "imageLeft title     title     title     title     title     title     imageRight"
+    "imageLeft content   content   content   content   content   content   imageRight"
+    "blank1    content   content   content   content   content   content   blank2";
+  grid-gap: 20px;
+  text-align: center;
+  padding: 20px;
+  & > div {
+    background-color: #181b2e;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1px;
+  }
+}
+.imageLeft {
+  grid-area: imageLeft;
+  background-color: pink;
+}
+.imageRight {
+  grid-area: imageRight;
+  background-color: red;
+}
+.title {
+  grid-area: title;
+  border: $panelBorder;
+  background-color: blue;
+  font-size: 20px;
+  font-weight: bold;
+  //
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  & > div {
+    padding-bottom: 2px;
+  }
+  & > .shortTitle {
+    display: none;
+    padding-bottom: 2px;
+  }
+  & > .date {
+    font-size: 12px;
+  }
+}
+.mainContentContainer {
+  grid-area: content;
+  border: $panelBorder;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+
+  & > h2 {
+    padding: 1rem 0;
+    margin: 0;
+    text-align: left;
+  }
+  & > h2:not(:first-child) {
+    margin: 1rem 0 0 0;
+  }
+  & > ul > li {
+    font-size: 1rem;
+    text-align: left;
+    padding: 0px 0px 0.5rem 0px;
+  }
+}
+
+.tableContainer {
+	width: 100%;
+	overflow: auto;
+}
+
+.tableComponent {
+	border-collapse: collapse;
+  width: 100%;
+
+	& th, td {
+		border: solid 1px white;
+		padding: 8px;
+		text-align: left;
+	}
+
+	& th {
+		background-color: rgb(41, 45, 73);
+	}
+}
+
+@media (max-width: $mobileWidthPxl) {
+  .container {
+    height: auto; // Let height grow with content
+    grid-gap: 10px;
+    grid-template-rows:
+      minmax(0px, 70px)
+      minmax(0px, auto);
+    grid-template-columns: minmax(0px, 1fr) minmax(0px, 2fr) minmax(0px, 2fr) minmax(
+        0px,
+        1fr
+      );
+    grid-template-areas:
+      "imageLeft title     title     imageRight"
+      "content   content   content   content";
+    margin: 1.5rem 0 0 0;
+  }
+  .title {
+    & > .shortTitle {
+      display: block;
+    }
+    & > .longTitle {
+      display: none;
+    }
+  }
+  .mainContentContainer {
+    padding: 0.5rem;
+  }
+}

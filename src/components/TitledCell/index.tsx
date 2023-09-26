@@ -38,18 +38,27 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
   return (
     <div className={styles.container}>
       <div className={styles.title} style={{ justifyContent: alignment }}>
-        <Tooltip
+        {/* <Tooltip
           title={tooltip || ""}
           placement="top"
           TransitionComponent={Zoom}
           arrow
-        >
+        > */}
+          <div>
           {!!link ? (
-            <a target="_blank" href={link!} rel="noreferrer">
+            <a
+              target="_blank"
+              href={link!}
+              rel="noreferrer"
+            >
               <TitleRow />
             </a>
           ) : !!props.onClick ? (
-            <p onClick={props.onClick}>
+            <p
+              onClick={() => {
+                props.onClick && props.onClick();
+              }}
+            >
               <TitleRow />
             </p>
           ) : (
@@ -57,7 +66,8 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
               <TitleRow />
             </span>
           )}
-        </Tooltip>
+          </div>
+        {/* </Tooltip> */}
 
         {!!headerElement && headerElement}
       </div>

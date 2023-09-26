@@ -1,0 +1,12 @@
+{
+	"name": "PDCO Dashboard",
+	"display": "standalone",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "/images/pdco-shield-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

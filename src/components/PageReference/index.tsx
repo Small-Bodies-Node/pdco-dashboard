@@ -8,7 +8,7 @@ import { SidebarMenu } from "../SidebarMenu";
 
 import styles from "./styles.module.scss";
 
-export const PageAbout = () => {
+export const PageReference = () => {
   // --->>
 
   // Check for changes in window size
@@ -40,46 +40,60 @@ export const PageAbout = () => {
 
         <div className={styles.title}>
           <ErrorBoundary fallbackRender={() => <MyError />}>
-            {!isMobile ? <div className="longTitle">{"About"}</div>
-            : <div className="shortTitle">{"ABOUT"}</div>}
+            {!isMobile ? <div className="longTitle">{"Reference"}</div>
+            : <div className="shortTitle">{"REFERENCE"}</div>}
           </ErrorBoundary>
         </div>
 
         <div className={styles.mainContentContainer}>
-          <h2>Usage</h2>
+          <h2>Useful Distances</h2>
 
-          <ul>
-            <li>
-              To preserve API calls, this dashboard caches data at the time
-              displayed in the title bar. It will also refresh automatically every
-              12 hours. You can manually refresh the data by clicking on the title
-              bar.
-            </li>
-
-            <li>
-              <span style={{ color: "yellow" }}>Yellow text</span> in the tables
-              indicates an NEO is passing below geosynchronous orbit (42,164km
-              from Earth center).
-            </li>
-
-            <li>
-              An asterisk (*) next to a distance value indicates there is {">"}
-              0.1LD difference between the minimum and maximum distance values.
-            </li>
-          </ul>
-
-          <h2>General Information</h2>
-
-          <ul>
-            <li>
-              This is the dashboard for quickly summarizing the state of concern
-              for the Planetary Defense Coordination Office.
-            </li>
-
-            <li>Made by Daniel Darg, with additional work done by Jake Short.</li>
-          </ul>
+					<div className={styles.tableContainer}>
+						<TableComponent
+							headers={[
+								"Distance from Earth's center",
+								"km",
+								"miles",
+								"Earth radii",
+								"LD",
+								"AU"
+							]}
+							data={[
+								["Mean Earth Radius", "6,371", "3,959", "1", "0.02", "0.000043"],
+								["ISS Mean Orbit Distance", "6,779", "4,212", "1.06", "0.018", "0.000045"],
+								["Geosynchronous Orbit Distance", "42,164", "26,199", "6.6", "0.11", "0.000282"],
+								["Mean Lunar Distance", "384,402", "238,856", "60", "1", "0.002570"],
+								["PHA threshold (distance from Earth's ORBIT)", "7,479,894", "4,647,790", "1,174", "19.5", "0.05"],
+								["AU", "149,597,871", "92,955,807", "23,481", "389", "1"]
+							]}
+						/>
+					</div>
         </div>
       </div>
     </>
+  );
+};
+
+interface TableComponentProps {
+  headers: string[];
+  data: string[][];
+}
+
+const TableComponent: React.FC<TableComponentProps> = ({ headers, data }) => {
+  return (
+    <table className={styles.tableComponent}>
+      <tr>
+        {headers.map((header, index) => (
+          <th key={index}>{header}</th>
+        ))}
+      </tr>
+      {data.map((row, rowIndex) => (
+        <tr key={rowIndex}>
+          {row.map((cell, cellIndex) => (
+            <td key={cellIndex}>{cell}</td>
+          ))}
+        </tr>
+      ))}
+    </table>
   );
 };

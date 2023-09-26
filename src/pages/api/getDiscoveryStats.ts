@@ -18,11 +18,12 @@ const getDiscoveryStats = (req: NextApiRequest, res: NextApiResponse) => {
   return getDataInternal(numbersStartDate as string, numbersEndDate as string).then(result => {
 		// Return 404 if the data fetching failed (likely due to invalid dates)
 		if(!result) {
-			res.statusCode = 400;
+			res.statusCode = 404;
 			res.end(result);
 		}
 		else {
 			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', 'public, max-age=43200');
 			res.end(JSON.stringify(result));
 		}
 	});
@@ -47,6 +48,11 @@ const getDataInternal = async (numbersStartDate: string, numbersEndDate: string)
 		}
 	}
 
+	// end row is null, so get the very latest
+	if(endRow === null) {
+		endRow = numbersData.data[numbersData.data.length - 1];
+	}
+
 	// Fetch NEA totals data
 	const neaTotals = await (await fetch('https://cneos.jpl.nasa.gov/stats/nea_totals.json')).json();
 
@@ -61,6 +67,8 @@ const getDataInternal = async (numbersStartDate: string, numbersEndDate: string)
 			neasDiscovered140mAllTime: neaTotals['140m+'],
 			neasDiscovered1kmAllTime: neaTotals['1km+'],
 			neasDiscoveredAllTime: neaTotals['all'],
+
+			actualFetchedEndDate: endRow[0]
 		}
 	}
 	// One or both rows not found (likely due to invalid date passed)

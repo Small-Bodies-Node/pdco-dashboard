@@ -10,6 +10,7 @@ export default async function handler(
 		await fetch('https://cneos.jpl.nasa.gov/stats/nea_totals.json')
 	).json();
 
+	res.setHeader('Cache-Control', 'public, max-age=43200');
   res.status(200).json({
 		neosDiscovered: neaTotals['all'],
 		neosGreaterThan140m: neaTotals['140m+'],

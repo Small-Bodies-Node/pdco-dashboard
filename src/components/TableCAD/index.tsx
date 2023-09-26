@@ -216,7 +216,7 @@ export const TableCAD = ({
 
     // Filter data if selected for uncertain NEOs
     // Filters to only show NEOs where distance (nominal, not minimum) is <1LD
-    if (!filterSortData.showCloseApproachesWithMinLessThan1LD) {
+    if (!filterSortData.isShowingCloseApproachesWithMinLessThan1LD) {
       newRawRows =
         newRawRows?.filter((data) => {
           if (auToLd(parseFloat(data.dist)) < 1) {
@@ -228,19 +228,28 @@ export const TableCAD = ({
     }
 
     // Sort data if selected
-    if (!!filterSortData.column) {
-      newRawRows.sort((a, b) => {
-        const columnIndice = filterSortData.column === 'dist' ? 'dist' : 'nominal_size';
-
+    newRawRows.sort((a, b) => {
+      const columnIndice = filterSortData.column === 'dist' ? 'dist' : (filterSortData.column === 'size' ? 'nominal_size' : 'cd');
+      
+      // sorting by date
+      if(columnIndice === 'cd') {
+        if (a[columnIndice] < b[columnIndice]) {
+          return filterSortData.direction === 'descending' ? 1 : -1;
+        } else if (a[columnIndice] > b[columnIndice]) {
+          return filterSortData.direction === 'descending' ? -1 : 1;
+        }
+      }
+      // sorting by numeric field
+      else {
         if (parseFloat(a[columnIndice] ?? '0') < parseFloat(b[columnIndice] ?? '0')) {
           return filterSortData.direction === 'descending' ? 1 : -1;
         } else if (parseFloat(a[columnIndice] ?? '0') > parseFloat(b[columnIndice] ?? '0')) {
           return filterSortData.direction === 'descending' ? -1 : 1;
         }
+      }
 
-        return 0;
-      });
-    }
+      return 0;
+    });
 
     setUnchangedRawRows(newRawRows);
     setRawRows(newRawRows);
@@ -418,7 +427,8 @@ export const TableCAD = ({
             headElements={columns.map(col => (
               {
                 element: col.label,
-                tooltip: col.label_tooltip
+                tooltip: col.label_tooltip,
+                onClick: col.colClickHandler
               }
             ))}
             bodyElements={bodyElements}

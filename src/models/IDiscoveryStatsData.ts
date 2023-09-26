@@ -6,4 +6,6 @@ export interface IDiscoveryStatsData {
 	neasDiscovered140mAllTime: string | number;
 	neasDiscovered1kmAllTime: string | number;
 	neasDiscoveredAllTime: string | number;
+
+	actualFetchedEndDate: string;
 }
