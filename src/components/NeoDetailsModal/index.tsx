@@ -88,7 +88,7 @@ export const NeoDetailsModal = ({ isShown, setIsShown, rawRow }: IProps) => {
           { text: <span key={0}>Distance - R<sub>E</sub> ({ESurfaceDistanceUnits[surfaceDistance]})</span> },
           { text: convertSurfaceDistanceAu(rawRow.dist) },
           { text: convertSurfaceDistanceAu(rawRow.min_distance) },
-          { text: convertAuTo(rawRow.max_distance) },
+          { text: convertSurfaceDistanceAu(rawRow.max_distance) },
         ],
         onClick: () => setSurfaceDistance((surfaceDistance + 1) % ESurfaceDistanceUnits.__LENGTH)
       }
