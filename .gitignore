@@ -41,3 +41,5 @@ yarn-error.log*
 **/public/sw.js
 **/public/sw.js.map
 **/public/worker-*.js
+
+_upload_ec2
