@@ -38,12 +38,12 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
   return (
     <div className={styles.container}>
       <div className={styles.title} style={{ justifyContent: alignment }}>
-        <Tooltip
+        {/* <Tooltip
           title={tooltip || ""}
           placement="top"
           TransitionComponent={Zoom}
           arrow
-        >
+        > */}
           <div>
           {!!link ? (
             <a
@@ -67,7 +67,7 @@ export const TitledCell = (props: React.PropsWithChildren<IProps>) => {
             </span>
           )}
           </div>
-        </Tooltip>
+        {/* </Tooltip> */}
 
         {!!headerElement && headerElement}
       </div>
